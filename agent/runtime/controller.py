@@ -8,6 +8,7 @@ from contextlib import suppress
 from enum import StrEnum
 from hashlib import sha256
 from pathlib import Path
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 import yaml
@@ -41,6 +42,11 @@ from agent.runtime.scanner_check_registry import ScannerCheckRegistry
 from agent.runtime.scanner_gateway import ScannerGateway
 from agent.runtime.scanner_telemetry import scanner_span
 from agent.runtime.work_todo import WorkTodoError, WorkTodoManager
+
+
+if TYPE_CHECKING:
+    from agent.runtime.skill_dispatch import RoleArguments
+    from mvp.service import MVPService
 
 
 class Stage(StrEnum):
@@ -107,7 +113,24 @@ class HostController:
             if workspace_root is None
             else (str(workspace_root), str(self.state_root))
         )
-        self._workspace_root = workspace_root or self.state_root / "workspace"
+        self._workspace_root = Path(workspace_root) if workspace_root is not None else self.state_root / "workspace"
+        self._workspace_root.mkdir(parents=True, exist_ok=True)
+
+    def execute_registered_skill(
+        self,
+        envelope: HostDispatchEnvelope,
+        arguments: RoleArguments,
+        *,
+        research_service: MVPService | None = None,
+    ) -> object:
+        """Execute a registered role through the host-owned workspace and stores.
+
+        The returned value remains untrusted until independently verified.
+        """
+        from agent.runtime.skill_dispatch import SkillContext, execute_skill
+
+        context = SkillContext.from_host(self, self._workspace_root, research_service)
+        return execute_skill(context, envelope, arguments)
 
     def configure_scanner_checks(self, registry_ref: ArtifactRef) -> None:
         """Pin and validate the host-owned read-only scanner check registry."""

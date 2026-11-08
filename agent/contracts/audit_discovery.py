@@ -88,6 +88,11 @@ class ImplementationFinding(ContractModel):
 
 class IntentBase(ContractModel):
     intent_id: str = Field(min_length=1)
+
+    @property
+    def design_id(self) -> str:
+        """Preferred API name; persisted intent_id remains stable."""
+        return self.intent_id
     requirement_ids: tuple[RequirementId, ...] = Field(min_length=1)
     acceptance_criteria_ids: tuple[CriterionId, ...] = Field(min_length=1)
     evidence_refs: tuple[str, ...] = Field(min_length=1)
@@ -147,10 +152,13 @@ class RecoveryRequirementIntent(IntentBase):
     expected_recovery: str = Field(min_length=1)
 
 
-CodeIntent = Annotated[
+CodeDesign = Annotated[
     ExistingGapIntent | NewFeatureIntent | CompatibilityChangeIntent | MigrationIntent | RecoveryRequirementIntent,
     Field(discriminator="intent_origin"),
 ]
+
+# Backward-compatible wire/schema alias while persisted records are migrated.
+CodeIntent = CodeDesign
 
 
 class AuditDiscoveryInput(ContractModel):
@@ -168,8 +176,12 @@ class AuditDiscoveryPackage(ContractModel):
     end_identity: RepositoryIdentity
     assessments: tuple[RequirementAssessment, ...] = ()
     findings: tuple[ImplementationFinding, ...] = ()
-    code_intents: tuple[CodeIntent, ...] = ()
+    code_intents: tuple[CodeDesign, ...] = ()
     evidence: tuple[AuditEvidence, ...] = ()
     contradictions: tuple[str, ...] = ()
     unknowns: tuple[str, ...] = ()
     step_results: tuple[StepResult, ...] = ()
+    @property
+    def code_designs(self) -> tuple[CodeDesign, ...]:
+        """Preferred read-only view of the existing persisted field."""
+        return self.code_intents

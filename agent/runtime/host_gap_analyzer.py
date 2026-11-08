@@ -1,6 +1,6 @@
 """Host boundary for canonical Gap Analysis.
 
-Analysis belongs to :mod:`agent.gap_analysis`. This module only verifies
+Analysis belongs to :mod:`agent.skills.planner.checks.gap_analysis`. This module only verifies
 immutable inputs, invokes the trusted walking-skeleton runner, persists the
 result, and issues a completion receipt for a valid result.
 """
@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 from agent.contracts.common import ArtifactRef, ContractModel, StepStatus
 from agent.contracts.host import ReceiptRef
-from agent.gap_analysis import (
+from agent.skills.planner.checks.gap_analysis import (
     ComparableSystemAnalysis,
     GapAnalyzer,
     GapBacktestCorpus,

@@ -77,6 +77,10 @@ class CodeIntentReview(ContractModel):
     resulting_action_ids: tuple[str, ...] = ()
 
 
+# Python-facing terminology; wire records retain their existing field names.
+CodeDesignReview = CodeIntentReview
+
+
 class PlanningFindingAssessment(ContractModel):
     """Planner assessment of an audit finding."""
 
@@ -319,3 +323,7 @@ class PlanningRecord(ContractModel):
     corrective_refactors: tuple[CorrectiveRefactor, ...] = ()
     work_items: tuple[PlanningWorkItem, ...] = ()
     step_results: tuple[StepResult, ...] = ()
+    @property
+    def code_design_reviews(self) -> tuple[CodeDesignReview, ...]:
+        """Preferred view; historical intent_reviews remains the wire key."""
+        return self.intent_reviews

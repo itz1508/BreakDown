@@ -143,7 +143,7 @@ def main() -> int:
     if len(sys.argv) < 2:
         print("Usage: python -m agent <command> [args]")
         print(
-            "Commands: doctor, run <existing-task-id>, scan <task-id> <request.json> "
+            "Commands: doctor, skills, run <existing-task-id>, scan <task-id> <request.json> "
             "[--state-root PATH], status, resume, verify"
         )
         return 1
@@ -166,6 +166,11 @@ def main() -> int:
         parser.add_argument("--state-root", default="/tmp/oneshot-state")
         args = parser.parse_args(sys.argv[2:])
         return cmd_scan(args.task_id, args.request_file, args.state_root)
+    elif cmd == "skills":
+        from agent.runtime.skill_dispatch import registered_skills
+
+        print(json.dumps(registered_skills(), sort_keys=True, indent=2))
+        return 0
     elif cmd == "status":
         if len(sys.argv) < 3:
             print("Usage: python -m agent status <task_id>")

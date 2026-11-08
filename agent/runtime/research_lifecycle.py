@@ -26,7 +26,7 @@ from agent.contracts.research import (
     ResearchRequest,
     ReviewDisposition,
 )
-from agent.research_catalog import ResearchCatalog
+from agent.runtime.research_catalog import ResearchCatalog
 from agent.runtime.artifact_store import (
     ArtifactStore,
     StaleRevisionError,

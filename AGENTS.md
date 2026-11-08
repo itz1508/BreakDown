@@ -4,7 +4,7 @@ This file defines **standing work practices** for contributors and coding agents
 
 ## Source of truth and workspace
 
-- **`/OneShot`** is the clean rebuild target. Check `git status` and `git log` before making changes.
+- **`/breakdown`** is the skill-based refactor destination. Check `git status` and `git log` before making changes.
 - Use Python **3.11+**, Pydantic **v2**, and **uv**. `pyproject.toml` declares dependencies; `uv.lock` records the resolution.
 - `settings/config.yaml` is the runtime/provider configuration. Validate against implemented schemas; do not invent settings.
 - Meta Muse Spark 1.3 is the configured **default** provider. Claude Agent SDK and Codex SDK are **optional** adapters.
