@@ -43,3 +43,9 @@ C preserves a single owner for routing and forwarding without conflating distinc
 - Executed under local Python 3.13; repository CI declares Python 3.11 and 3.12. Those version-specific tests, full root suite, Ruff, mypy, remote deployment, and production load tests have **not** been run here.
 - Two Uvicorn/WebSockets dependency deprecation warnings appeared during the loopback test; these are separate from test assertion failures.
 - Alternatives A and B were never stored as competing implementations. Only C is intended for publication. Do not delete unrelated remote branches or treat test output as a Host-issued Build Admission receipt.
+
+## 2026-11-09T02:49:14-08:00 — Published canonical revision and external CI observation
+
+- Published the single consolidated implementation to `main` in commit `9cde0610534d57ccf573d44de3a69a05c9675b3a`, with seven added files (proxy code, configuration, tests, design records). Remote Git blob hashes were verified against tested local source files.
+- GitHub Actions CI run [42603835815](https://github.com/itz1508/BreakDown/actions/runs/42603835815) **failed before lint or tests**: `uv sync --locked --extra meta --extra mvp` could not download `protobuf==7.36.2` because the runner's `package-proxy.host.local` DNS lookup failed. This does not establish an application or dependency-version defect; a complete repository CI pass remains outstanding.
+- No distinct proxy draft implementation was retained. Existing remote `draft`, `refactor/executor-sandbox-relocation-20261108`, `breakdown`, and `itz1508/breakdown` branches remain intact because their work is unrelated to this proxy exercise and has not been reconciled into the canonical runtime.
