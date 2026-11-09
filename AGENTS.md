@@ -21,7 +21,7 @@ This file defines **standing work practices** for contributors and coding agents
 | Lint | `uv run --no-sync ruff check .` |
 | Format check | `uv run --no-sync ruff format --check .` |
 | Type check | `uv run --no-sync mypy agent` |
-| Check environment | `uv run --no-sync python scripts/doctor.py` |
+| Preflight, sync, and environment doctor | `python scripts/doctor.py` |
 | CLI | `uv run --no-sync python -m agent doctor` |
 
 ## How to perform authorized work
