@@ -13,7 +13,6 @@ build/
 
 # Virtual environments
 .venv/
-.venv-EnvAgent/
 venv/
 
 # Cache
