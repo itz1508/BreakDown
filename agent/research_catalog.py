@@ -7,6 +7,8 @@ while delegating to the skill-based implementation at
 
 from agent.skills.researcher.tools.research_catalog import (
     CatalogSample as _CatalogSample,
+)
+from agent.skills.researcher.tools.research_catalog import (
     ResearchCatalog as _ResearchCatalog,
 )
 

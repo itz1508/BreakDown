@@ -303,9 +303,6 @@ class EffectExecutor:
                         error=f"preimage mismatch: expected {expected_source_digest}, got {pre_digest}",
                     )
                 dst_path.parent.mkdir(parents=True, exist_ok=True)
-                pre_target_digest = None
-                if dst_path.exists():
-                    pre_target_digest = hashlib.sha256(dst_path.read_bytes()).hexdigest()
                 # Durable checkpoint for atomic move
                 self._pre_effect_checkpoint(action_id, f"{source_path}->{target_path}", pre_digest, pre_digest)
                 # Atomic move via replace (same filesystem) or copy+unlink
