@@ -1,12 +1,14 @@
-"""Planner-owned, read-only CodeDesign review guidance; never an admission gate.
+"""Audit Discovery-owned, read-only CodeDesign preparation guidance; never an admission gate.
 
 Adapted from the deep-module ideas in mattpocock/skills:
 https://github.com/mattpocock/skills/tree/main/skills/engineering/codebase-design
 
-This is an advisory skill, not a second scanner, persisted stage contract, role,
-repository inspector, or host dispatcher. Audit Discovery supplies source-grounded
-CodeDesign candidates; Planning evaluates designs and records decisions in the
-existing planning contracts. Runtime owns trusted checks, effects and receipts.
+This is preparatory guidance within Audit Discovery, not a second scanner,
+persisted stage contract, role, repository inspector, or host dispatcher.
+After inspecting source, Audit Discovery prepares evidence-grounded CodeDesign
+candidates and unresolved review questions before handoff to Planning. Planning
+owns subsequent design decisions in its existing contracts. Runtime owns trusted
+checks, effects, and receipts.
 """
 
 from __future__ import annotations
@@ -152,8 +154,9 @@ def review_questions(design: CodeDesign) -> tuple[DesignQuestion, ...]:
 
     This does not read the repository, infer facts from missing evidence, choose a
     disposition, create Build actions, or issue a verification result. The
-    caller must inspect evidence and record its conclusions in the existing
-    Planner-owned CodeDesignReview and DesignDecision models.
+    Audit Discovery caller must inspect source evidence and preserve unresolved
+    questions in its existing CodeDesign candidate. Planning evaluates that
+    candidate and separately records CodeDesignReview and DesignDecision.
     """
     origin = design.intent_origin
     if origin not in _ORIGIN_QUESTIONS:

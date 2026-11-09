@@ -6,7 +6,7 @@ Migration source: [OneShot-Continuing](https://github.com/itz1508/OneShot-Contin
 
 | Skill | Entrypoint | Function |
 | --- | --- | --- |
-| Auditor | `agent.skills.auditor.run` | Read-only source inspection and evidence-grounded candidate CodeDesign |
+| Auditor | `agent.skills.auditor.run` and `agent.skills.auditor.code_design` | Read-only source inspection and pre-Planning CodeDesign preparation |
 | Researcher | `agent.skills.researcher.run` | MCP-backed Research through the existing host service |
 | Planner | `agent.skills.planner.run` | Host-driven Scanner, gap analysis, design review |
 | Builder | `agent.skills.builder.run` | Only admitted effects through the Runtime executor |
@@ -19,7 +19,7 @@ Runtime retains controller, authorization, artifacts, receipts, event logs, Scan
 
 The source files in `agent/audit` are migrated to `agent/skills/auditor/checks`, `agent/gap_analysis.py` to `agent/skills/planner/checks/gap_analysis.py`, and `agent/research_catalog.py` to `agent/runtime/research_catalog.py`.
 
-**CodeDesign:** This is the preferred Python-facing terminology; the legacy `CodeIntent` wire field and persisted artifacts remain readable for compatibility until an independently validated storage and Vector Search migration occurs. No Databricks index was modified by this repository change.
+**CodeDesign:** Audit Discovery owns source-grounded candidate preparation and evidence questions; Planning owns subsequent design decisions and `CodeDesignReview`. This is the preferred Python-facing terminology; the legacy `CodeIntent` wire field and persisted artifacts remain readable for compatibility until an independently validated storage and Vector Search migration occurs. No Databricks index was modified by this repository change.
 
 ## Local verification
 
