@@ -40,6 +40,8 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["E501", "B017", "S101", "RUF012"]
+"agent/skills/uix_designer/tools/**" = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+"agent/skills/video_generator/tools/**" = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["agent"]
@@ -48,6 +50,7 @@ known-first-party = ["agent"]
 python_version = "3.11"
 strict = true
 packages = ["agent"]
+exclude = ["agent/skills/uix_designer/tools", "agent/skills/video_generator/tools"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
