@@ -286,6 +286,44 @@ class EffectExecutor:
                     pre_image_digest=pre_digest,
                 )
 
+            elif action_kind == "move" and source_path and target_path:
+                src_path = Path(resolved_source)  # type: ignore[arg-type]
+                dst_path = Path(resolved_target)  # type: ignore[arg-type]
+                if not src_path.exists():
+                    return BuildActionExecution(
+                        action_id=action_id,
+                        status=BuildActionStatus.FAILED,
+                        error=f"source file not found: {source_path}",
+                    )
+                pre_digest = hashlib.sha256(src_path.read_bytes()).hexdigest()
+                if expected_source_digest and pre_digest != expected_source_digest:
+                    return BuildActionExecution(
+                        action_id=action_id,
+                        status=BuildActionStatus.FAILED,
+                        error=f"preimage mismatch: expected {expected_source_digest}, got {pre_digest}",
+                    )
+                dst_path.parent.mkdir(parents=True, exist_ok=True)
+                pre_target_digest = None
+                if dst_path.exists():
+                    pre_target_digest = hashlib.sha256(dst_path.read_bytes()).hexdigest()
+                # Durable checkpoint for atomic move
+                self._pre_effect_checkpoint(action_id, f"{source_path}->{target_path}", pre_digest, pre_digest)
+                # Atomic move via replace (same filesystem) or copy+unlink
+                try:
+                    os.replace(str(src_path), str(dst_path))
+                except OSError:
+                    # Cross-device fallback
+                    dst_path.write_bytes(src_path.read_bytes())
+                    src_path.unlink()
+                post_digest = hashlib.sha256(dst_path.read_bytes()).hexdigest()
+                self._clear_pre_effect_checkpoint(action_id)
+                return BuildActionExecution(
+                    action_id=action_id,
+                    status=BuildActionStatus.COMPLETED,
+                    pre_image_digest=pre_digest,
+                    post_image_digest=post_digest,
+                )
+
             else:
                 return BuildActionExecution(
                     action_id=action_id,
