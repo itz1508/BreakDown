@@ -1,6 +1,6 @@
 import pytest
 
-from modal_build_sandbox.recovery import AttemptStore
+from oneshot_sandbox.recovery import AttemptStore
 
 
 def test_durable_precreate_and_cas(tmp_path):

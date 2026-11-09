@@ -9,10 +9,10 @@ from types import SimpleNamespace
 import pytest
 from test_contracts import make_request
 
-from modal_build_sandbox.contracts import Cleanup, Outcome
-from modal_build_sandbox.modal_runtime import ModalRuntime
-from modal_build_sandbox.recovery import AttemptStore
-from modal_build_sandbox.runner import StandaloneRunner, _run_worker
+from oneshot_sandbox.contracts import Cleanup, Outcome
+from oneshot_sandbox.integrations.modal import WORKER_ENTRY, ModalRuntime
+from oneshot_sandbox.recovery import AttemptStore
+from oneshot_sandbox.runner import StandaloneRunner, _run_worker
 
 
 class FakeModalRuntime:
@@ -165,3 +165,33 @@ def test_modal_create_does_not_inject_secrets_or_network(monkeypatch, tmp_path):
     assert kw["volumes"] == {} and kw["network_file_systems"] == {}
     assert not kw["include_oidc_identity_token"] and not kw["pty"]
     assert "ports" not in kw and not kw.get("gpu")
+
+
+def test_modal_upload_stages_core_only_and_prepares_worker_directory(tmp_path):
+    req = make_request(tmp_path)
+    class Filesystem:
+        def __init__(self):
+            self.directories = []
+            self.copies = []
+            self.writes = []
+
+        def make_directory(self, dest, **kwargs):
+            self.directories.append(dest)
+
+        def copy_from_local(self, src, dest):
+            assert Path(src).is_file()
+            self.copies.append(dest)
+
+        def write_text(self, value, dest):
+            self.writes.append((value, dest))
+
+    fs = Filesystem()
+    sandbox = SimpleNamespace(object_id="sb-test", filesystem=fs)
+    ModalRuntime("existing-app").upload(sandbox, req)
+    root = "/opt/oneshot-sandbox/oneshot_sandbox/"
+    assert root.rstrip("/") in fs.directories
+    assert root + "runner.py" in fs.copies
+    assert root + "contracts.py" in fs.copies
+    assert not any("/integrations/" in path for path in fs.copies)
+    assert "from oneshot_sandbox.runner import sandbox_worker" in WORKER_ENTRY
+    assert any(path == "/input/request.json" for _, path in fs.writes)

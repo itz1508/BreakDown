@@ -1,4 +1,4 @@
-"""Standalone Modal Sandbox backend; never imports OneShot host modules."""
+"""Provider-neutral standalone Sandbox core; never imports OneShot host modules."""
 
 from .contracts import SandboxExecutionRequest, SandboxExecutionResult
 

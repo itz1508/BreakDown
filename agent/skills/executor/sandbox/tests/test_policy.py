@@ -1,7 +1,7 @@
 import pytest
 from test_contracts import make_request
 
-from modal_build_sandbox.policy import check_commands, normalize_path
+from oneshot_sandbox.policy import check_commands, normalize_path
 
 
 @pytest.mark.parametrize(
@@ -40,7 +40,7 @@ def test_reject_corrupt_command_plan(tmp_path):
 def test_reject_model_chosen_shell_command(tmp_path):
     req = make_request(tmp_path)
     malicious = req.focused_checks[0].model_copy(update={"argv": ("sh", "-c", "echo out")})
-    from modal_build_sandbox.policy import commands_digest
+    from oneshot_sandbox.policy import commands_digest
 
     changed = req.model_copy(update={"focused_checks": (malicious,)})
     changed = changed.model_copy(update={"command_plan_sha256": commands_digest(changed)})

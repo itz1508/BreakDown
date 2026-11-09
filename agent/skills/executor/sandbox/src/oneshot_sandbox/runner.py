@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .applicator import apply_changes, prepare_changes
+from .backend import SandboxBackend
 from .contracts import (
     Cleanup,
     Diagnostic,
@@ -63,7 +64,7 @@ def preflight(req: SandboxExecutionRequest) -> None:
 
 
 def _run_worker(req: SandboxExecutionRequest, root: Path, output: Path, sandbox_id: str) -> SandboxExecutionResult:
-    """Trusted worker, run *inside* isolated Modal container. Never claim host receipt."""
+    """Trusted worker, run inside an isolated Sandbox. Never claim host receipt."""
     output.mkdir(exist_ok=True, parents=True)
     patch = validate_candidate(req)
     before = extract_verified_tar(
@@ -148,7 +149,7 @@ def _run_worker(req: SandboxExecutionRequest, root: Path, output: Path, sandbox_
 
 
 def sandbox_worker(request_path: str) -> None:
-    """Modal command entry. Fixed source path is part of trusted adapter, not agent input."""
+    """Fixed worker entry invoked by a trusted backend; never an authority issuer."""
     req = SandboxExecutionRequest.model_validate_json(Path(request_path).read_text(encoding="utf-8"))
     req = req.model_copy(
         update={"source_snapshot_ref": "/input/source.tar", "candidate_bundle_ref": "/input/bundle.zip"}
@@ -159,7 +160,7 @@ def sandbox_worker(request_path: str) -> None:
 
 
 class StandaloneRunner:
-    def __init__(self, runtime: Any, attempts: AttemptStore, output_root: Path):
+    def __init__(self, runtime: SandboxBackend, attempts: AttemptStore, output_root: Path):
         self.runtime, self.attempts, self.output_root = runtime, attempts, Path(output_root)
         if self.output_root.is_symlink():
             raise ValueError("output root must not be a symlink")

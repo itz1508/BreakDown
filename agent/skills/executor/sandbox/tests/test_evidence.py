@@ -8,8 +8,8 @@ from pathlib import Path
 import pytest
 from test_contracts import make_request
 
-from modal_build_sandbox.evidence import changed_paths, validate_candidate, write_evidence_zip
-from modal_build_sandbox.snapshot import sha256_file
+from oneshot_sandbox.evidence import changed_paths, validate_candidate, write_evidence_zip
+from oneshot_sandbox.snapshot import sha256_file
 
 
 def test_candidate_manifest_bytes_verified(tmp_path):
@@ -44,8 +44,8 @@ def test_reject_candidate_bundle_extra_entries(tmp_path):
 
 
 def test_command_output_cap_is_bounded(tmp_path):
-    from modal_build_sandbox.contracts import CommandSpec
-    from modal_build_sandbox.evidence import matches_oracle, run_command
+    from oneshot_sandbox.contracts import CommandSpec
+    from oneshot_sandbox.evidence import matches_oracle, run_command
 
     cmd = CommandSpec(command_id="output-limit", argv=("python", "-c", "print('X'*50000)"), purpose="focused")
     result, stdout, stderr = run_command(cmd, tmp_path, tmp_path, 1024)
@@ -57,7 +57,7 @@ def test_command_output_cap_is_bounded(tmp_path):
 def test_id_path_escape_rejected(tmp_path):
     from pydantic import ValidationError
 
-    from modal_build_sandbox.contracts import SandboxExecutionRequest
+    from oneshot_sandbox.contracts import SandboxExecutionRequest
 
     req = make_request(tmp_path)
     with pytest.raises(ValidationError):

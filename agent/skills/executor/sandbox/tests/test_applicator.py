@@ -1,8 +1,8 @@
 import pytest
 from test_contracts import make_request
 
-from modal_build_sandbox.applicator import apply_changes, parse_patch, prepare_changes
-from modal_build_sandbox.snapshot import secure_read
+from oneshot_sandbox.applicator import apply_changes, parse_patch, prepare_changes
+from oneshot_sandbox.snapshot import secure_read
 
 
 def _patch(req):

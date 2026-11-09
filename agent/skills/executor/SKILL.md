@@ -1,17 +1,15 @@
-# Executor — isolated Sandbox and source-file execution
+# Executor — isolated sandbox execution and workspace file handling
 
-**Owner:** Agent-side isolated execution implementation and its source-file staging; **not** a workflow transition owner or an authority issuer.
+**Role:** Execution capability assigned by the existing Host; not a workflow stage, admission authority, receipt issuer, or new Builder.
 
-**Canonical package:** `agent/skills/executor/sandbox_v3/`, containing the standalone `modal_build_sandbox` project, pinned `uv.lock`, tests, and offline/connected validation scripts. This is the single implementation of source snapshot handling, allowed-path patch application, Sandbox lifecycle, evidence export, and attempt reconciliation.
+**Canonical implementation:** `agent/skills/executor/sandbox/` owns source-snapshot verification, sandbox-local file staging, patch application, bounded command execution, changed-path inspection, evidence export, and attempt-state reconciliation.
 
-**Inputs:** A Host-admitted, pinned `SandboxExecutionRequest` (snapshot, candidate bundle, approved paths/preimages, image and profile identities, bounded checks, and attempt identity). The Sandbox request validates shape and data coherence; **it is not an authorization token**.
+**Contracts and ownership:** Host retains workflow dispatch, source identity, approval, Build Admission, authoritative ArtifactStore, checkpoints, receipts, tool allowlists, and CAS promotion. `agent/skills/builder/` remains the Build role. A Sandbox request describes input only and does not confer authorization.
 
-**Execution:** The existing Host verifies immutable approval and Build Admission before provisioning the Sandbox. The standalone runner checks hashes, paths and command plans; the isolated Ubuntu/Python image is selected by a trusted Host, not by an agent proposal. No secret, volume, OIDC, network or authoritative checkout is supplied to the Sandbox. The current implementation executes a patch-first runner, **not an autonomous coding agent inside the Sandbox**.
+**Backends:** Provider-neutral `oneshot_sandbox` core defines the execution-backend interface. Integrations live under `oneshot_sandbox/integrations/`; the Modal adapter is optional and selected explicitly by trusted configuration. No provider credentials or SDK imports are required for offline validation.
 
-**Outputs:** `result.json`, `after.tar`, `evidence.zip`, durable attempt state. Host independently checks exports and decides Build Validation, CAS promotion and receipts.
+**Isolation:** Runtime must enforce the admitted image/profile, resource limits, network and secret policy, preimages, and permitted paths before creating effects. The current backend is patch-first, not an autonomous coding agent inside the sandbox.
 
-**Out of scope (unchanged owners):** `agent/runtime/artifact_store.py`, authorization, checkpoint/receipt/event stores, Build Admission, Host dispatch and authoritative source promotion. `agent/skills/builder` remains the admitted Build role; this Executor is **not** an additional workflow stage or independently dispatchable role.
+**Outputs:** `result.json`, `after.tar`, `evidence.zip`, durable per-attempt state. Host independently verifies and reconciles outputs before considering source promotion.
 
-**Standalone validation:** `cd agent/skills/executor/sandbox_v3 && uv sync --locked --extra modal --group dev && uv run --no-sync pytest -q tests --ignore=tests/integration`.
-
-**Integration status:** No Host-to-Modal Sandbox E2E receipt or production Build authorization is implied by this structural move. Do not register a second builder or claim authorization from skill documentation.
+**Validation:** `cd agent/skills/executor/sandbox && uv sync --locked --group dev && uv run --no-sync pytest -q tests --ignore=tests/integration`. Connected Modal E2E requires explicit opt-in and credentials. Neither local tests nor this relocation establish integrated Host admission or real Sandbox E2E.
