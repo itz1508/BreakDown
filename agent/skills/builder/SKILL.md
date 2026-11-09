@@ -1,6 +1,6 @@
 # Builder — admitted effects
 
-**Executable:** `agent.skills.builder.run.run(context, envelope, BuildArguments)`.
+**Executable:** `agent.skills.builder.build.run(context, envelope, BuildArguments)`.
 
 **Input:** Verified Build dispatch, exact action ID/kind, host-issued `BuildAdmissionReceipt`, optional wave and preimage.
 

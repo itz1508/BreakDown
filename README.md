@@ -6,10 +6,10 @@ Migration source: [OneShot-Continuing](https://github.com/itz1508/OneShot-Contin
 
 | Skill | Entrypoint | Function |
 | --- | --- | --- |
-| Auditor | `agent.skills.auditor.run` and `agent.skills.auditor.code_design` | Read-only source inspection and pre-Planning CodeDesign preparation |
-| Researcher | `agent.skills.researcher.run` | MCP-backed Research through the existing host service |
-| Planner | `agent.skills.planner.run` | Host-driven Scanner, gap analysis, design review |
-| Builder | `agent.skills.builder.run` | Only admitted effects through the Runtime executor |
+| Auditor | `agent.skills.auditor.audit` and `agent.skills.auditor.code_design` | Read-only source inspection and pre-Planning CodeDesign preparation |
+| Researcher | `agent.skills.researcher.research` | MCP-backed Research through the existing host service |
+| Planner | `agent.skills.planner.plan` | Host-driven Scanner, gap analysis, design review |
+| Builder | `agent.skills.builder.build` | Only admitted effects through the Runtime executor |
 
 `agent.runtime.skill_dispatch` checks the persisted Host dispatch envelope before importing a role. Existing role ID `audit_discovery` is intentionally retained even though the package is named `auditor`.
 

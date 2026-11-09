@@ -1,6 +1,6 @@
 # Planner — design review and Scanner
 
-**Executable:** `agent.skills.planner.run.run(context, envelope, PlanningArguments)`.
+**Executable:** `agent.skills.planner.plan.run(context, envelope, PlanningArguments)`.
 
 **Input:** Verified Planning dispatch and typed `ScannerRunInput`, including candidate digest, repository identity, gap evidence and receipt.
 

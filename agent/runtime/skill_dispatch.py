@@ -22,10 +22,10 @@ if TYPE_CHECKING:
 
 
 _ROLE_MODULES = {
-    ("audit_discovery", "audit_discovery"): "agent.skills.auditor.run",
-    ("research", "researcher"): "agent.skills.researcher.run",
-    ("planning", "planner"): "agent.skills.planner.run",
-    ("build", "builder"): "agent.skills.builder.run",
+    ("audit_discovery", "audit_discovery"): "agent.skills.auditor.audit",
+    ("research", "researcher"): "agent.skills.researcher.research",
+    ("planning", "planner"): "agent.skills.planner.plan",
+    ("build", "builder"): "agent.skills.builder.build",
 }
 
 

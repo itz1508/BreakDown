@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import pytest
 
 from agent.runtime.skill_dispatch import AuditArguments, SkillContext
-from agent.skills.auditor.run import run
+from agent.skills.auditor.audit import run
 
 
 def test_auditor_preserves_file_bytes(tmp_path: Path) -> None:

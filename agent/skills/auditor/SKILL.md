@@ -1,6 +1,6 @@
 # Auditor — read-only repository inspection
 
-**Executable:** `agent.skills.auditor.run.run(context, envelope, AuditArguments)`.
+**Executable:** `agent.skills.auditor.audit.run(context, envelope, AuditArguments)`.
 
 **Input:** Host-persisted audit-discovery dispatch, Runtime workspace root, requested capabilities and bounded scope. Existing persisted role ID `audit_discovery` is preserved.
 
