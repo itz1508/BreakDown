@@ -22,8 +22,8 @@ def test_missing_lock_blocks_sync(tmp_path, monkeypatch):
 def test_missing_uv_blocks_sync(tmp_path, monkeypatch):
     (tmp_path / "pyproject.toml").touch()
     (tmp_path / "uv.lock").touch()
-    (tmp_path / "settings").mkdir()
-    (tmp_path / "settings" / "config.yaml").touch()
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "config.yaml").touch()
     monkeypatch.setattr(doctor.shutil, "which", lambda command: None)
     monkeypatch.setattr(sys, "argv", ["doctor.py", "--root", str(tmp_path)])
 
@@ -37,8 +37,8 @@ def test_missing_uv_blocks_sync(tmp_path, monkeypatch):
 def test_preflight_precedes_sync_and_runtime_diagnostics(tmp_path, monkeypatch):
     (tmp_path / "pyproject.toml").touch()
     (tmp_path / "uv.lock").touch()
-    (tmp_path / "settings").mkdir()
-    (tmp_path / "settings" / "config.yaml").touch()
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "config.yaml").touch()
     monkeypatch.setattr(doctor.shutil, "which", lambda command: "/usr/bin/uv")
     monkeypatch.setattr(sys, "argv", ["doctor.py", "--root", str(tmp_path)])
     calls = []
@@ -61,8 +61,8 @@ def test_preflight_precedes_sync_and_runtime_diagnostics(tmp_path, monkeypatch):
 def test_failed_sync_blocks_runtime_diagnostics(tmp_path, monkeypatch):
     (tmp_path / "pyproject.toml").touch()
     (tmp_path / "uv.lock").touch()
-    (tmp_path / "settings").mkdir()
-    (tmp_path / "settings" / "config.yaml").touch()
+    (tmp_path / "config").mkdir()
+    (tmp_path / "config" / "config.yaml").touch()
     monkeypatch.setattr(doctor.shutil, "which", lambda command: "/usr/bin/uv")
     monkeypatch.setattr(sys, "argv", ["doctor.py", "--root", str(tmp_path)])
     calls = []
