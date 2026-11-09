@@ -3,8 +3,10 @@ name: Modal Sandbox v3 standalone validation
 on:
   pull_request:
     paths:
-      - 'deployment/modal/sandbox_v3/**'
+      - 'agent/skills/executor/sandbox_v3/**'
       - '.github/workflows/modal-sandbox-v3.yml'
+      - 'tests/boundaries/test_executor_sandbox_layout.py'
+      - 'pyproject.toml'
   workflow_dispatch:
 
 permissions:
@@ -55,6 +57,6 @@ jobs:
       - name: Report standalone lockfile requirement
         if: success() || failure()
         run: |
-          if ! git ls-files --error-unmatch deployment/modal/sandbox_v3/uv.lock >/dev/null 2>&1; then
+          if ! git ls-files --error-unmatch agent/skills/executor/sandbox_v3/uv.lock >/dev/null 2>&1; then
             echo "::warning::The standalone uv.lock is not committed. CI generated a temporary lock only."
           fi
