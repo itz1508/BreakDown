@@ -27,7 +27,7 @@ jobs:
         python-version: ['3.11', '3.12']
     defaults:
       run:
-        working-directory: deployment/modal/sandbox_v3
+        working-directory: agent/skills/executor/sandbox_v3
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf # v3
@@ -57,6 +57,6 @@ jobs:
       - name: Report standalone lockfile requirement
         if: success() || failure()
         run: |
-          if ! git ls-files --error-unmatch agent/skills/executor/sandbox_v3/uv.lock >/dev/null 2>&1; then
+          if ! git -C "$GITHUB_WORKSPACE" ls-files --error-unmatch agent/skills/executor/sandbox_v3/uv.lock >/dev/null 2>&1; then
             echo "::warning::The standalone uv.lock is not committed. CI generated a temporary lock only."
           fi
