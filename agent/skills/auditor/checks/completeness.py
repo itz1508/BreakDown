@@ -3,16 +3,17 @@
 from __future__ import annotations
 
 import ast
+import io
 import tokenize
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, python_files
+from agent.skills.auditor.checks.core import Finding, evidence, python_files, safe_read_bytes, safe_read_text
 
 
 def scan_completeness(root: Path, scope: Path) -> list[Finding]:
     findings: list[Finding] = []
     for path in python_files(root, scope):
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        tree = ast.parse(safe_read_text(root, path), filename=str(path))
         for node in ast.walk(tree):
             if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 continue
@@ -38,7 +39,7 @@ def scan_completeness(root: Path, scope: Path) -> list[Finding]:
                         "Function body raises NotImplementedError; determine if accepted behavior depends on it.",
                     )
                 )
-        with path.open("rb") as source:
+        with io.BytesIO(safe_read_bytes(root, path)) as source:
             for token in tokenize.tokenize(source.readline):
                 if token.type != tokenize.COMMENT:
                     continue

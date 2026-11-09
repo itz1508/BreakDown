@@ -10,6 +10,12 @@ User selects **Research → Audit** and provides a question or audit scope. Pres
 
 Inspect source and contracts, implementation completeness, imports and paths, API/tool/event wiring, safety boundaries, dependencies, persistence, concurrency and recovery, verification fixtures, and actual E2E outcomes. Distinguish verified observations from candidate vulnerabilities and missing runtime evidence. Reconcile against existing findings before opening new ones.
 
+## Ordered inspection and handoff
+
+Within the static Audit capability: paths → contracts → dependencies → security → completeness → wiring → frontend → integration → state → recovery → verification. Explicit subsets retain that relative order. A symlinked/out-of-root source cannot be read by a scanner; an incomplete requested check blocks the disposition.
+
+The full Audit Discovery workflow has a separate Host-owned order: load accepted Research and repository instructions; capture source entry identity; inspect actual source; assess accepted requirements; record findings; prepare evidence-grounded CodeDesign and unknowns; capture source exit identity; submit the exact bound artifact for Host validation. The static scanner neither creates Research references nor attests source stability or completes this stage. CodeDesign questions are advisory and must follow evidence, not manufacture it.
+
 ## Capability modules
 
 - `paths.py`: symlink containment and broken paths.

@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import scan
+from agent.skills.auditor.checks.core import CAPABILITY_ORDER, scan
 
 
 def main() -> int:
@@ -17,19 +17,7 @@ def main() -> int:
     parser.add_argument(
         "--capability",
         action="append",
-        choices=(
-            "paths",
-            "wiring",
-            "security",
-            "contracts",
-            "completeness",
-            "verification",
-            "frontend",
-            "state",
-            "dependencies",
-            "integration",
-            "recovery",
-        ),
+        choices=CAPABILITY_ORDER,
         default=[],
     )
     args = parser.parse_args()

@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence
+from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
 
 
 def scan_frontend(root: Path, scope: Path) -> list[Finding]:
@@ -15,8 +15,8 @@ def scan_frontend(root: Path, scope: Path) -> list[Finding]:
         return []
     if scope != root and not source.is_relative_to(scope) and not api.is_relative_to(scope):
         return []
-    ui = source.read_text(encoding="utf-8")
-    backend = api.read_text(encoding="utf-8")
+    ui = safe_read_text(root, source)
+    backend = safe_read_text(root, api)
     findings: list[Finding] = []
     literal_call = any(marker in ui for marker in ("'/research'", '"/research"', "`/research`"))
     dynamic_route = re.search(r"const\s+(\w+)\s*=\s*[^\n;]*['\"]research['\"]", ui)

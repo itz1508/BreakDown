@@ -5,14 +5,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence
+from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
 
 
 def scan_dependencies(root: Path, scope: Path) -> list[Finding]:
     manifest = root / "web" / "package.json"
     if not manifest.is_file() or (scope != root and not manifest.is_relative_to(scope)):
         return []
-    package = json.loads(manifest.read_text(encoding="utf-8"))
+    package = json.loads(safe_read_text(root, manifest))
     if not isinstance(package, dict):
         raise ValueError("frontend package manifest must be an object")
     if package.get("dependencies") or package.get("devDependencies"):

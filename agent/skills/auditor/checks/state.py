@@ -5,14 +5,14 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence
+from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
 
 
 def scan_state(root: Path, scope: Path) -> list[Finding]:
     controller = root / "agent" / "runtime" / "controller.py"
     if not controller.is_file() or (scope != root and not controller.is_relative_to(scope)):
         return []
-    tree = ast.parse(controller.read_text(encoding="utf-8"), filename=str(controller))
+    tree = ast.parse(safe_read_text(root, controller), filename=str(controller))
     findings: list[Finding] = []
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) or node.name != "issue_stage_receipt":

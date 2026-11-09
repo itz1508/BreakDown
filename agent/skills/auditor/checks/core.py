@@ -41,6 +41,26 @@ class AuditResult:
         return data
 
 
+def safe_read_bytes(root: Path, path: Path) -> bytes:
+    """Reject out-of-root or symlinked audit sources before opening them."""
+    root = root.resolve(strict=True)
+    if not path.is_relative_to(root):
+        raise ValueError("audit source escapes repository root")
+    part_path = root
+    for part in path.relative_to(root).parts:
+        part_path = part_path / part
+        if part_path.is_symlink():
+            raise ValueError("audit source uses a symlink")
+    resolved = path.resolve(strict=True)
+    if not resolved.is_relative_to(root) or not resolved.is_file():
+        raise ValueError("audit source is not a regular in-root file")
+    return path.read_bytes()
+
+
+def safe_read_text(root: Path, path: Path) -> str:
+    return safe_read_bytes(root, path).decode("utf-8")
+
+
 def evidence(
     root: Path,
     path: Path,
@@ -52,7 +72,7 @@ def evidence(
     status: str = "candidate",
 ) -> Finding:
     """Capture file digest so a later host can reconcile stale findings."""
-    data = path.read_bytes()
+    data = safe_read_bytes(root, path)
     return Finding(
         capability,
         code,
@@ -74,8 +94,29 @@ def python_files(root: Path, scope: Path) -> Iterable[Path]:
             for part in path.relative_to(root).parts
         ):
             continue
-        if path.is_file() and not path.is_symlink():
+        if path.is_symlink():
+            continue
+        if path.is_file():
+            if not path.resolve(strict=True).is_relative_to(root):
+                raise ValueError("audit Python source escapes repository root")
             yield path
+
+
+# Stable per-capability order; a requested subset cannot bypass this ordering.
+# The Host retains ownership of cross-stage Audit Discovery checkpoints.
+CAPABILITY_ORDER: tuple[str, ...] = (
+    "paths",
+    "contracts",
+    "dependencies",
+    "security",
+    "completeness",
+    "wiring",
+    "frontend",
+    "integration",
+    "state",
+    "recovery",
+    "verification",
+)
 
 
 Scanner = Callable[[Path, Path], list[Finding]]
@@ -96,24 +137,28 @@ def scan(root: Path, scope: str = ".", capabilities: tuple[str, ...] = (), reque
 
     scanners: dict[str, Scanner] = {
         "paths": scan_paths,
-        "wiring": scan_wiring,
-        "security": scan_security,
         "contracts": scan_contracts,
-        "completeness": scan_completeness,
-        "verification": scan_verification,
-        "frontend": scan_frontend,
-        "state": scan_state,
         "dependencies": scan_dependencies,
+        "security": scan_security,
+        "completeness": scan_completeness,
+        "wiring": scan_wiring,
+        "frontend": scan_frontend,
         "integration": scan_integration,
+        "state": scan_state,
         "recovery": scan_recovery,
+        "verification": scan_verification,
     }
-    requested = capabilities or tuple(scanners)
+    if tuple(scanners) != CAPABILITY_ORDER:
+        raise RuntimeError("audit capability registry/order mismatch")
+    requested = tuple(dict.fromkeys(capabilities)) if capabilities else CAPABILITY_ORDER
     unknown = sorted(set(requested) - set(scanners))
     if unknown:
         raise ValueError(f"unknown audit capabilities: {', '.join(unknown)}")
     root = root.resolve(strict=True)
     if not root.is_dir():
         raise ValueError("repository root must be a directory")
+    if Path(scope).is_absolute():
+        raise ValueError("audit scope must be relative to repository root")
     target = (root / scope).resolve(strict=True)
     if not target.is_relative_to(root):
         raise ValueError("audit scope escapes repository root")
@@ -123,16 +168,19 @@ def scan(root: Path, scope: str = ".", capabilities: tuple[str, ...] = (), reque
     limitations = [
         "Static observations are not runtime or E2E verification.",
         "Only Python and literal frontend API route patterns are inspected; dynamic wiring requires runtime evidence.",
+        "Symlink checks are not atomic source checkpoints; Host must verify source stability.",
     ]
     executed: list[str] = []
-    for name in dict.fromkeys(requested):
+    for name in CAPABILITY_ORDER:
+        if name not in requested:
+            continue
         try:
             findings.extend(scanners[name](root, target))
             executed.append(name)
         except (OSError, UnicodeError, SyntaxError, ValueError) as exc:
             limitations.append(f"{name} not completed: {type(exc).__name__}")
     findings.sort(key=lambda f: (f.capability, f.path, f.line, f.code))
-    if len(executed) != len(set(requested)):
+    if len(executed) != len(requested):
         disposition = "blocked"
     elif findings:
         disposition = "findings_open"

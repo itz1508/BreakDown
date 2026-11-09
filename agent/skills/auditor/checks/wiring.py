@@ -6,7 +6,7 @@ import ast
 import re
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence
+from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
 
 _API_PREFIX = re.compile(r"/api/[\w/{}-]+")
 
@@ -16,7 +16,7 @@ def scan_wiring(root: Path, scope: Path) -> list[Finding]:
     api = root / "mvp" / "api.py"
     if not api.is_file() or not (root / "web" / "src").is_dir():
         return []
-    tree = ast.parse(api.read_text(encoding="utf-8"), filename=str(api))
+    tree = ast.parse(safe_read_text(root, api), filename=str(api))
     routes: set[str] = set()
     for node in ast.walk(tree):
         if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
@@ -36,7 +36,7 @@ def scan_wiring(root: Path, scope: Path) -> list[Finding]:
     for file in sorted((root / "web" / "src").rglob("*.jsx")):
         if not file.is_relative_to(scope) and scope != root:
             continue
-        for line_no, line in enumerate(file.read_text(encoding="utf-8").splitlines(), 1):
+        for line_no, line in enumerate(safe_read_text(root, file).splitlines(), 1):
             for match in _API_PREFIX.finditer(line):
                 value = match.group()
                 if "'" not in line and '"' not in line:

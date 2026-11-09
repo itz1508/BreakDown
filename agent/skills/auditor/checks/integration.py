@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence
+from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
 
 
 def scan_integration(root: Path, scope: Path) -> list[Finding]:
@@ -15,7 +15,7 @@ def scan_integration(root: Path, scope: Path) -> list[Finding]:
         return []
     findings: list[Finding] = []
     if ui.is_file():
-        text = ui.read_text(encoding="utf-8")
+        text = safe_read_text(root, ui)
         selector = re.search(r"""(?i)(?:['"]audit['"]|>\s*audit\s*<|audit_mode|auditMode)""", text)
         if selector is None:
             findings.append(
@@ -30,7 +30,7 @@ def scan_integration(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     if host.is_file():
-        text = host.read_text(encoding="utf-8")
+        text = safe_read_text(root, host)
         if "agent.skills.auditor.checks" not in text and "audit_guidance" not in text:
             findings.append(
                 evidence(

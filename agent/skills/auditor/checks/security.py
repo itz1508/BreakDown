@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, python_files
+from agent.skills.auditor.checks.core import Finding, evidence, python_files, safe_read_text
 
 DANGEROUS = {("subprocess", "run"), ("subprocess", "Popen"), ("os", "system")}
 
@@ -13,7 +13,7 @@ DANGEROUS = {("subprocess", "run"), ("subprocess", "Popen"), ("os", "system")}
 def scan_security(root: Path, scope: Path) -> list[Finding]:
     findings: list[Finding] = []
     for path in python_files(root, scope):
-        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        tree = ast.parse(safe_read_text(root, path), filename=str(path))
         for node in ast.walk(tree):
             if not isinstance(node, ast.Call):
                 continue

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence
+from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
 
 
 def scan_recovery(root: Path, scope: Path) -> list[Finding]:
@@ -14,7 +14,7 @@ def scan_recovery(root: Path, scope: Path) -> list[Finding]:
         return []
     findings: list[Finding] = []
     if service.is_file():
-        content = service.read_text(encoding="utf-8")
+        content = safe_read_text(root, service)
         if (
             "_active_requests: set[str]" in content
             and "self._active_guard = Lock()" in content
@@ -33,7 +33,7 @@ def scan_recovery(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     if host.is_file():
-        content = host.read_text(encoding="utf-8")
+        content = safe_read_text(root, host)
         if "reconcile host state before retry" in content and "def _reconcile_research(" not in content:
             findings.append(
                 evidence(
