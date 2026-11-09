@@ -6,7 +6,7 @@ This file defines **standing work practices** for contributors and coding agents
 
 - **`/breakdown`** is the skill-based refactor destination. Check `git status` and `git log` before making changes.
 - Use Python **3.11+**, Pydantic **v2**, and **uv**. `pyproject.toml` declares dependencies; `uv.lock` records the resolution.
-- `settings/config.yaml` is the runtime/provider configuration. Validate against implemented schemas; do not invent settings.
+- `config/config.yaml` is the runtime/provider configuration. Validate against implemented schemas; do not invent settings.
 - Meta Muse Spark 1.3 is the configured **default** provider. Claude Agent SDK and Codex SDK are **optional** adapters.
 - The `echo` provider is a test double only — never the runtime default.
 
@@ -20,7 +20,7 @@ This file defines **standing work practices** for contributors and coding agents
 | Run tests | `uv run --no-sync pytest -q` |
 | Lint | `uv run --no-sync ruff check .` |
 | Format check | `uv run --no-sync ruff format --check .` |
-| Type check | `uv run --no-sync mypy agent` |
+| Type check | `uv run --no-sync mypy agent contracts system` |
 | Preflight, sync, and environment doctor | `python scripts/doctor.py` |
 | CLI | `uv run --no-sync python -m agent doctor` |
 

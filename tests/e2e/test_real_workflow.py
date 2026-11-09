@@ -6,27 +6,27 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
-from agent.contracts.build import BuildActionStatus
-from agent.contracts.common import ArtifactRef
-from agent.contracts.host import ReceiptRef
-from agent.contracts.research import (
+from contracts.workflow.builder.build import BuildActionStatus
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.system.host import ReceiptRef
+from contracts.workflow.researcher.research import (
     AuthorizationStatus,
     CriteriaStatus,
     FeasibilityStatus,
     Requirement,
     ResearchRecord,
 )
-from agent.contracts.scanner import ScannerFinding
-from agent.contracts.work_todo import WorkBinding, WorkStatus
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.authorization import AuthorizationEngine
-from agent.runtime.build_admission import BuildAdmission, BuildAdmissionError
-from agent.runtime.canonical_serialization import SERIALIZER_PROFILE, digest_raw
-from agent.runtime.checkpoint_store import CheckpointStore
-from agent.runtime.controller import STAGE_ORDER, HostController, Stage, TransitionError
-from agent.runtime.effect_executor import EffectExecutor
-from agent.runtime.receipt_store import ReceiptStore
-from agent.runtime.scanner_gateway import ScannerGateway
+from contracts.workflow.planner.scanner import ScannerFinding
+from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+from system.storage.artifact_store import ArtifactStore
+from system.host.policy_enforce import AuthorizationEngine
+from system.host.build_admission import BuildAdmission, BuildAdmissionError
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from system.storage.checkpoint_store import CheckpointStore
+from system.host.workflow_control import STAGE_ORDER, HostController, Stage, TransitionError
+from system.host.effect_executor import EffectExecutor
+from system.storage.receipt_store import ReceiptStore
+from system.host.scanner_gateway import ScannerGateway
 from tests.fixtures.structural_gap import passing_gap
 
 LOCK_SUBJECT = "package_lock"
@@ -232,7 +232,7 @@ class TestE2EWorkflow:
         controller = HostController(state_root=tmp_path)
         result = controller.providers.generate(
             "echo",
-            __import__("agent.runtime.providers.base", fromlist=["ProviderRequest"]).ProviderRequest(
+            __import__("system.host.providers.base", fromlist=["ProviderRequest"]).ProviderRequest(
                 run_id="run-001",
                 prompt="analyze requirements",
             ),
@@ -739,7 +739,7 @@ class TestScenarios:
         admission_receipt = _make_admission(receipts, action_ids=("act-001",))
 
         # Try to execute act-002 (not authorized)
-        from agent.runtime.effect_executor import EffectExecutionError
+        from system.host.effect_executor import EffectExecutionError
 
         with pytest.raises(EffectExecutionError, match="not authorized"):
             executor.execute_admitted(

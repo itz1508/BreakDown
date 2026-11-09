@@ -4,7 +4,7 @@ import threading
 
 import pytest
 
-from agent.runtime.checkpoint_store import (
+from system.storage.checkpoint_store import (
     CheckpointStore,
     CompetingWriterError,
 )

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from agent.contracts.validation.structural import (
+from contracts.workflow.validation.structural import (
     CONCERNS,
     ConcernCell,
     PersistenceDeclaration,

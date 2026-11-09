@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from agent.contracts.host import HostDispatchEnvelope
-from agent.runtime.skill_dispatch import AuditArguments, SkillContext
+from contracts.workflow.system.host import HostDispatchEnvelope
+from system.host.skill_dispatch import AuditArguments, SkillContext
 from agent.skills.auditor.checks.core import AuditResult, scan
 
 

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from agent.contracts.host import HostDispatchEnvelope
-from agent.contracts.scanner import ScannerResult
-from agent.runtime.skill_dispatch import PlanningArguments, SkillContext
+from contracts.workflow.system.host import HostDispatchEnvelope
+from contracts.workflow.planner.scanner import ScannerResult
+from system.host.skill_dispatch import PlanningArguments, SkillContext
 
 
 def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: PlanningArguments) -> ScannerResult:

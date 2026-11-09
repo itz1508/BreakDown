@@ -5,13 +5,13 @@ from pathlib import Path
 
 import pytest
 
-from agent.contracts.guardrails import GuardrailDecision, GuardrailRequest, GuardrailResult
-from agent.contracts.host import Checkpoint
-from agent.contracts.observability import EventStatus, ExecutionEvent
-from agent.runtime.authorization import AuthorizationError, PathAuthorizer, RolePolicy
-from agent.runtime.durable_checkpoint_store import SQLiteCheckpointStore
-from agent.runtime.event_store import AppendOnlyEventStore
-from agent.runtime.guardrails import GuardrailBlocked, run_blocking_guardrails
+from contracts.workflow.system.guardrails import GuardrailDecision, GuardrailRequest, GuardrailResult
+from contracts.workflow.system.host import Checkpoint
+from contracts.workflow.system.observability import EventStatus, ExecutionEvent
+from system.host.policy_enforce import AuthorizationError, PathAuthorizer, RolePolicy
+from system.storage.durable_checkpoint_store import SQLiteCheckpointStore
+from system.storage.event_store import AppendOnlyEventStore
+from system.host.guardrails import GuardrailBlocked, run_blocking_guardrails
 
 HEX = "a" * 64
 

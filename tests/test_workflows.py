@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-from agent.runtime.loaders import LoaderError, load_stage_workflow, load_workflow_bundle
+from system.host.loaders import LoaderError, load_stage_workflow, load_workflow_bundle
 
 CONTRACT = Path(".agents/contracts/workflow.yaml")
 STAGES = (

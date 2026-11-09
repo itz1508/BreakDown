@@ -6,11 +6,11 @@ and that synthetic content never supplies factual authority.
 
 import pytest
 
-from agent.contracts.research import (
+from contracts.workflow.researcher.research import (
     CatalogMatchStatus,
     ResearchIntent,
 )
-from agent.runtime.research_catalog import ResearchCatalog
+from system.host.research_catalog import ResearchCatalog
 
 
 @pytest.fixture

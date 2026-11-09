@@ -2,10 +2,10 @@
 
 import pytest
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.planning import BuildSpecification, CreateAction
-from agent.contracts.task_todo import Build
-from agent.runtime.build_todos import compile_build
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.specification import BuildSpecification, CreateAction
+from contracts.workflow.planner.task_todo import Build
+from system.host.build_todos import compile_build
 
 
 def ref():

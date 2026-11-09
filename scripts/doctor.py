@@ -26,7 +26,7 @@ def preflight(root: Path) -> str | None:
     check("python", "passed" if sys.version_info >= (3, 11) else "blocked", platform.python_version())
     if sys.version_info < (3, 11):
         return None
-    for name in ("pyproject.toml", "uv.lock", "settings/config.yaml"):
+    for name in ("pyproject.toml", "uv.lock", "config/config.yaml"):
         if not (root / name).is_file():
             check("project_file", "blocked", f"Missing {name}")
             return None
@@ -41,9 +41,9 @@ def runtime_diagnostics(root: Path) -> int:
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
     try:
-        from agent.runtime.loaders import load_app_config, load_selected_provider
+        from system.host.loaders import load_app_config, load_selected_provider
 
-        app = load_app_config(root / "settings/config.yaml")
+        app = load_app_config(root / "config/config.yaml")
         provider = load_selected_provider(app, root)
     except (ImportError, OSError, ValueError, RuntimeError) as exc:
         check("runtime_config", "blocked", f"{type(exc).__name__}: {exc}")

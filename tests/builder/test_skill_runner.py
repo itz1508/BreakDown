@@ -2,7 +2,7 @@
 
 from unittest.mock import Mock
 
-from agent.runtime.skill_dispatch import BuildArguments
+from system.host.skill_dispatch import BuildArguments
 from agent.skills.builder.build import run
 
 

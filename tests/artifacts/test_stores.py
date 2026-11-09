@@ -3,17 +3,17 @@
 import pytest
 from pydantic import BaseModel
 
-from agent.runtime.artifact_store import (
+from system.storage.artifact_store import (
     ArtifactNotFoundError,
     ArtifactStore,
     DuplicateArtifactError,
 )
-from agent.runtime.checkpoint_store import (
+from system.storage.checkpoint_store import (
     CheckpointStore,
     CompetingWriterError,
 )
-from agent.runtime.event_store import EventStore
-from agent.runtime.receipt_store import ReceiptStore
+from system.storage.event_store import EventStore
+from system.storage.receipt_store import ReceiptStore
 
 
 class ArtifactDataModel(BaseModel):

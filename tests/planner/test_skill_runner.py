@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from agent.runtime.skill_dispatch import PlanningArguments
+from system.host.skill_dispatch import PlanningArguments
 from agent.skills.planner.plan import run
 
 

@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from agent.runtime.skill_dispatch import ResearchArguments, SkillContext
+from system.host.skill_dispatch import ResearchArguments, SkillContext
 from agent.skills.researcher.research import run
 
 

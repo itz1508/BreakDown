@@ -5,7 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from agent.runtime.skill_dispatch import AuditArguments, SkillContext
+from system.host.skill_dispatch import AuditArguments, SkillContext
 from agent.skills.auditor.audit import run
 
 
