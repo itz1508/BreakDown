@@ -1,4 +1,5 @@
 """Trusted allowlist for optional sandbox integrations; no arbitrary module names."""
+
 from __future__ import annotations
 
 from importlib import import_module

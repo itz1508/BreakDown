@@ -169,6 +169,7 @@ def test_modal_create_does_not_inject_secrets_or_network(monkeypatch, tmp_path):
 
 def test_modal_upload_stages_core_only_and_prepares_worker_directory(tmp_path):
     req = make_request(tmp_path)
+
     class Filesystem:
         def __init__(self):
             self.directories = []

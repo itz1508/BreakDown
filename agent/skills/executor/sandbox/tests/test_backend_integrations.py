@@ -1,4 +1,5 @@
 """Provider neutrality: core import does not select Modal; registry fails closed."""
+
 from __future__ import annotations
 
 import os
