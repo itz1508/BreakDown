@@ -54,6 +54,9 @@ jobs:
         env:
           RUN_MODAL_E2E: '0'
         run: uv run --no-sync pytest -q tests --ignore=tests/integration
+      - name: Verify Executor relocation and ownership boundaries
+        if: success() || failure()
+        run: uv run --no-sync pytest -q "$GITHUB_WORKSPACE/tests/boundaries/test_executor_sandbox_layout.py"
       - name: Report standalone lockfile requirement
         if: success() || failure()
         run: |
