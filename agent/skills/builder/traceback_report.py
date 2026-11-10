@@ -80,11 +80,9 @@ def normalize_exception(
     next_exc = current.__cause__ or (current.__context__ if not current.__suppress_context__ else None)
     name = getattr(error, "name", None) if isinstance(error, (ImportError, NameError)) else None
     module_name = _safe_name(name, dotted=True) if name is not None else None
-    errno = error.errno if isinstance(error, OSError) and type(error.errno) is int else None
     return NormalizedException(
         type=_safe_name(type(error).__name__),
         module_name=module_name,
-        errno=errno,
         frames=normalized_frames,
         cause_types=tuple(chains),
         frames_truncated=len(frames) > max_frames,

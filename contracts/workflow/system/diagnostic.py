@@ -31,7 +31,6 @@ class NormalizedException(ContractModel):
     module_name: str | None = Field(
         default=None, max_length=160, pattern=r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$"
     )
-    errno: int | None = None
     frames: tuple[FrameEvidence, ...] = Field(default=(), max_length=12)
     cause_types: tuple[str, ...] = Field(default=(), max_length=4)
     frames_truncated: bool = False

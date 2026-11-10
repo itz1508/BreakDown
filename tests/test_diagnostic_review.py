@@ -403,3 +403,14 @@ def test_forged_dossier_copy_is_rejected_before_provider():
             pytest.fail("provider must not run on forged Dossier")
     with pytest.raises(ValidationError,match="exact supplied artifact"):
         recommend(fake, Provider())
+
+
+def test_os_error_number_does_not_decide_diagnostic_validity():
+    try:
+        raise FileNotFoundError(2, "private path not collected")
+    except FileNotFoundError as exc:
+        record = normalize_exception(exc)
+    assert record.type == "FileNotFoundError"
+    assert "errno" not in record.model_dump()
+    assert DiagnosticStatus.NOT_VALID.value == "not_valid"
+    assert DiagnosticStatus.UNCERTAINTY.value == "uncertainty"
