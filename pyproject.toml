@@ -53,7 +53,7 @@ packages = ["agent", "contracts", "system"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q"
+addopts = "-q --import-mode=importlib"
 
 [tool.deptry]
 known_first_party = ["agent", "contracts", "system", "api_fundamentals"]
