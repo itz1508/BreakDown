@@ -14,7 +14,7 @@ Inspect source and contracts, implementation completeness, imports and paths, AP
 
 Within the static Audit capability: paths → contracts → dependencies → security → completeness → wiring → frontend → integration → state → recovery → verification. Explicit subsets retain that relative order. A symlinked/out-of-root source cannot be read by a scanner; an incomplete requested check blocks the disposition.
 
-The legacy Host-owned Audit Discovery workflow still binds Research and repository evidence to its existing persisted contract. The inactive target graph instead places Auditor PRE before Research, followed by a standalone CodeDesign capability after Research. The existing static scanner cannot supply the PRE handoff or complete Research-to-source correlation. CodeDesign questions are advisory; see `agent/skills/code_design/SKILL.md`. No source-identity receipts, Host transitions, or persisted wire fields change in this packaging refactor.
+The legacy Host-owned Audit Discovery workflow still binds Research and repository evidence to its existing persisted contract. The inactive target graph instead places Auditor PRE before Research, followed by a standalone CodeDesign capability after Research. The existing static scanner cannot supply the PRE handoff or complete Research-to-source correlation. CodeDesign questions are advisory; see `agent/skills/coder/SKILL.md`. No source-identity receipts, Host transitions, or persisted wire fields change in this packaging refactor.
 
 ## Capability modules
 

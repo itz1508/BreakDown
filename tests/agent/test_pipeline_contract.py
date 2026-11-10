@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 YAML_PATHS = (
     "contracts/workflow/pipeline.yaml",
     "agent/skills/auditor/audit.yaml",
-    "agent/skills/code_design/code_design.yaml",
+    "agent/skills/coder/code.yaml",
     "agent/skills/researcher/research.yaml",
     "agent/skills/planner/plan.yaml",
     "agent/skills/fixturer/Fixture.yaml",
@@ -36,7 +36,7 @@ def isolated(tmp_path: Path) -> Path:
         target.parent.mkdir(parents=True, exist_ok=True)
         target.touch()
     (tmp_path / "agent/skills/fixturer/Fixturer.py").touch()
-    (tmp_path / "agent/skills/code_design/code_design.py").touch()
+    (tmp_path / "agent/skills/coder/coding.py").touch()
     return tmp_path
 
 
@@ -51,7 +51,7 @@ def test_valid_graph_inactive(isolated: Path) -> None:
     compiled = compile_definitions(isolated)
     assert len(compiled.root.steps) == 6
     assert tuple(step.id for step in compiled.root.steps) == (
-        "auditor_pre", "search_review", "research", "code_design", "planning", "builder_preparation"
+        "auditor_pre", "search_review", "research", "coder", "planning", "builder_preparation"
     )
     assert len(compiled.role_pipelines) == 6
     assert len(compiled.referenced_operations) == 23

@@ -13,11 +13,11 @@ steps:
 - id: research
   depends_on: [search_review]
   pipeline_ref: agent/skills/researcher/research.yaml#main
-- id: code_design
+- id: coder
   depends_on: [research]
-  pipeline_ref: agent/skills/code_design/code_design.yaml#main
+  pipeline_ref: agent/skills/coder/code.yaml#main
 - id: planning
-  depends_on: [code_design]
+  depends_on: [coder]
   pipeline_ref: agent/skills/planner/plan.yaml#main
 - id: builder_preparation
   depends_on: [planning]

@@ -4,7 +4,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from agent.skills.code_design.code_design import review_questions
+from agent.skills.coder.coding import review_questions
 
 
 def test_code_design_questions_have_evidence_first_sequence() -> None:
@@ -17,6 +17,6 @@ def test_code_design_questions_have_evidence_first_sequence() -> None:
 
 
 def test_skill_import_does_not_run_questions() -> None:
-    from agent.skills.code_design import code_design
+    from agent.skills.coder import coding
 
-    assert code_design.review_questions is review_questions
+    assert coding.review_questions is review_questions

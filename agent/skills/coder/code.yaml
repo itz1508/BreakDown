@@ -1,12 +1,12 @@
-# Standalone CodeDesign skill definition; not an executable Host stage.
+# Coder's standalone CodeDesign guidance pipeline; inactive and not an executable Host stage.
 kind: skill_mini_pipeline
 definition_version: 1
-pipeline_id: code_design.code_design
-owner: code_design
+pipeline_id: coder.code
+owner: coder
 artifact_contract_refs:
 - contracts/workflow/auditor/code_design.py
 - contracts/workflow/auditor/_discovery.py
-implementation_intent: agent/skills/code_design/code_design.py
+implementation_intent: agent/skills/coder/coding.py
 segments:
 - id: main
   steps:

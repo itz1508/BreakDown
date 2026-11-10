@@ -16,8 +16,8 @@ def test_canonical_skill_file_names() -> None:
     for path in (
         "agent/skills/auditor/auditing.py",
         "agent/skills/researcher/researching.py",
-        "agent/skills/code_design/code_design.py",
-        "agent/skills/code_design/code_design.yaml",
+        "agent/skills/coder/coding.py",
+        "agent/skills/coder/code.yaml",
         "agent/skills/auditor/review/core.py",
         "agent/skills/planner/planning.py",
         "agent/skills/planner/review/gap_analysis.py",
@@ -29,6 +29,7 @@ def test_canonical_skill_file_names() -> None:
         "agent/skills/researcher/research.py",
         "agent/skills/researcher/search.yaml",
         "agent/skills/auditor/code_design.py",
+        "agent/skills/code_design",
         "agent/skills/auditor/checks",
         "agent/skills/planner/plan.py",
         "agent/skills/planner/checks",
