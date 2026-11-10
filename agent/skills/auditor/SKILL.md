@@ -1,18 +1,11 @@
-# Auditor — source-grounded PRE and POST review
+# Auditor — repository context and source inspection
 
-**Mini-pipeline:** `audit.yaml#pre` prepares scoped research questions, and
-`audit.yaml#post` inspects repository evidence and consolidates findings.
-These are Agent-side process segments, not new Host stages. The existing
-persisted `audit_discovery` identity remains unchanged.
+**Target position:** Auditor PRE before Research. `audit.yaml#pre` declares scoped intake and Research-question preparation; its operations are **unbound**.
 
-**Python:** `auditing.run(context, envelope, arguments)` retains the existing
-ordered, read-only check registry and the external Host dispatch boundary.
+**Current executable:** `auditing.run(context, envelope, arguments)` still delegates to the existing read-only source inspection registry. It is registered through the legacy `audit_discovery` Host identity. **It is not yet an implementation of Auditor PRE**, and no Host routing has been changed.
 
-**Shared Catalog:** Both Auditor PRE and Researcher can consult
-`agent/catalog/research_samples.yaml`. Its templates are synthetic guidance,
-not findings or verification evidence.
+**CodeDesign:** The evidence-question capability is now the separate `agent.skills.code_design` skill after Research and before Planning. Auditor no longer owns its Python implementation. Existing AuditDiscovery/CodeIntent wire contracts remain unchanged pending an independently approved migration.
 
-**Boundary:** Auditor returns source-grounded findings and unknowns. It may
-not choose Planner designs, write application source, issue Host receipts or
-authorize Builder effects. Guidance: `references/audit_guidance.md` and
-`agent/skills/references/aggregation_patterns.md`.
+**Shared Catalog:** `agent/catalog/research_samples.yaml` contains synthetic guidance, not verified source evidence.
+
+**Boundary:** No Planner decisions, project-source mutations, approvals, independent verification or trusted receipts. Read `references/audit_guidance.md` for known static inspection limitations.

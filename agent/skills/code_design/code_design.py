@@ -1,14 +1,12 @@
-"""Audit Discovery-owned, read-only CodeDesign preparation guidance; never an admission gate.
+"""Standalone CodeDesign capability: evidence questions after Research.
 
 Adapted from the deep-module ideas in mattpocock/skills:
 https://github.com/mattpocock/skills/tree/main/skills/engineering/codebase-design
 
-This is preparatory guidance within Audit Discovery, not a second scanner,
-persisted stage contract, role, repository inspector, or host dispatcher.
-After inspecting source, Audit Discovery prepares evidence-grounded CodeDesign
-candidates and unresolved review questions before handoff to Planning. Planning
-owns subsequent design decisions in its existing contracts. Runtime owns trusted
-checks, effects, and receipts.
+This existing pure question-generation logic is independent of Auditor's
+execution entrypoint. It does not correlate Research evidence with source,
+create complete CodeDesign candidates, dispatch a stage, or issue receipts.
+Planning owns subsequent design decisions; Host owns trusted authorization.
 """
 
 from __future__ import annotations

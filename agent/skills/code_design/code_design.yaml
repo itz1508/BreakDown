@@ -1,0 +1,19 @@
+# Standalone CodeDesign skill definition; not an executable Host stage.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: code_design.code_design
+owner: code_design
+artifact_contract_refs:
+- contracts/workflow/auditor/code_design.py
+- contracts/workflow/auditor/_discovery.py
+implementation_intent: agent/skills/code_design/code_design.py
+segments:
+- id: main
+  steps:
+  - id: prepare_evidence_questions
+    operation_id: code_design.review_questions
+    status: unbound
+policy:
+  evidence_from_research_required: true
+  can_choose_final_design: false
+  issues_approval: false

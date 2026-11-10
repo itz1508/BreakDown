@@ -14,19 +14,6 @@ segments:
     depends_on: [inspect_request]
     operation_id: auditor.prepare_search_questions
     status: unbound
-- id: post
-  steps:
-  - id: inspect_sources
-    operation_id: auditor.scan
-    status: unbound
-  - id: link_findings_to_evidence
-    depends_on: [inspect_sources]
-    operation_id: auditor.link_evidence
-    status: unbound
-  - id: consolidate_findings
-    depends_on: [link_findings_to_evidence]
-    operation_id: auditor.consolidate
-    status: unbound
 policy:
   source_access: read_only
   issues_approval: false
