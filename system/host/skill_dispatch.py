@@ -25,7 +25,7 @@ _ROLE_MODULES = {
     ("audit_discovery", "audit_discovery"): "agent.skills.auditor.auditing",
     ("research", "researcher"): "agent.skills.researcher.researching",
     ("planning", "planner"): "agent.skills.planner.planning",
-    ("build", "builder"): "agent.skills.builder.build",
+    ("build", "builder"): "agent.skills.builder.building",
 }
 
 

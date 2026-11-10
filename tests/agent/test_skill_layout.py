@@ -16,6 +16,7 @@ def test_canonical_skill_file_names() -> None:
     for path in (
         "agent/skills/auditor/auditing.py",
         "agent/skills/researcher/researching.py",
+        "agent/skills/builder/building.py",
         "agent/skills/coder/coding.py",
         "agent/skills/coder/code.yaml",
         "agent/skills/auditor/review/core.py",
@@ -27,6 +28,7 @@ def test_canonical_skill_file_names() -> None:
     for obsolete in (
         "agent/skills/auditor/audit.py",
         "agent/skills/researcher/research.py",
+        "agent/skills/builder/build.py",
         "agent/skills/researcher/search.yaml",
         "agent/skills/auditor/code_design.py",
         "agent/skills/code_design",
@@ -45,3 +47,5 @@ def test_host_registered_paths_use_canonical_modules() -> None:
     }
     assert registered[("audit_discovery", "audit_discovery")] == "agent.skills.auditor.auditing"
     assert registered[("planning", "planner")] == "agent.skills.planner.planning"
+    assert registered[("research", "researcher")] == "agent.skills.researcher.researching"
+    assert registered[("build", "builder")] == "agent.skills.builder.building"
