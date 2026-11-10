@@ -1,4 +1,4 @@
-"""Auditor order, source containment, and CodeDesign handoff regressions."""
+"""Auditor static scan order and source containment regressions."""
 
 from pathlib import Path
 
