@@ -5,12 +5,34 @@ pipeline_id: researcher.research
 owner: researcher
 artifact_contract_refs: [contracts/workflow/researcher/research.py]
 segments:
+- id: review
+  steps:
+  - id: validate_question_and_scope
+    operation_id: researcher.review_search
+    status: unbound
+  - id: prepare_retrieval_request
+    depends_on: [validate_question_and_scope]
+    operation_id: researcher.prepare_query
+    status: unbound
+- id: retrieve
+  steps:
+  - id: retrieve_candidates
+    operation_id: researcher.compound_retrieve
+    status: unbound
+  - id: expand_related_sources
+    depends_on: [retrieve_candidates]
+    operation_id: researcher.expand_sources
+    status: unbound
+  - id: verify_source_lineage
+    depends_on: [expand_related_sources]
+    operation_id: researcher.verify_lineage
+    status: unbound
 - id: main
   steps:
   - id: retrieve_evidence
     operation_id: researcher.retrieve_evidence
     status: unbound
-    subpipeline_ref: agent/skills/researcher/search.yaml#retrieve
+    subpipeline_ref: agent/skills/researcher/research.yaml#retrieve
   - id: investigate_evidence
     depends_on: [retrieve_evidence]
     operation_id: researcher.investigate
@@ -19,6 +41,12 @@ segments:
     depends_on: [investigate_evidence]
     operation_id: researcher.record_evidence
     status: unbound
+limits:
+  max_depth: 2
+  max_candidates: 50
+  max_records: 200
 policy:
+  retrieval_requires_external_authorization: true
+  relevance_is_not_evidence: true
   source_access: read_only
   can_approve_plan: false

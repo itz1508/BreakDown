@@ -1,14 +1,11 @@
 # Researcher — sourced evidence investigation
 
-**Mini-pipelines:** `research.yaml#main` defines investigation order;
-`search.yaml#review` prepares bounded retrieval questions before Research;
-`search.yaml#retrieve` describes compound retrieval and source expansion.
+**Mini-pipeline:** `research.yaml` now contains the original `review`, `retrieve`, and `main` segments. The former `search.yaml` declarations were moved without registering new executable search operations.
 
-**Python:** `research.run(context, envelope, arguments)` retains the
-existing Host-provided service; these YAML files do not activate that service.
+**Python:** `researching.run(context, envelope, arguments)` preserves the original Host-managed Research delegation and state-root consistency check.
 
-**Shared Catalog:** Templates and examples remain at `agent/catalog/`
-for Auditor PRE and Researcher. Template matches are not evidence.
+**Searching:** No standalone `searching.py` implementation exists in the repository. Declared retrieval operation IDs remain unbound. Do not fabricate network/search behavior or bypass Host tool authorization.
 
-**Boundary:** No independent stage transitions, architectural decisions,
-approval, effects, or trusted receipts. Search operation IDs are unbound.
+**Shared Catalog:** Templates remain at `agent/catalog/` for Auditor PRE and Researcher; matching synthetic examples is not verification evidence.
+
+**Boundary:** No independent stage transitions, architectural decisions, approvals, effects or trusted receipts.

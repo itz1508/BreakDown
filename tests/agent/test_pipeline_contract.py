@@ -16,7 +16,6 @@ YAML_PATHS = (
     "contracts/workflow/pipeline.yaml",
     "agent/skills/auditor/audit.yaml",
     "agent/skills/code_design/code_design.yaml",
-    "agent/skills/researcher/search.yaml",
     "agent/skills/researcher/research.yaml",
     "agent/skills/planner/plan.yaml",
     "agent/skills/fixturer/Fixture.yaml",
@@ -54,7 +53,7 @@ def test_valid_graph_inactive(isolated: Path) -> None:
     assert tuple(step.id for step in compiled.root.steps) == (
         "auditor_pre", "search_review", "research", "code_design", "planning", "builder_preparation"
     )
-    assert len(compiled.role_pipelines) == 7
+    assert len(compiled.role_pipelines) == 6
     assert len(compiled.referenced_operations) == 23
     assert not compiled.activation_ready
 
@@ -122,7 +121,7 @@ def test_path_traversal_is_rejected(isolated: Path) -> None:
 
 
 def test_symlink_ref_is_rejected(isolated: Path) -> None:
-    original = isolated / "agent/skills/researcher/search.yaml"
+    original = isolated / "agent/skills/researcher/research.yaml"
     backup = original.with_name("search_copy.yaml")
     original.rename(backup)
     try:
