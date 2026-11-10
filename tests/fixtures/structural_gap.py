@@ -17,7 +17,7 @@ from contracts.workflow.validation.structural import (
     SourceDeclaration,
     TraceStep,
 )
-from agent.skills.planner.checks.gap_analysis import (
+from agent.skills.planner.review.gap_analysis import (
     ComparableSystemAnalysis,
     GapBacktestCorpus,
     KnownCriticalBacktest,

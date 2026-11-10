@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
 
 
 def scan_recovery(root: Path, scope: Path) -> list[Finding]:

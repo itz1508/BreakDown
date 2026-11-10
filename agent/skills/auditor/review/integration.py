@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
 
 
 def scan_integration(root: Path, scope: Path) -> list[Finding]:
@@ -31,7 +31,7 @@ def scan_integration(root: Path, scope: Path) -> list[Finding]:
             )
     if host.is_file():
         text = safe_read_text(root, host)
-        if "agent.skills.auditor.checks" not in text and "audit_guidance" not in text:
+        if "agent.skills.auditor.review" not in text and "audit_guidance" not in text:
             findings.append(
                 evidence(
                     root,

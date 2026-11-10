@@ -7,7 +7,7 @@ import io
 import tokenize
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, python_files, safe_read_bytes, safe_read_text
+from agent.skills.auditor.review.core import Finding, evidence, python_files, safe_read_bytes, safe_read_text
 
 
 def scan_completeness(root: Path, scope: Path) -> list[Finding]:

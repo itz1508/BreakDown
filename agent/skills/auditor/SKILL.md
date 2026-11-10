@@ -5,7 +5,7 @@
 These are Agent-side process segments, not new Host stages. The existing
 persisted `audit_discovery` identity remains unchanged.
 
-**Python:** `audit.run(context, envelope, arguments)` retains the existing
+**Python:** `auditing.run(context, envelope, arguments)` retains the existing
 ordered, read-only check registry and the external Host dispatch boundary.
 
 **Shared Catalog:** Both Auditor PRE and Researcher can consult

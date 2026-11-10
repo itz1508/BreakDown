@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from contracts.workflow.system.host import HostDispatchEnvelope
 from system.host.skill_dispatch import AuditArguments, SkillContext
-from agent.skills.auditor.checks.core import AuditResult, scan
+from agent.skills.auditor.review.core import AuditResult, scan
 
 
 def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: AuditArguments) -> AuditResult:

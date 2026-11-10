@@ -186,7 +186,7 @@ def compile_definitions(
 ) -> CompiledDefinitions:
     """Validate inactive graph, role DAGs and contract paths without execution."""
     root = Path(repository_root).resolve(strict=True)
-    graph = AgentProcessGraph.model_validate(_load_yaml(_resolve_relative(root, "agent/breakdown.yaml")))
+    graph = AgentProcessGraph.model_validate(_load_yaml(_resolve_relative(root, "contracts/workflow/pipeline.yaml")))
     pipelines: dict[str, SkillPipeline] = {}
     operations: set[str] = set()
     seen_segments: set[tuple[str, str]] = set()

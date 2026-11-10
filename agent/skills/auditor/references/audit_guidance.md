@@ -43,7 +43,7 @@ Every observation must bind capability, code, severity, relative path/line, sour
 ## Example
 
 ```bash
-python -m agent.skills.auditor.checks --root /absolute/authorized/repo --scope . --request "Inspect integration completeness"
+python -m agent.skills.auditor --root /absolute/authorized/repo --scope . --request "Inspect integration completeness"
 ```
 
 The CLI intentionally performs no shell commands, network calls, or source writes. Connected E2E requires separately authorized host execution and independent evidence.

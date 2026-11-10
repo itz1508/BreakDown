@@ -1,4 +1,4 @@
-# Declarative Agent-side pipeline contract. Not an execution authority.
+# Canonical Agent process pipeline. Not the legacy workflow contract or an execution authority.
 kind: agent_process_graph
 definition_version: 1
 graph_id: breakdown.agent

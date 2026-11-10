@@ -5,7 +5,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from agent.skills.auditor.checks.core import CAPABILITY_ORDER, safe_read_text, scan
+from agent.skills.auditor.review.core import CAPABILITY_ORDER, safe_read_text, scan
 from agent.skills.auditor.code_design import review_questions
 
 

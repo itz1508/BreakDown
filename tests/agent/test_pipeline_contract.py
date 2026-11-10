@@ -13,7 +13,7 @@ from agent.skills.pipeline_contract import DefinitionError, compile_definitions
 
 ROOT = Path(__file__).resolve().parents[2]
 YAML_PATHS = (
-    "agent/breakdown.yaml",
+    "contracts/workflow/pipeline.yaml",
     "agent/skills/auditor/audit.yaml",
     "agent/skills/researcher/search.yaml",
     "agent/skills/researcher/research.yaml",
@@ -71,7 +71,7 @@ def test_unknown_operation_is_rejected(isolated: Path) -> None:
 
 
 def test_root_cycle_is_rejected(isolated: Path) -> None:
-    update(isolated, "agent/breakdown.yaml", lambda d: d["steps"][0].update(depends_on=["planning"]))
+    update(isolated, "contracts/workflow/pipeline.yaml", lambda d: d["steps"][0].update(depends_on=["planning"]))
     with pytest.raises(ValidationError, match="cycle"):
         compile_definitions(isolated)
 
@@ -96,7 +96,7 @@ def test_duplicate_step_is_rejected(isolated: Path) -> None:
 
 def test_unknown_segment_is_rejected(isolated: Path) -> None:
     update(
-        isolated, "agent/breakdown.yaml",
+        isolated, "contracts/workflow/pipeline.yaml",
         lambda d: d["steps"][0].update(
             pipeline_ref="agent/skills/auditor/audit.yaml#wrong"
         ),
@@ -107,7 +107,7 @@ def test_unknown_segment_is_rejected(isolated: Path) -> None:
 
 def test_path_traversal_is_rejected(isolated: Path) -> None:
     update(
-        isolated, "agent/breakdown.yaml",
+        isolated, "contracts/workflow/pipeline.yaml",
         lambda d: d["steps"][0].update(
             pipeline_ref="agent/skills/../skills/auditor/audit.yaml#pre"
         ),
@@ -140,7 +140,7 @@ def test_missing_contract_is_rejected(isolated: Path) -> None:
 
 
 def test_duplicate_yaml_key_is_rejected(isolated: Path) -> None:
-    target = isolated / "agent/breakdown.yaml"
+    target = isolated / "contracts/workflow/pipeline.yaml"
     target.write_text(target.read_text() + "\nkind: agent_process_graph\n")
     with pytest.raises(DefinitionError, match="duplicate YAML key"):
         compile_definitions(isolated)
@@ -167,16 +167,18 @@ def test_role_owner_mismatch_is_rejected(isolated: Path) -> None:
 
 
 def test_yaml_cannot_activate_graph(isolated: Path) -> None:
-    update(isolated, "agent/breakdown.yaml", lambda d: d.update(activation="active"))
+    update(isolated, "contracts/workflow/pipeline.yaml", lambda d: d.update(activation="active"))
     with pytest.raises(ValidationError, match="activation"):
         compile_definitions(isolated)
 
 
-def test_legacy_planner_import_and_fail_closed_api() -> None:
-    from agent.skills.planner import plan, planning
+def test_canonical_planner_api_is_fail_closed() -> None:
+    from importlib.util import find_spec
 
-    assert plan.run is planning.run
-    assert plan.create is planning.create
+    from agent.skills.planner import planning
+
+    assert find_spec("agent.skills.planner.plan") is None
+    assert find_spec("agent.skills.planner.planning") is not None
     with pytest.raises(planning.PlanningPipelineNotActive, match="executor is required"):
         planning.create(object(), object())
     with pytest.raises(ValueError, match="requires"):
