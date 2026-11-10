@@ -1,0 +1,27 @@
+# Declarative Agent-side pipeline contract. Not an execution authority.
+kind: agent_process_graph
+definition_version: 1
+graph_id: breakdown.agent
+activation: inactive
+steps:
+- id: auditor_pre
+  depends_on: []
+  pipeline_ref: agent/skills/auditor/audit.yaml#pre
+- id: search_review
+  depends_on: [auditor_pre]
+  pipeline_ref: agent/skills/researcher/search.yaml#review
+- id: research
+  depends_on: [search_review]
+  pipeline_ref: agent/skills/researcher/research.yaml#main
+- id: auditor_post
+  depends_on: [research]
+  pipeline_ref: agent/skills/auditor/audit.yaml#post
+- id: planning
+  depends_on: [auditor_post]
+  pipeline_ref: agent/skills/planner/plan.yaml#main
+- id: builder_preparation
+  depends_on: [planning]
+  pipeline_ref: agent/skills/builder/build.yaml#prepare
+external_boundaries:
+  before_builder: Plan review, approval, freeze and execution eligibility are outside this Agent-only graph.
+  after_builder: Execution, reconciliation, independent inspection and completion are external boundaries.

@@ -1,11 +1,14 @@
-# Researcher — sourced evidence execution
+# Researcher — sourced evidence investigation
 
-**Executable:** `agent.skills.researcher.research.run(context, envelope, ResearchArguments)`.
+**Mini-pipelines:** `research.yaml#main` defines investigation order;
+`search.yaml#review` prepares bounded retrieval questions before Research;
+`search.yaml#retrieve` describes compound retrieval and source expansion.
 
-**Input:** Verified Research dispatch, existing task, injected `MVPService` sharing the Host state root.
+**Python:** `research.run(context, envelope, arguments)` retains the
+existing Host-provided service; these YAML files do not activate that service.
 
-**Tools:** Existing `mvp.research_host.execute_research`, MCP research adapter and host-owned `ResearchLifecycle`. Catalog templates are guidance, not evidence.
+**Shared Catalog:** Templates and examples remain at `agent/catalog/`
+for Auditor PRE and Researcher. Template matches are not evidence.
 
-**Output:** Existing Research result payload and independently persisted host artifacts. The skill cannot mint trusted receipts or unilaterally advance a stage.
-
-**Runtime:** Host verifies task/run/stage/request/revision/input digest and return route. Uncertain effects require reconciliation.
+**Boundary:** No independent stage transitions, architectural decisions,
+approval, effects, or trusted receipts. Search operation IDs are unbound.

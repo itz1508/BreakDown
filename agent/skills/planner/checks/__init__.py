@@ -1,1 +1,1 @@
-"""Planner-owned checks; trusted Scanner execution is host-managed."""
+"""Legacy Planner checks namespace; use agent.skills.planner.review."""

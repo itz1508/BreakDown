@@ -1,15 +1,18 @@
-# Auditor — read-only repository inspection
+# Auditor — source-grounded PRE and POST review
 
-**Executable:** `agent.skills.auditor.audit.run(context, envelope, AuditArguments)`.
+**Mini-pipeline:** `audit.yaml#pre` prepares scoped research questions, and
+`audit.yaml#post` inspects repository evidence and consolidates findings.
+These are Agent-side process segments, not new Host stages. The existing
+persisted `audit_discovery` identity remains unchanged.
 
-**Input:** Host-persisted audit-discovery dispatch, Runtime workspace root, requested capabilities and bounded scope. Existing persisted role ID `audit_discovery` is preserved.
+**Python:** `audit.run(context, envelope, arguments)` retains the existing
+ordered, read-only check registry and the external Host dispatch boundary.
 
-**Checks (fixed order):** paths, contracts, dependencies, security, completeness, wiring, frontend, integration, state, recovery, verification. The CLI and Host use the same `CAPABILITY_ORDER` and fail closed on unreadable or symlinked sources.
+**Shared Catalog:** Both Auditor PRE and Researcher can consult
+`agent/catalog/research_samples.yaml`. Its templates are synthetic guidance,
+not findings or verification evidence.
 
-**CodeDesign preparation:** After repository inspection, requirement assessment and findings—and before Planning, `agent.skills.auditor.code_design.review_questions` supplies evidence questions for existing CodeDesign candidate origins. Audit Discovery records source-grounded candidates and unknowns; it does not choose an implementation design or modify application source.
-
-**Output:** Source-grounded `AuditResult` with findings and limitations. Candidate CodeDesign requirements remain informational until Planner review. No repository edits, approved Build actions, trusted receipts, or stage transitions.
-
-**Boundary:** The standalone CLI and MVP Audit capability return static `AuditResult` / `AuditFindingsRecord`, not the full Research-bound `AuditDiscoveryPackage`. Source entry/exit checkpoints, requirement assessments, CodeDesign candidate publication and stage transition are Host-owned and cannot be inferred from a static scan.
-
-**Runtime:** `system.host.skill_dispatch.execute_skill` validates persisted routing before loading this role. References: `references/audit_guidance.md`.
+**Boundary:** Auditor returns source-grounded findings and unknowns. It may
+not choose Planner designs, write application source, issue Host receipts or
+authorize Builder effects. Guidance: `references/audit_guidance.md` and
+`agent/skills/references/aggregation_patterns.md`.

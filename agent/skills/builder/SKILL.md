@@ -1,11 +1,11 @@
-# Builder — admitted effects
+# Builder — preparation without new runtime authority
 
-**Executable:** `agent.skills.builder.build.run(context, envelope, BuildArguments)`.
+**Mini-pipeline:** `build.yaml#prepare` receives a candidate reference and
+describes preparation of a handoff for external review. All its operation IDs
+remain unbound and it cannot perform effects or grant approval.
 
-**Input:** Verified Build dispatch, exact action ID/kind, host-issued `BuildAdmissionReceipt`, optional wave and preimage.
+**Python:** Existing `build.run(context, envelope, arguments)` remains the
+Host-authorized executable path, unchanged by this Agent-side contract.
 
-**Tools:** `EffectExecutor.execute_admitted` enforces authorization, receipt authenticity, containment, pre-effect checkpointing, atomic effects, and reconciliation.
-
-**Output:** `BuildActionExecution` with observed effects, never an independent validation receipt.
-
-**Runtime:** Only the Host creates the executor and signs admission receipts. Builder cannot expand approved scope.
+**Boundary:** No unapproved execution, independent verification, Host
+receipt issuance, or expansion of approved scope.

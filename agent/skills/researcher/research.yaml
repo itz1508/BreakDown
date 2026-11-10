@@ -1,0 +1,24 @@
+# Research investigation declares operations; it does not run tools itself.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: researcher.research
+owner: researcher
+artifact_contract_refs: [contracts/workflow/researcher/research.py]
+segments:
+- id: main
+  steps:
+  - id: retrieve_evidence
+    operation_id: researcher.retrieve_evidence
+    status: unbound
+    subpipeline_ref: agent/skills/researcher/search.yaml#retrieve
+  - id: investigate_evidence
+    depends_on: [retrieve_evidence]
+    operation_id: researcher.investigate
+    status: unbound
+  - id: record_observations
+    depends_on: [investigate_evidence]
+    operation_id: researcher.record_evidence
+    status: unbound
+policy:
+  source_access: read_only
+  can_approve_plan: false
