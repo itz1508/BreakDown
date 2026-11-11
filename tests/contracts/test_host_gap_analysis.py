@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from contracts.workflow.shared import DiagnosticStatus, StepStatus
 from contracts.workflow.planner.scanner import ScannerOutcome
-from system.host.sys_controller import HostController, TransitionError
+from contracts.workflow.shared import DiagnosticStatus, StepStatus
 from system.host.host_gap_analyzer import StructuralGapError
+from system.host.sys_controller import HostController, TransitionError
 from tests.fixtures.structural_gap import build_gap_inputs, passing_gap
 
 

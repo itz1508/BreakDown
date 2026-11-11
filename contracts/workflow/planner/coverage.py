@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from contracts.workflow.system.coverage import PlanningCoverage
 from contracts.workflow.planner.specification import IssueType
+from contracts.workflow.system.coverage import PlanningCoverage
 from contracts.workflow.validation.structural import CONCERNS
 
 ISSUE_CATEGORIES: tuple[IssueType, ...] = (

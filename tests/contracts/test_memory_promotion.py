@@ -3,15 +3,9 @@
 import pytest
 from pydantic import BaseModel
 
-from contracts.workflow.builder.build import BuildActionExecution, BuildActionStatus, BuildRecord
 from contracts.context.build_memory import KnowledgeKind, VerifiedBuildKnowledge
-from contracts.workflow.verifier.build_validation import (
-    BuildValidationRecord,
-    CriterionResult,
-    E2EResult,
-    ObservedCriterionResult,
-    ValidationIssueInput,
-)
+from contracts.workflow.builder.build import BuildActionExecution, BuildActionStatus, BuildRecord
+from contracts.workflow.planner.template import PlanTemplate
 from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
 from contracts.workflow.system.host import (
     BuildAdmissionReceipt,
@@ -19,11 +13,17 @@ from contracts.workflow.system.host import (
     ReceiptRef,
     admission_receipt_subject,
 )
-from contracts.workflow.planner.template import PlanTemplate
-from system.storage.artifact_store import ArtifactStore
-from system.storage.canonical_serialization import SERIALIZER_PROFILE
+from contracts.workflow.verifier.build_validation import (
+    BuildValidationRecord,
+    CriterionResult,
+    E2EResult,
+    ObservedCriterionResult,
+    ValidationIssueInput,
+)
 from system.host.memory_promotion import HostMemoryManager, MemoryPromotionError
 from system.host.plan_templates import PlanTemplateService
+from system.storage.artifact_store import ArtifactStore
+from system.storage.canonical_serialization import SERIALIZER_PROFILE
 from system.storage.receipt_store import ReceiptStore
 from system.storage.stage_journal import StageJournalService
 

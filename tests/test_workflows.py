@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from pathlib import Path
 
 import pytest
@@ -88,7 +87,12 @@ def test_role_definitions_are_owned_and_closed() -> None:
 
 def test_host_has_six_stages_but_only_explicit_runtime_skill_routes() -> None:
     assert tuple(s.value for s in Stage) == (
-        "research", "audit_discovery", "planning", "fixture_validation", "build", "build_validation"
+        "research",
+        "audit_discovery",
+        "planning",
+        "fixture_validation",
+        "build",
+        "build_validation",
     )
     assert role_for_stage("research") == "researcher"
     assert role_for_stage("audit_discovery") == "audit_discovery"
@@ -99,7 +103,9 @@ def test_host_has_six_stages_but_only_explicit_runtime_skill_routes() -> None:
             role_for_stage(stage)
 
 
-@pytest.mark.parametrize("mutation", ["duplicate_key", "wrong_owner", "forward_dependency", "unknown_segment", "active_operation"])
+@pytest.mark.parametrize(
+    "mutation", ["duplicate_key", "wrong_owner", "forward_dependency", "unknown_segment", "active_operation"]
+)
 def test_invalid_role_definitions_block(mutation: str) -> None:
     from copy import deepcopy
 
@@ -114,9 +120,7 @@ def test_invalid_role_definitions_block(mutation: str) -> None:
         elif mutation == "forward_dependency":
             definition["segments"][0]["steps"][0]["depends_on"] = ["prepare_retrieval_request"]
         elif mutation == "unknown_segment":
-            definition["segments"][2]["steps"][0]["subpipeline_ref"] = (
-                "agent/skills/researcher/research.yaml#missing"
-            )
+            definition["segments"][2]["steps"][0]["subpipeline_ref"] = "agent/skills/researcher/research.yaml#missing"
         else:
             definition["segments"][0]["steps"][0]["status"] = "active"
         source = yaml.safe_dump(definition)

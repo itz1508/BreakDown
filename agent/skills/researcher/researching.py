@@ -6,9 +6,7 @@ from contracts.workflow.system.host import HostDispatchEnvelope
 from system.host.skill_dispatch import ResearchArguments, SkillContext
 
 
-def run(
-    context: SkillContext, envelope: HostDispatchEnvelope, arguments: ResearchArguments
-) -> dict[str, object]:
+def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: ResearchArguments) -> dict[str, object]:
     """Run an existing task; never fabricate a Research result or receipt."""
     if context.research_service is None:
         raise ValueError("Research service is not configured")

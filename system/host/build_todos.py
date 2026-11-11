@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import (
     BuildAction,
     BuildSpecification,
@@ -12,6 +11,7 @@ from contracts.workflow.planner.specification import (
     RemoveAction,
 )
 from contracts.workflow.planner.task_todo import Build, TaskTodo, paths_overlap
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.tool_registry import safe_relative_path
 
 

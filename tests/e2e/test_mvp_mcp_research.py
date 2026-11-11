@@ -10,8 +10,6 @@ from types import SimpleNamespace
 import pytest
 
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
-from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
-from system.host.providers.base import ProviderError, ProviderRequest
 from mvp.mcp_research import (
     MCPResearchAdapter,
     _tool_json,
@@ -21,6 +19,8 @@ from mvp.mcp_research import (
 )
 from mvp.research_host import execute_research
 from mvp.service import MVPError, MVPService
+from system.host.providers.base import ProviderError, ProviderRequest
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
 
 
 @pytest.fixture(autouse=True)
@@ -386,7 +386,9 @@ def test_host_evidence_paths_are_forwarded_to_real_mcp_request(tmp_path, monkeyp
 
     monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
     assert execute_research(service, task_id)["status"] == "completed"
-    assert captured == [{"workspace_paths": ["README.md", "contracts/workflow/researcher/research.py"], "snapshots": []}]
+    assert captured == [
+        {"workspace_paths": ["README.md", "contracts/workflow/researcher/research.py"], "snapshots": []}
+    ]
 
 
 @pytest.mark.parametrize(
@@ -461,8 +463,8 @@ def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch)
 
 def test_dispatch_rejects_wrong_workflow_role_before_upstream_call(tmp_path, monkeypatch):
     from contracts.workflow.shared import ArtifactRef
-    from system.storage.canonical_serialization import SERIALIZER_PROFILE
     from system.host.sys_controller import TransitionError
+    from system.storage.canonical_serialization import SERIALIZER_PROFILE
 
     service = MVPService(tmp_path)
     task = service.create("Inspect authorized repository evidence")

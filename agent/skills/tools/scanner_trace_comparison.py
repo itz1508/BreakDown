@@ -10,10 +10,9 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Sequence
 
-from contracts.workflow.shared import DiagnosticStatus
 from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -21,7 +20,7 @@ from contracts.workflow.planner.scanner import (
     ScannerOutcome,
     ScannerResult,
 )
-
+from contracts.workflow.shared import DiagnosticStatus
 
 Scalar = bool | int | float | str
 
@@ -61,19 +60,25 @@ def _validate_checks(checks: Sequence[AcceptedCheck]) -> tuple[AcceptedCheck, ..
         if not isinstance(check, AcceptedCheck):
             raise ValueError("invalid accepted check")
         if (
-            not isinstance(check.check_id, str) or not 1 <= len(check.check_id) <= 128
-            or not isinstance(check.target_ref, str) or not 1 <= len(check.target_ref) <= 256
+            not isinstance(check.check_id, str)
+            or not 1 <= len(check.check_id) <= 128
+            or not isinstance(check.target_ref, str)
+            or not 1 <= len(check.target_ref) <= 256
             or type(check.expected_value) not in (bool, int, float, str)
             or (type(check.expected_value) is float and not math.isfinite(check.expected_value))
             or (type(check.expected_value) is int and abs(check.expected_value) > 10**12)
             or (type(check.expected_value) is str and len(check.expected_value) > 512)
             or any(
                 ord(char) < 32 or 0xD800 <= ord(char) <= 0xDFFF
-                for text in (check.check_id, check.target_ref,
-                             check.expected_value if isinstance(check.expected_value, str) else "")
+                for text in (
+                    check.check_id,
+                    check.target_ref,
+                    check.expected_value if isinstance(check.expected_value, str) else "",
+                )
                 for char in text
             )
-            or type(check.weight) is not int or not 1 <= check.weight <= 1_000_000
+            or type(check.weight) is not int
+            or not 1 <= check.weight <= 1_000_000
         ):
             raise ValueError("invalid accepted criterion fields")
         key = (check.check_id, check.target_ref)
@@ -98,14 +103,23 @@ def verify_all(result: ScannerResult, *, checks: Sequence[AcceptedCheck]) -> Sca
         raise ValueError("result must be a ScannerResult")
     result = ScannerResult.model_validate(result.model_dump(mode="json"))
     data = [
-        {"check_id": check.check_id, "target_ref": check.target_ref,
-         "expected_value": check.expected_value, "weight": check.weight}
+        {
+            "check_id": check.check_id,
+            "target_ref": check.target_ref,
+            "expected_value": check.expected_value,
+            "weight": check.weight,
+        }
         for check in sorted(accepted, key=lambda c: (c.check_id, c.target_ref))
     ]
-    digest = hashlib.sha256(json.dumps(
-        {"version": 1, "checks": data},
-        sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False,
-    ).encode("utf-8")).hexdigest()
+    digest = hashlib.sha256(
+        json.dumps(
+            {"version": 1, "checks": data},
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=True,
+            allow_nan=False,
+        ).encode("utf-8")
+    ).hexdigest()
 
     steps = {(step.check_id, step.target_ref): step for step in result.trace_steps}
     # Duplicate observations cannot satisfy a criterion even if one matches.
@@ -115,8 +129,11 @@ def verify_all(result: ScannerResult, *, checks: Sequence[AcceptedCheck]) -> Sca
     if duplicate_steps:
         limitations.append("duplicate_trace_observations")
     if (
-        result.candidate_ref is None or result.registry_ref is None
-        or not result.repository_identity or not result.task_id or not result.run_id
+        result.candidate_ref is None
+        or result.registry_ref is None
+        or not result.repository_identity
+        or not result.task_id
+        or not result.run_id
     ):
         limitations.append("scanner_identity_incomplete")
     if result.capabilities_not_checked or result.evidence_requests or result.limitation_reasons:
@@ -141,10 +158,7 @@ def verify_all(result: ScannerResult, *, checks: Sequence[AcceptedCheck]) -> Sca
             reason = "ambiguous_trace"
         elif step is None:
             reason = "missing_trace"
-        elif (
-            type(step.expected_value) is not type(check.expected_value)
-            or step.expected_value != check.expected_value
-        ):
+        elif type(step.expected_value) is not type(check.expected_value) or step.expected_value != check.expected_value:
             reason = "expected_value_conflict"
         elif not step.required:
             reason = "required_criterion_was_optional"
@@ -186,8 +200,10 @@ def verify_all(result: ScannerResult, *, checks: Sequence[AcceptedCheck]) -> Sca
         incomplete = True
 
     status = (
-        DiagnosticStatus.NOT_VALID if has_mismatch
-        else DiagnosticStatus.UNCERTAINTY if incomplete
+        DiagnosticStatus.NOT_VALID
+        if has_mismatch
+        else DiagnosticStatus.UNCERTAINTY
+        if incomplete
         else DiagnosticStatus.VALID
     )
     score = None if incomplete else mismatch_weight

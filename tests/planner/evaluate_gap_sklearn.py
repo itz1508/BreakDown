@@ -17,10 +17,10 @@ from pydantic import BaseModel
 from sklearn import __version__ as sklearn_version
 from sklearn.metrics import classification_report, confusion_matrix
 
-from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.scanner import ScannerOutcome
-from system.storage.artifact_store import ArtifactStore
+from contracts.workflow.shared import ArtifactRef
 from system.host.scanner_gateway import ScannerGateway
+from system.storage.artifact_store import ArtifactStore
 
 
 class Candidate(BaseModel):

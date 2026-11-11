@@ -2,9 +2,9 @@
 
 import pytest
 
-from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import BuildSpecification, CreateAction
 from contracts.workflow.planner.task_todo import Build
+from contracts.workflow.shared import ArtifactRef
 from system.host.build_todos import compile_build
 
 

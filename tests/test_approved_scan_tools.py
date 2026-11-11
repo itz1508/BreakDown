@@ -6,9 +6,8 @@ import sys
 
 import pytest
 
-from agent.skills.tools.sys_scan import sys_scan
 from agent.skills.tools.scanner_trace_comparison import AcceptedCheck, verify_all
-from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
+from agent.skills.tools.sys_scan import sys_scan
 from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -17,12 +16,17 @@ from contracts.workflow.planner.scanner import (
     ScannerResult,
     ScannerTraceStep,
 )
+from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
 
 
 def _ref(label: str) -> ArtifactRef:
     return ArtifactRef(
-        artifact_id=label, artifact_revision=1, artifact_digest="a" * 64,
-        contract_id="test_artifact", contract_version="1.0", serializer_profile="jcs",
+        artifact_id=label,
+        artifact_revision=1,
+        artifact_digest="a" * 64,
+        contract_id="test_artifact",
+        contract_version="1.0",
+        serializer_profile="jcs",
     )
 
 
@@ -34,31 +38,52 @@ def _result(*, observed: bool | None = True, extra_trace: bool = False) -> Scann
         criterion = CriterionResult.SATISFIED if observed else CriterionResult.NOT_SATISFIED
         observation_state = ObservationState.KNOWN
     step = ScannerTraceStep(
-        check_id="dependency_present", target_ref="candidate@1",
-        rule_version="1", scanner_version="1", observation_state=observation_state,
-        observed_value=observed, expected_value=True, criterion_result=criterion,
+        check_id="dependency_present",
+        target_ref="candidate@1",
+        rule_version="1",
+        scanner_version="1",
+        observation_state=observation_state,
+        observed_value=observed,
+        expected_value=True,
+        criterion_result=criterion,
         criterion_validity=CriterionValidity.VALID if observed is True else CriterionValidity.NOT_VALID,
         evidence_refs=("artifact:verified-step",) if observed is True else (),
     )
     extras = (
-        ScannerTraceStep(
-            check_id="extra_check", target_ref="candidate@1", rule_version="1",
-            scanner_version="1", observation_state=ObservationState.UNKNOWN,
-            observed_value=None, expected_value=True, criterion_result=CriterionResult.UNKNOWN,
-            criterion_validity=CriterionValidity.NOT_VALID,
-        ),
-    ) if extra_trace else ()
+        (
+            ScannerTraceStep(
+                check_id="extra_check",
+                target_ref="candidate@1",
+                rule_version="1",
+                scanner_version="1",
+                observation_state=ObservationState.UNKNOWN,
+                observed_value=None,
+                expected_value=True,
+                criterion_result=CriterionResult.UNKNOWN,
+                criterion_validity=CriterionValidity.NOT_VALID,
+            ),
+        )
+        if extra_trace
+        else ()
+    )
     outcome = (
-        ScannerOutcome.PASS if observed is True else
-        ScannerOutcome.FAIL if observed is False else ScannerOutcome.BLOCKED
+        ScannerOutcome.PASS
+        if observed is True
+        else ScannerOutcome.FAIL
+        if observed is False
+        else ScannerOutcome.BLOCKED
     )
     return ScannerResult(
-        request_id="scan-1", outcome=outcome,
-        task_id="task-1", run_id="run-1", repository_identity="commit:abc",
+        request_id="scan-1",
+        outcome=outcome,
+        task_id="task-1",
+        run_id="run-1",
+        repository_identity="commit:abc",
         requested_capabilities=("dependency_readiness",),
         capabilities_checked=("dependency_readiness",) if observed is not None else (),
         capabilities_not_checked=() if observed is not None else ("dependency_readiness",),
-        candidate_ref=_ref("candidate"), registry_ref=_ref("registry"),
+        candidate_ref=_ref("candidate"),
+        registry_ref=_ref("registry"),
         trace_steps=(step, *extras),
     )
 
@@ -115,7 +140,8 @@ def test_missing_evidence_cannot_pass():
 
 def test_declared_expectation_conflicts_with_accepted_criteria():
     r = verify_all(
-        _result(), checks=[AcceptedCheck("dependency_present", "candidate@1", False)],
+        _result(),
+        checks=[AcceptedCheck("dependency_present", "candidate@1", False)],
     )
     assert r.status is DiagnosticStatus.UNCERTAINTY
     assert r.checks[0].reason == "expected_value_conflict"
@@ -152,9 +178,13 @@ def test_forged_model_copy_cannot_bypass_trace_validation():
 def test_unmatched_unvalidated_satisfied_trace_cannot_pass():
     base = _result()
     extra = ScannerTraceStep(
-        check_id="extra_check", target_ref="candidate@1", rule_version="1",
-        scanner_version="1", observation_state=ObservationState.KNOWN,
-        observed_value=True, expected_value=True,
+        check_id="extra_check",
+        target_ref="candidate@1",
+        rule_version="1",
+        scanner_version="1",
+        observation_state=ObservationState.KNOWN,
+        observed_value=True,
+        expected_value=True,
         criterion_result=CriterionResult.SATISFIED,
         criterion_validity=CriterionValidity.NOT_VALID,
     )
@@ -167,10 +197,12 @@ def test_unmatched_unvalidated_satisfied_trace_cannot_pass():
 
 def test_duplicate_scanner_capabilities_cannot_pass():
     base = _result()
-    duplicate = base.model_copy(update={
-        "requested_capabilities": ("dependency_readiness", "dependency_readiness"),
-        "capabilities_checked": ("dependency_readiness", "dependency_readiness"),
-    })
+    duplicate = base.model_copy(
+        update={
+            "requested_capabilities": ("dependency_readiness", "dependency_readiness"),
+            "capabilities_checked": ("dependency_readiness", "dependency_readiness"),
+        }
+    )
     report = verify_all(duplicate, checks=[AcceptedCheck("dependency_present", "candidate@1", True)])
     assert report.status is DiagnosticStatus.UNCERTAINTY
     assert "scanner_execution_incomplete" in report.limitations
@@ -189,10 +221,12 @@ def test_criteria_digest_is_independent_of_supplied_order_and_covers_weights():
 
 def test_no_acceptance_result_claimed_for_unevidenced_matched_trace():
     base = _result()
-    unevidenced = base.trace_steps[0].model_copy(update={
-        "criterion_validity": CriterionValidity.NOT_VALID,
-        "evidence_refs": (),
-    })
+    unevidenced = base.trace_steps[0].model_copy(
+        update={
+            "criterion_validity": CriterionValidity.NOT_VALID,
+            "evidence_refs": (),
+        }
+    )
     altered = base.model_copy(update={"trace_steps": (unevidenced,)})
     report = verify_all(altered, checks=[AcceptedCheck("dependency_present", "candidate@1", True)])
     assert report.status is DiagnosticStatus.UNCERTAINTY
@@ -202,8 +236,10 @@ def test_no_acceptance_result_claimed_for_unevidenced_matched_trace():
 def test_missing_or_duplicate_traces_never_produce_valid():
     check = [AcceptedCheck("dependency_present", "candidate@1", True)]
     original = _result()
-    for altered in (original.model_copy(update={"trace_steps": ()}),
-                    original.model_copy(update={"trace_steps": original.trace_steps * 2})):
+    for altered in (
+        original.model_copy(update={"trace_steps": ()}),
+        original.model_copy(update={"trace_steps": original.trace_steps * 2}),
+    ):
         outcome = verify_all(altered, checks=check)
         assert outcome.status is DiagnosticStatus.UNCERTAINTY
         assert outcome.drift_score is None

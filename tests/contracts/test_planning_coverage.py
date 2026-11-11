@@ -3,8 +3,8 @@
 from contracts.workflow.planner.coverage import ISSUE_CATEGORIES, planning_coverage
 from contracts.workflow.planner.scanner import ScannerResult
 from contracts.workflow.validation.structural import CONCERNS
-from system.host.sys_controller import HostController
 from system.host.scanner_evidence import persist_scan_result
+from system.host.sys_controller import HostController
 from tests.fixtures.scanner import passing_scan
 from tests.fixtures.structural_gap import passing_gap
 

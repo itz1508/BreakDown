@@ -5,15 +5,18 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from system.host.sys_controller import TransitionError
 from system.host.skill_dispatch import AuditArguments, SkillContext, execute_skill, registered_skills
+from system.host.sys_controller import TransitionError
 
 
 def test_four_registered_roles() -> None:
     items = registered_skills()
     assert len(items) == 4
     assert {item["contract_role"] for item in items} == {
-        "audit_discovery", "researcher", "planner", "builder",
+        "audit_discovery",
+        "researcher",
+        "planner",
+        "builder",
     }
     assert len({item["stage"] for item in items}) == 4
 

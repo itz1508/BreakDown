@@ -12,7 +12,6 @@ latest persisted revision is loaded and verified.
 
 from __future__ import annotations
 
-from contracts.workflow.shared import EvidenceRef
 from contracts.workflow.researcher.research import (
     AdmissionDisposition,
     ExecutionStatus,
@@ -26,6 +25,7 @@ from contracts.workflow.researcher.research import (
     ResearchRequest,
     ReviewDisposition,
 )
+from contracts.workflow.shared import EvidenceRef
 from system.host.research_catalog import ResearchCatalog
 from system.storage.artifact_store import (
     ArtifactStore,

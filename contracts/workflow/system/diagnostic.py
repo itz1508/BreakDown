@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from enum import StrEnum
+
 from pydantic import Field, model_validator
 
 from contracts.workflow.shared import ArtifactRef, ContractModel, DiagnosticStatus, Sha256
@@ -16,10 +17,13 @@ class FrameEvidence(ContractModel):
 
     @model_validator(mode="after")
     def relative_location(self) -> FrameEvidence:
-        if (self.path.startswith("/") or "\\" in self.path
+        if (
+            self.path.startswith("/")
+            or "\\" in self.path
             or re.match(r"^[A-Za-z]:", self.path)
             or ".." in self.path.split("/")
-            or any(ord(c) < 32 or 0xD800 <= ord(c) <= 0xDFFF for c in self.path)):
+            or any(ord(c) < 32 or 0xD800 <= ord(c) <= 0xDFFF for c in self.path)
+        ):
             raise ValueError("diagnostic frame path must be normalized relative metadata")
         return self
 
@@ -113,9 +117,8 @@ class DiagnosticReview(ContractModel):
             raise ValueError("diagnostic review cannot claim verification")
         if (self.recommendation_status is RecommendationStatus.PROPOSED) != (self.recommendation is not None):
             raise ValueError("recommendation required only for proposed state")
-        if (
-            self.recommendation is not None
-            and not set(self.recommendation.supporting_evidence_keys).issubset(self.dossier.evidence_keys)
+        if self.recommendation is not None and not set(self.recommendation.supporting_evidence_keys).issubset(
+            self.dossier.evidence_keys
         ):
             raise ValueError("diagnostic recommendation cites unverified evidence")
         return self

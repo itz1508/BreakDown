@@ -7,7 +7,6 @@ from contracts.workflow.auditor._discovery import (
     RepositoryIdentity,
     RequirementAssessment,
 )
-from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import (
     BuildSpecification,
     RequirementCoverage,
@@ -18,6 +17,7 @@ from contracts.workflow.researcher.research import (
     Requirement,
     ResearchRecord,
 )
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.validation import validate_audit_lineage, validate_build_specification
 
 HEX = "a" * 64

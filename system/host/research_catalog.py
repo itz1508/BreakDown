@@ -10,8 +10,8 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from hashlib import sha256
-from pathlib import Path
 from importlib.resources import files
+from pathlib import Path
 from typing import Any
 
 import yaml

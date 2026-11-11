@@ -3,11 +3,11 @@
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.template import PlanTemplate, TemplateStatus
+from contracts.workflow.shared import ArtifactRef
+from system.host.plan_templates import PlanTemplateError, PlanTemplateService
 from system.storage.artifact_store import ArtifactStore
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.host.plan_templates import PlanTemplateError, PlanTemplateService
 from system.storage.receipt_store import ReceiptStore
 
 

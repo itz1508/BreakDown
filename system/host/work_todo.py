@@ -6,7 +6,6 @@ approve effects, alter an admitted Build plan, or own stage transitions.
 
 from __future__ import annotations
 
-from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.work_todo import (
     TodoAction,
     TodoList,
@@ -14,6 +13,7 @@ from contracts.workflow.planner.work_todo import (
     WorkPlan,
     WorkStatus,
 )
+from contracts.workflow.shared import ArtifactRef
 from system.storage.artifact_store import ArtifactStore, StaleRevisionError
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
 from system.storage.event_store import EventStore

@@ -13,8 +13,8 @@ pytest.importorskip("httpx")
 from fastapi.testclient import TestClient
 
 from contracts.workflow.auditor._report import AuditFindingsRecord
-from system.storage.canonical_serialization import digest_model
 from system.host.sys_controller import Stage
+from system.storage.canonical_serialization import digest_model
 
 
 @pytest.fixture()

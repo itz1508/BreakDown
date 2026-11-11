@@ -6,8 +6,8 @@ from enum import StrEnum
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.shared import ArtifactRef, ContractModel, DiagnosticStatus, StepResult
 from contracts.workflow.planner.specification import IssueType
+from contracts.workflow.shared import ArtifactRef, ContractModel, DiagnosticStatus, StepResult
 
 
 class CriterionResult(StrEnum):

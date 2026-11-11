@@ -323,6 +323,7 @@ class PlanningRecord(ContractModel):
     corrective_refactors: tuple[CorrectiveRefactor, ...] = ()
     work_items: tuple[PlanningWorkItem, ...] = ()
     step_results: tuple[StepResult, ...] = ()
+
     @property
     def code_design_reviews(self) -> tuple[CodeDesignReview, ...]:
         """Preferred view; historical intent_reviews remains the wire key."""

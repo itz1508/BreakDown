@@ -12,7 +12,7 @@ from agent.skills.planner import planning
 from agent.skills.researcher import researching
 from system.host.research_catalog import ResearchCatalog
 from system.host.skill_dispatch import role_for_stage
-from system.host.sys_controller import HostController, Stage, TransitionError
+from system.host.sys_controller import HostController, Stage
 from system.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
 
 
@@ -50,5 +50,6 @@ def test_all_renamed_skills_are_importable() -> None:
 def test_mvp_imports_against_new_host() -> None:
     from mvp.api import app
     from mvp.service import MVPService
+
     assert app is not None
     assert MVPService is not None

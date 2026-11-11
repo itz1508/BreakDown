@@ -9,9 +9,9 @@ from __future__ import annotations
 from enum import StrEnum
 from pathlib import Path
 
-from system.host.sys_path import PathSafetyError, resolve_allowed_path
-
 from pydantic import BaseModel, Field
+
+from system.host.sys_path import PathSafetyError, resolve_allowed_path
 
 
 class AuthorizationError(Exception):

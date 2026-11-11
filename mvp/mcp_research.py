@@ -16,7 +16,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from contracts.workflow.researcher.research import ResearchRecord
-from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_dict, digest_model
+from mvp.connector_store import connector_store
 from system.host.providers.base import (
     CapabilityDescriptor,
     ProviderError,
@@ -24,7 +24,7 @@ from system.host.providers.base import (
     ProviderResult,
 )
 from system.host.providers.registry import ProviderRegistry
-from mvp.connector_store import connector_store
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_dict, digest_model
 
 _TASK_ID = re.compile(r"^[a-f0-9]{32}$")
 _DIGEST = re.compile(r"^[a-f0-9]{64}$")

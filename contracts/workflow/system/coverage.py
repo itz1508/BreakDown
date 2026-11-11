@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from contracts.workflow.shared import ContractModel
 from contracts.workflow.planner.specification import IssueType
+from contracts.workflow.shared import ContractModel
 
 
 class PlanningCoverage(ContractModel):

@@ -13,10 +13,10 @@ from hashlib import sha256
 from pathlib import Path
 
 from contracts.workflow.researcher.research import ResearchRecord
-from system.storage.canonical_serialization import digest_model
-from system.host.sys_controller import Stage
 from mvp.research_host import configured_evidence_sources, execute_research
 from mvp.service import MVPService
+from system.host.sys_controller import Stage
+from system.storage.canonical_serialization import digest_model
 
 
 def main() -> int:

@@ -5,16 +5,19 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from system.host.skill_dispatch import ResearchArguments, SkillContext
 from agent.skills.researcher.researching import run
+from system.host.skill_dispatch import ResearchArguments, SkillContext
 
 
 def test_researcher_rejects_different_state_roots(tmp_path: Path) -> None:
     service = Mock()
     service.host.state_root = tmp_path / "other"
     with pytest.raises(ValueError, match="different state roots"):
-        run(SkillContext(host=Mock(state_root=tmp_path), workspace_root=tmp_path,
-                         research_service=service), Mock(task_id="task"), ResearchArguments())
+        run(
+            SkillContext(host=Mock(state_root=tmp_path), workspace_root=tmp_path, research_service=service),
+            Mock(task_id="task"),
+            ResearchArguments(),
+        )
 
 
 def test_researcher_invokes_existing_host_service(tmp_path: Path) -> None:

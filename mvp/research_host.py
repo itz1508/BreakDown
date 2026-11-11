@@ -8,17 +8,17 @@ from pathlib import Path, PurePosixPath
 
 from agent.skills.auditor.review.core import Finding as AuditCoreFinding
 from contracts.workflow.auditor._report import AuditFinding, AuditFindingsRecord
+from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+from contracts.workflow.researcher.research import ResearchRecord
 from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
-from contracts.workflow.researcher.research import ResearchRecord
-from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
-from system.host.sys_policy_enforcer import Capability
-from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_dict, digest_model
-from system.host.sys_controller import Stage
-from system.host.providers.base import ProviderError, ProviderRequest
-from system.host.work_todo import WorkTodoManager
 from mvp.mcp_research import ResearchMCPOutput, mcp_transport_config, research_artifact_id
 from mvp.service import MVPError, MVPService
+from system.host.providers.base import ProviderError, ProviderRequest
+from system.host.sys_controller import Stage
+from system.host.sys_policy_enforcer import Capability
+from system.host.work_todo import WorkTodoManager
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_dict, digest_model
 
 
 def configured_evidence_sources() -> dict[str, object] | None:
