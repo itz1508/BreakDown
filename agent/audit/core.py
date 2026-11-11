@@ -7,6 +7,22 @@ from collections.abc import Callable, Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
+# Stable per-capability order; a requested subset cannot bypass this ordering.
+# The Host retains ownership of cross-stage Audit Discovery checkpoints.
+CAPABILITY_ORDER: tuple[str, ...] = (
+    "paths",
+    "contracts",
+    "dependencies",
+    "security",
+    "completeness",
+    "wiring",
+    "frontend",
+    "integration",
+    "state",
+    "recovery",
+    "verification",
+)
+
 
 @dataclass(frozen=True)
 class Finding:

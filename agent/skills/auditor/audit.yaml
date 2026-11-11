@@ -1,0 +1,19 @@
+# Declarative mini-pipeline; operation IDs do not grant execution authority.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: auditor.audit
+owner: auditor
+artifact_contract_refs: [agent/contracts/audit_discovery.py]
+segments:
+- id: pre
+  steps:
+  - id: inspect_request
+    operation_id: auditor.inspect_scope
+    status: unbound
+  - id: identify_search_questions
+    depends_on: [inspect_request]
+    operation_id: auditor.prepare_search_questions
+    status: unbound
+policy:
+  source_access: read_only
+  issues_approval: false

@@ -1,0 +1,19 @@
+# Preparation only; no effect, admission, or authorization is enabled.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: builder.build
+owner: builder
+artifact_contract_refs: [agent/contracts/build.py]
+segments:
+- id: prepare
+  steps:
+  - id: receive_candidate_reference
+    operation_id: builder.receive_candidate
+    status: unbound
+  - id: prepare_external_handoff
+    depends_on: [receive_candidate_reference]
+    operation_id: builder.prepare_handoff
+    status: unbound
+policy:
+  executes_effects: false
+  issues_approval: false
