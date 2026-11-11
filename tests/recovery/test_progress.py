@@ -1,6 +1,6 @@
 """Recovery and progress tests — REC01-REC09."""
 
-from agent.runtime.recovery import (
+from system.host.recovery import (
     BoundedRecovery,
     ErrorClass,
     RecoveryDecision,

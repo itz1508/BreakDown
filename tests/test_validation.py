@@ -1,24 +1,24 @@
 """Test cross-stage validation: audit lineage and build specification."""
 
-from agent.contracts.audit_discovery import (
+from contracts.workflow.auditor._discovery import (
     AssessmentStatus,
     AuditDiscoveryPackage,
     NewFeatureIntent,
     RepositoryIdentity,
     RequirementAssessment,
 )
-from agent.contracts.common import ArtifactRef
-from agent.contracts.planning import (
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.specification import (
     BuildSpecification,
     RequirementCoverage,
 )
-from agent.contracts.research import (
+from contracts.workflow.researcher.research import (
     AcceptanceCriterion,
     AuthorizationStatus,
     Requirement,
     ResearchRecord,
 )
-from agent.contracts.validation import validate_audit_lineage, validate_build_specification
+from contracts.workflow.validation import validate_audit_lineage, validate_build_specification
 
 HEX = "a" * 64
 
@@ -105,7 +105,7 @@ def test_cross_stage_lineage():
 
 def test_build_spec_validation():
     research, audit = make_records()
-    from agent.contracts.planning import CreateAction
+    from contracts.workflow.planner.specification import CreateAction
 
     spec = BuildSpecification(
         spec_id="spec-001",

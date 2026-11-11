@@ -1,6 +1,6 @@
 # Researcher — sourced evidence execution
 
-**Executable:** `agent.skills.researcher.run.run(context, envelope, ResearchArguments)`.
+**Executable:** `agent.skills.researcher.research.run(context, envelope, ResearchArguments)`.
 
 **Input:** Verified Research dispatch, existing task, injected `MVPService` sharing the Host state root.
 

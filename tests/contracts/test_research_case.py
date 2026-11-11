@@ -8,7 +8,7 @@ fixture specifications, and negative/security cases.
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.research import (
+from contracts.workflow.researcher.research import (
     AdmissionDisposition,
     ExecutionStatus,
     FixtureSpecification,
@@ -23,7 +23,7 @@ from agent.contracts.research import (
     ReviewDisposition,
     SourceReference,
 )
-from agent.contracts.validation.research import (
+from contracts.workflow.validation.research import (
     validate_fixture_spec_completeness,
     validate_input_admission,
     validate_output_binding,
@@ -338,7 +338,7 @@ class TestSourceAndInformationClassification:
         src = SourceReference(
             source_id="src-001",
             source_type="file",
-            identity="agent/contracts/research.py",
+            identity="contracts/workflow/researcher/research.py",
             version="1.0",
             content_digest="abc123",
         )
@@ -346,7 +346,7 @@ class TestSourceAndInformationClassification:
 
     def test_information_classifications(self):
         """RC27: All 6 information classifications valid."""
-        from agent.contracts.research import InformationClass
+        from contracts.workflow.researcher.research import InformationClass
 
         assert len(InformationClass) == 6
         assert InformationClass.VERIFIED_EVIDENCE.value == "verified_evidence"

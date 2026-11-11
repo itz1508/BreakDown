@@ -3,8 +3,8 @@ name: Host integrity connected tests
 on:
   pull_request:
     paths:
-      - 'agent/runtime/controller.py'
-      - 'agent/runtime/receipt_store.py'
+      - 'system/host/workflow_control.py'
+      - 'system/storage/receipt_store.py'
       - 'mvp/**'
       - 'tests/e2e/test_host_integrity.py'
       - 'tests/e2e/test_host_dispatch.py'

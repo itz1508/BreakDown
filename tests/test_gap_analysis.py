@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from agent.contracts.common import DiagnosticStatus
+from contracts.workflow.common import DiagnosticStatus
 from agent.skills.planner.checks.gap_analysis import (
     CapabilityConsumer,
     CapabilityProducer,

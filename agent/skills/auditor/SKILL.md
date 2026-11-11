@@ -1,6 +1,6 @@
 # Auditor — read-only repository inspection
 
-**Executable:** `agent.skills.auditor.run.run(context, envelope, AuditArguments)`.
+**Executable:** `agent.skills.auditor.audit.run(context, envelope, AuditArguments)`.
 
 **Input:** Host-persisted audit-discovery dispatch, Runtime workspace root, requested capabilities and bounded scope. Existing persisted role ID `audit_discovery` is preserved.
 
@@ -12,4 +12,4 @@
 
 **Boundary:** The standalone CLI and MVP Audit capability return static `AuditResult` / `AuditFindingsRecord`, not the full Research-bound `AuditDiscoveryPackage`. Source entry/exit checkpoints, requirement assessments, CodeDesign candidate publication and stage transition are Host-owned and cannot be inferred from a static scan.
 
-**Runtime:** `agent.runtime.skill_dispatch.execute_skill` validates persisted routing before loading this role. References: `references/audit_guidance.md`.
+**Runtime:** `system.host.skill_dispatch.execute_skill` validates persisted routing before loading this role. References: `references/audit_guidance.md`.

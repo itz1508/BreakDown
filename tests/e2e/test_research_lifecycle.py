@@ -9,7 +9,7 @@ unverified claims, and invalid inputs).
 import pytest
 from pydantic import BaseModel
 
-from agent.contracts.research import (
+from contracts.workflow.researcher.research import (
     AdmissionDisposition,
     CatalogMatchStatus,
     ExecutionStatus,
@@ -19,10 +19,10 @@ from agent.contracts.research import (
     ResearchIntent,
     ReviewDisposition,
 )
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.event_store import EventStore
-from agent.runtime.receipt_store import ReceiptStore
-from agent.runtime.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
+from system.storage.artifact_store import ArtifactStore
+from system.storage.event_store import EventStore
+from system.storage.receipt_store import ReceiptStore
+from system.host.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
 
 
 class _DummyReport(BaseModel):
@@ -285,7 +285,7 @@ class TestAdversarialSecurity:
         """LC12: Output to unadmitted input rejected (unverified claim)."""
         lifecycle.create_request("RR-001", "USER-001")
         # Manually store an unadmitted input by writing to artifact store
-        from agent.contracts.research import InputRequest, ResearchAdmission
+        from contracts.workflow.researcher.research import InputRequest, ResearchAdmission
 
         unadmitted = InputRequest(
             input_id="RR-IN-BAD",
@@ -399,7 +399,7 @@ class TestAdversarialSecurity:
             report_ref="report-001",
         )
         # Manually create an output with a forged review receipt
-        from agent.contracts.research import OutputResult
+        from contracts.workflow.researcher.research import OutputResult
 
         forged = OutputResult(
             output_id="RR-OUT-001",

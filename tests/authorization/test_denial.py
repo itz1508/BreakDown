@@ -2,7 +2,7 @@
 
 import pytest
 
-from agent.runtime.authorization import (
+from system.host.policy_enforce import (
     AuthorizationEngine,
     AuthorizationError,
     Capability,

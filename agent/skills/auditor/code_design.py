@@ -17,7 +17,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
-    from agent.contracts.code_design import CodeDesign
+    from contracts.workflow.auditor.code_design import CodeDesign
 
 
 IntentOrigin = Literal[

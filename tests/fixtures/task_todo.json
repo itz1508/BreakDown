@@ -1,0 +1,135 @@
+{
+  "specification": {
+    "spec_id": "todo-e2e",
+    "objective": "Create a program that prints 42",
+    "actions": [
+      {
+        "requirement_ids": [
+          "REQ-001"
+        ],
+        "acceptance_criteria_ids": [
+          "AC-001"
+        ],
+        "code_intent_ids": [
+          "ci-1"
+        ],
+        "preconditions": [
+          "target absent"
+        ],
+        "validation_steps": [
+          "run main.py"
+        ],
+        "expected_result": "program prints 42",
+        "recovery_requirement": "remove only created file",
+        "target_conflict_check_ref": "checked-absent",
+        "action_id": "library",
+        "action_kind": "create",
+        "target_path": "answer.py",
+        "depends_on": []
+      },
+      {
+        "requirement_ids": [
+          "REQ-001"
+        ],
+        "acceptance_criteria_ids": [
+          "AC-001"
+        ],
+        "code_intent_ids": [
+          "ci-1"
+        ],
+        "preconditions": [
+          "target absent"
+        ],
+        "validation_steps": [
+          "run main.py"
+        ],
+        "expected_result": "program prints 42",
+        "recovery_requirement": "remove only created file",
+        "target_conflict_check_ref": "checked-absent",
+        "action_id": "entrypoint",
+        "action_kind": "create",
+        "target_path": "main.py",
+        "depends_on": [
+          "library"
+        ]
+      }
+    ]
+  },
+  "contents": {
+    "answer.py": "def answer():\n    return 42\n",
+    "main.py": "from answer import answer\nprint(answer())\n"
+  },
+  "expected": {
+    "waves": [
+      [
+        "library"
+      ],
+      [
+        "entrypoint"
+      ]
+    ],
+    "todos": [
+      {
+        "todo_id": "library",
+        "todo_revision": 1,
+        "title": "create: library",
+        "objective": "Create a program that prints 42",
+        "source_action_ids": [
+          "library"
+        ],
+        "dependency_todo_ids": [],
+        "authorized_paths": [
+          "answer.py"
+        ],
+        "expected_preimages": {
+          "answer.py": null
+        },
+        "instructions": [
+          "target absent",
+          "run main.py"
+        ],
+        "verification": [],
+        "expected_result": "program prints 42",
+        "recovery_requirements": [
+          "remove only created file"
+        ]
+      },
+      {
+        "todo_id": "entrypoint",
+        "todo_revision": 1,
+        "title": "create: entrypoint",
+        "objective": "Create a program that prints 42",
+        "source_action_ids": [
+          "entrypoint"
+        ],
+        "dependency_todo_ids": [
+          "library"
+        ],
+        "authorized_paths": [
+          "main.py"
+        ],
+        "expected_preimages": {
+          "main.py": null
+        },
+        "instructions": [
+          "target absent",
+          "run main.py"
+        ],
+        "verification": [],
+        "expected_result": "program prints 42",
+        "recovery_requirements": [
+          "remove only created file"
+        ]
+      }
+    ],
+    "execution_statuses": [
+      "completed",
+      "completed"
+    ],
+    "verification": {
+      "returncode": 0,
+      "stdout": "42\n",
+      "stderr": ""
+    }
+  }
+}
