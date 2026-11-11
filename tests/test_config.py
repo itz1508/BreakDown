@@ -11,6 +11,7 @@ def test_config_loads():
     assert provider.provider_id == "meta"
     assert app.security.default_deny
 
+
 def test_config_profile_is_credential_free_and_versioned() -> None:
     app = load_app_config(Path("config/config.yaml"))
     assert app.provider.profile == "config/providers/meta.yaml"

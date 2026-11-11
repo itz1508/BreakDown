@@ -19,8 +19,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 from contracts.workflow.common import ArtifactRef
 from contracts.workflow.planner.scanner import ScannerOutcome
-from system.storage.artifact_store import ArtifactStore
 from system.host.scanner_gateway import ScannerGateway
+from system.storage.artifact_store import ArtifactStore
 
 
 class Candidate(BaseModel):
