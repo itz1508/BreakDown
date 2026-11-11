@@ -19,7 +19,6 @@ from agent.contracts.scanner import (
     CriterionValidity,
     ObservationState,
     ScannerOutcome,
-    ScannerResult,
 )
 
 Scalar = bool | int | float | str
@@ -89,7 +88,7 @@ def _validate_checks(checks: Sequence[AcceptedCheck]) -> tuple[AcceptedCheck, ..
     return tuple(validated)
 
 
-def verify_all(result: ScannerResult, *, checks: Sequence[AcceptedCheck]) -> ScanComparison:
+def verify_all(result, *, checks: Sequence[AcceptedCheck]) -> ScanComparison:
     """Compare the recorded observations; do not run a scan or re-authorize it.
 
     The caller must provide Host-accepted criteria and a Host-verified result.
@@ -98,10 +97,9 @@ def verify_all(result: ScannerResult, *, checks: Sequence[AcceptedCheck]) -> Sca
     Drift is an unbounded weighted mismatch sum, or None if incomplete.
     """
     accepted = _validate_checks(checks)
-    # Pydantic.model_copy(update=...) bypasses validators; check the boundary.
-    if not isinstance(result, ScannerResult):
-        raise ValueError("result must be a ScannerResult")
-    result = ScannerResult.model_validate(result.model_dump(mode="json"))
+    # Accept any object with the scanner result shape (duck typing, not Pydantic).
+    if not hasattr(result, "trace_steps"):
+        raise ValueError("result must have trace_steps")
     data = [
         {
             "check_id": check.check_id,

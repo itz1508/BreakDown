@@ -3,9 +3,6 @@ kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: coder.code
 owner: coder
-artifact_contract_refs:
-- agent/contracts/audit.py
-- agent/contracts/planning.py
 implementation_intent: agent/skills/coder/coding.py
 segments:
 - id: main

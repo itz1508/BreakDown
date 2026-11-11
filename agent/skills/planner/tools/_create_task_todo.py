@@ -11,9 +11,7 @@ the action's validation steps and verification tools.
 
 from __future__ import annotations
 
-from agent.contracts.common import Sha256
-from agent.contracts.planning import BuildAction, BuildSpecification
-from agent.contracts.task_todo import TaskTodo
+from agent.skills.planner.types import BuildAction, BuildSpecification, TaskTodo
 
 
 def _action_paths(action: BuildAction) -> tuple[str, ...]:
@@ -26,13 +24,13 @@ def _action_paths(action: BuildAction) -> tuple[str, ...]:
     return tuple(paths)
 
 
-def _action_preimages(action: BuildAction) -> dict[str, Sha256 | None]:
+def _action_preimages(action: BuildAction) -> dict[str, str | None]:
     """Build expected-preimage dict keyed exactly to *action* paths.
 
     CreateAction has no source digest (target is new); others carry
     ``expected_source_digest`` for the source path.
     """
-    preimages: dict[str, Sha256 | None] = {}
+    preimages: dict[str, str | None] = {}
     source_digest = getattr(action, "expected_source_digest", None)
     for path in _action_paths(action):
         preimages[path] = source_digest if path == getattr(action, "source_path", None) else None

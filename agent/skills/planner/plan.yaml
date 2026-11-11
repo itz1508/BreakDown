@@ -3,10 +3,6 @@ kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: planner.plan
 owner: planner
-artifact_contract_refs:
-- agent/contracts/planning_input.py
-- agent/contracts/planning.py
-- agent/contracts/scanner.py
 public_api_intent: planning.create(request, context)
 segments:
 - id: main

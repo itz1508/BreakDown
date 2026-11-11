@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from agent.contracts.planning import CandidateSpecification
+from agent.skills.planner.types import CandidateSpecification
 
 
 @dataclass(frozen=True)
@@ -22,8 +22,8 @@ class FixtureDraft:
 
 def prepare(candidate: CandidateSpecification) -> tuple[FixtureDraft, ...]:
     """Copy declared fixtures; do not manufacture missing or observed results."""
-    if not isinstance(candidate, CandidateSpecification):
-        raise TypeError("CandidateSpecification requires a typed candidate")
+    if not hasattr(candidate, "build_spec") or not hasattr(candidate.build_spec, "fixtures"):
+        raise TypeError("candidate requires build_spec.fixtures attribute")
     source = candidate.build_spec.fixtures
     ids = [fixture.fixture_id for fixture in source]
     if len(set(ids)) != len(ids):

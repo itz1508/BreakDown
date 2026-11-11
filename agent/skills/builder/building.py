@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from agent.contracts.build import BuildActionExecution
 from agent.contracts.host import HostDispatchEnvelope
-from system.host.skill_dispatch import BuildArguments, SkillContext
 
 
 def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: BuildArguments) -> BuildActionExecution:

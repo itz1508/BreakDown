@@ -1,0 +1,14 @@
+# Declarative mini-pipeline; operation IDs do not grant execution authority.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: shared.loading
+owner: shared
+segments:
+- id: main
+  steps:
+  - id: loading
+    operation_id: shared.loading
+    status: unbound
+policy:
+  source_access: read_only
+  issues_approval: false

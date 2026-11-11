@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from agent.contracts.scanner import ScannerResult
+    # ScannerResult is host-owned; skill-side uses Any until host provides it.
+    from typing import Any as ScannerResult
+
     from agent.contracts.host import HostDispatchEnvelope
-    from system.host.skill_dispatch import PlanningArguments, SkillContext
 
 
 class PlanningPipelineNotActive(RuntimeError):

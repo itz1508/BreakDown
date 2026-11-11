@@ -1,0 +1,14 @@
+# Declarative mini-pipeline; operation IDs do not grant execution authority.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: researcher.researching
+owner: researcher
+segments:
+- id: main
+  steps:
+  - id: researching
+    operation_id: researcher.researching
+    status: unbound
+policy:
+  source_access: read_only
+  issues_approval: false
