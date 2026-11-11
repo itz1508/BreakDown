@@ -1,120 +1,131 @@
-"""Single end-to-end workflow contract closure and role boundary tests."""
+"""Validate the actual role-owned skill definitions and Host stage boundary."""
 
-from copy import deepcopy
+from __future__ import annotations
+
+from collections.abc import Mapping
 from pathlib import Path
 
 import pytest
 import yaml
 
-from system.host.loaders import LoaderError, load_stage_workflow, load_workflow_bundle
+from system.host.skill_dispatch import role_for_stage
+from system.host.sys_controller import Stage
 
-CONTRACT = Path(".agents/contracts/workflow.yaml")
-STAGES = (
-    "research",
-    "audit_discovery",
-    "planning",
-    "fixture_validation",
-    "build",
-    "build_validation",
-)
-
-
-def test_single_workflow_contract_parses_and_has_all_six_roles() -> None:
-    assert CONTRACT.is_file()
-    assert not list(Path("agent/workflows/stages").glob("*.yaml"))
-    bundle = load_workflow_bundle(CONTRACT)
-    assert tuple(bundle["role_workflows"]) == STAGES
-    assert len(bundle["host_workflows"]) == 22
-    assert all(stage in bundle["role_workflows"] for stage in STAGES)
-    for stage in STAGES:
-        role = load_stage_workflow(CONTRACT, stage)["workflow"]
-        assert role["input_schema"]["additionalProperties"] is False
-        assert role["output_schema"]["additionalProperties"] is False
-        assert role["schema_validation"]["require_output_input_request_ref_match"] is True
-        assert role["output_schema"]["allOf"]
-        assert role["inputs"]["required"]
+SKILLS = {
+    "auditor": ("audit.yaml", "auditing.py"),
+    "researcher": ("research.yaml", "researching.py"),
+    "coder": ("code.yaml", "coding.py"),
+    "planner": ("plan.yaml", "planning.py"),
+    "builder": ("build.yaml", "building.py"),
+}
 
 
-def test_approved_role_guidance_is_under_reference_not_roles() -> None:
-    assert not list(Path(".agents/roles").glob("*.md"))
-    for name in ("researcher", "audit-discovery", "planner", "fixture-validator", "builder", "build-verifier"):
-        assert (Path(".agents/reference") / f"{name}.md").is_file()
+class StrictYamlLoader(yaml.SafeLoader):
+    def construct_mapping(self, node, deep=False):
+        mapping = {}
+        for key_node, value_node in node.value:
+            key = self.construct_object(key_node, deep=deep)
+            if not isinstance(key, str) or key in mapping:
+                raise ValueError("duplicate or invalid YAML key")
+            mapping[key] = self.construct_object(value_node, deep=deep)
+        return mapping
 
 
-def _bad_contract(tmp_path: Path, edit) -> Path:
-    data = deepcopy(load_workflow_bundle(CONTRACT))
-    edit(data)
-    target = tmp_path / "broken.yaml"
-    target.write_text(yaml.safe_dump(data, sort_keys=False))
-    return target
+def load_definition(text: str, *, role: str) -> dict:
+    data = yaml.load(text, Loader=StrictYamlLoader)
+    if not isinstance(data, dict) or data.get("kind") != "skill_mini_pipeline":
+        raise ValueError("invalid skill definition")
+    if data.get("owner") != role:
+        raise ValueError("skill owner mismatch")
+    if data.get("definition_version") != 1:
+        raise ValueError("unsupported definition version")
+    segments = data.get("segments")
+    if not isinstance(segments, list) or not segments:
+        raise ValueError("missing segments")
+    segment_ids = [segment["id"] for segment in segments]
+    if len(set(segment_ids)) != len(segment_ids):
+        raise ValueError("duplicate segment")
+    for segment in segments:
+        steps = segment.get("steps")
+        if not isinstance(steps, list) or not steps:
+            raise ValueError("empty segment")
+        ids = [step["id"] for step in steps]
+        if len(set(ids)) != len(ids):
+            raise ValueError("duplicate step")
+        seen = set()
+        for step in steps:
+            if not step.get("operation_id"):
+                raise ValueError("missing operation identifier")
+            if step.get("status") != "unbound":
+                raise ValueError("role definition grants unauthorized execution")
+            for parent in step.get("depends_on", []):
+                if parent not in seen:
+                    raise ValueError("missing, forward or recursive dependency")
+            seen.add(step["id"])
+            ref = step.get("subpipeline_ref")
+            if ref:
+                prefix, sep, name = ref.partition("#")
+                if sep != "#" or prefix != f"agent/skills/{role}/{SKILLS[role][0]}" or name not in segment_ids:
+                    raise ValueError("invalid subpipeline reference")
+    if data.get("policy", {}).get("can_approve_or_execute") is True:
+        raise ValueError("skill cannot self-authorize")
+    if data.get("policy", {}).get("issues_approval") is True:
+        raise ValueError("skill cannot issue approval")
+    return data
 
 
-@pytest.mark.parametrize(
-    "edit",
-    [
-        lambda d: d["bundle"].update(role_guidance_root=".agents/roles"),
-        lambda d: d["bundle"].update(pre_scanner_gate="scanner_execution"),
-        lambda d: d["role_workflows"]["research"]["workflow"]["input_schema"].update(required=["request_id"]),
-        lambda d: d["role_workflows"]["audit_discovery"]["workflow"]["output_schema"].update(additionalProperties=True),
-        lambda d: d["role_workflows"]["planning"]["workflow"]["request_result_exchange"].update(mode="one_way"),
-        lambda d: d["role_workflows"]["build"]["workflow"]["request_result_exchange"].update(
-            build_admission_precedes_execution=False
-        ),
-        lambda d: d["host_workflows"].pop("structural_gap_analysis"),
-        lambda d: d["host_workflows"]["structural_gap_analysis"]["input_contracts"].remove("candidate_specification"),
-        lambda d: d["host_workflows"]["structural_gap_analysis"]["required_work"].remove("run_walking_skeleton"),
-        lambda d: d["host_workflows"]["structural_gap_analysis"]["completion"].update(
-            known_critical_gap_detection_rate=0.5
-        ),
-        lambda d: d["host_workflows"]["structural_gap_analysis"]["correction"].update(
-            rerun_all_passes_before_scanner=False
-        ),
-        lambda d: d["execution"]["research_to_planning"].remove("structural_gap_analysis"),
-        lambda d: d["execution"]["on_structural_gap_failure"].update(scanner_blocked_until_valid=False),
-    ],
-)
-def test_invalid_contract_is_rejected(tmp_path: Path, edit) -> None:
-    with pytest.raises(LoaderError):
-        load_workflow_bundle(_bad_contract(tmp_path, edit))
+def test_role_definitions_are_owned_and_closed() -> None:
+    assert not Path("contracts/workflow/pipeline.yaml").exists()
+    assert not Path("agent/skills/pipeline_contract.py").exists()
+    assert not Path(".agents/contracts/workflow.yaml").exists()
+    for role, (yaml_name, implementation) in SKILLS.items():
+        root = Path("agent/skills") / role
+        assert (root / "SKILL.md").is_file()
+        assert (root / implementation).is_file()
+        definition = load_definition((root / yaml_name).read_text(encoding="utf-8"), role=role)
+        assert definition["pipeline_id"].startswith(role + ".")
 
 
-def test_duplicate_workflow_key_rejected(tmp_path: Path) -> None:
-    source = CONTRACT.read_text()
-    target = tmp_path / "duplicate.yaml"
-    target.write_text(source.replace("  role_order:", "  role_order: []\n  role_order:", 1))
-    with pytest.raises(LoaderError, match="duplicate"):
-        load_workflow_bundle(target)
+def test_host_has_six_stages_but_only_explicit_runtime_skill_routes() -> None:
+    assert tuple(s.value for s in Stage) == (
+        "research", "audit_discovery", "planning", "fixture_validation", "build", "build_validation"
+    )
+    assert role_for_stage("research") == "researcher"
+    assert role_for_stage("audit_discovery") == "audit_discovery"
+    assert role_for_stage("planning") == "planner"
+    assert role_for_stage("build") == "builder"
+    for stage in ("fixture_validation", "build_validation", "unknown"):
+        with pytest.raises(KeyError):
+            role_for_stage(stage)
 
 
-def test_research_is_information_gathering_and_builder_execution_only() -> None:
-    research = load_stage_workflow(CONTRACT, "research")["workflow"]
-    assert "Gather" in research["success_contract"]["success_meaning"]
-    assert research["completion"]["successful_result"]["diagnostic_status_is_not_a_completion_gate"]
-    assert research["request_result_exchange"]["returns_result_to"] == "input_request.respond_to"
+@pytest.mark.parametrize("mutation", ["duplicate_key", "wrong_owner", "forward_dependency", "unknown_segment", "active_operation"])
+def test_invalid_role_definitions_block(mutation: str) -> None:
+    from copy import deepcopy
 
-    build = load_stage_workflow(CONTRACT, "build")["workflow"]
-    assert "new_design" in build["request_result_exchange"]["prohibits"]
-    assert build["request_result_exchange"]["preflight_and_effect_gate"] == "host_owned"
-    assert build["request_result_exchange"]["move_action"] == "single_admitted_action_declaring_source_and_destination"
+    source = (Path("agent/skills/researcher") / "research.yaml").read_text(encoding="utf-8")
+    if mutation == "duplicate_key":
+        source += "\nowner: researcher\n"
+    else:
+        definition = yaml.safe_load(source)
+        definition = deepcopy(definition)
+        if mutation == "wrong_owner":
+            definition["owner"] = "builder"
+        elif mutation == "forward_dependency":
+            definition["segments"][0]["steps"][0]["depends_on"] = ["prepare_retrieval_request"]
+        elif mutation == "unknown_segment":
+            definition["segments"][2]["steps"][0]["subpipeline_ref"] = (
+                "agent/skills/researcher/research.yaml#missing"
+            )
+        else:
+            definition["segments"][0]["steps"][0]["status"] = "active"
+        source = yaml.safe_dump(definition)
+    with pytest.raises(ValueError):
+        load_definition(source, role="researcher")
 
 
-def test_structural_gap_workflow_declares_every_runtime_input() -> None:
-    gap = load_workflow_bundle(CONTRACT)["host_workflows"]["structural_gap_analysis"]
-    assert set(gap["input_contracts"]) == {
-        "candidate_specification",
-        "workflow_contract_bundle",
-        "registry_snapshot_set",
-        "workflow_trace",
-        "concern_matrix",
-        "gap_backtest_corpus",
-        "source_grounded_analysis",
-        "comparable_system_analysis",
-    }
-    assert gap["completion"]["successful_result"] == {
-        "execution_status": "completed",
-        "diagnostic_status": "valid",
-    }
-    assert gap["completion"]["invalid_result"] == {
-        "execution_status": "failed",
-        "diagnostic_status": "not_valid",
-    }
+def test_builder_cannot_issue_approvals_from_yaml() -> None:
+    text = (Path("agent/skills/builder") / "build.yaml").read_text(encoding="utf-8")
+    data = load_definition(text, role="builder")
+    assert data["policy"]["executes_effects"] is False
+    assert data["policy"]["issues_approval"] is False

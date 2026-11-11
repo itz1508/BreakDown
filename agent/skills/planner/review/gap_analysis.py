@@ -456,7 +456,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="gap_analysis_owner",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/planner/checks/gap_analysis.py",
+                    path="agent/skills/planner/review/gap_analysis.py",
                     symbols=("GapAnalyzer", "GapAnalyzer.analyze"),
                 ),
             ),
@@ -467,21 +467,21 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             producers=(
                 CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("reference_gaps",)),
             ),
-            consumers=(CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="reference_gaps"),),
+            consumers=(CapabilityConsumer(path="agent/skills/planner/review/gap_analysis.py", reference="reference_gaps"),),
         ),
         CapabilityRequirement(
             capability_id="execution_trace",
             producers=(CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("trace_gaps",)),),
-            consumers=(CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="trace_gaps"),),
+            consumers=(CapabilityConsumer(path="agent/skills/planner/review/gap_analysis.py", reference="trace_gaps"),),
         ),
         CapabilityRequirement(
             capability_id="concern_matrix",
             producers=(CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("concern_gaps",)),),
-            consumers=(CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="concern_gaps"),),
+            consumers=(CapabilityConsumer(path="agent/skills/planner/review/gap_analysis.py", reference="concern_gaps"),),
         ),
         CapabilityRequirement(
             capability_id="historical_backtest",
-            producers=(CapabilityProducer(path="agent/skills/planner/checks/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)),),
+            producers=(CapabilityProducer(path="agent/skills/planner/review/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)),),
         ),
         CapabilityRequirement(
             capability_id="walking_skeleton",

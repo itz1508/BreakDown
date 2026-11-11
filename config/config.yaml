@@ -1,6 +1,6 @@
 config_version: "1.0"
 provider:
-  profile: .agents/providers/meta.yaml
+  profile: config/providers/meta.yaml
 state:
   root_env: ONESHOT_STATE_ROOT
   serializer_profile: oneshot-jcs-candidate-v1

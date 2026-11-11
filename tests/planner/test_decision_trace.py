@@ -315,7 +315,7 @@ def test_unavailable_telemetry_exporter_does_not_block_persistence_or_expose_pay
         return FailingExporterSpan()
 
     monkeypatch.setitem(sys.modules, "logfire", SimpleNamespace(span=record_span))
-    monkeypatch.setattr(telemetry, "_enabled", True)
+    monkeypatch.setattr(telemetry, "_backend", "logfire")
     controller, _, _, scan_ref = make_scanned_controller(tmp_path, monkeypatch)
     assert controller.artifact_store.get_verified(scan_ref.artifact_id, 1)
     assert captured == [("scanner.run", {"task_id": "task-001", "run_id": "run-001", "artifact_id": "draft"})]
@@ -338,7 +338,7 @@ def test_gap_receipt_remains_mandatory(tmp_path):
 def test_disabled_logfire_never_blocks_persistence(tmp_path, monkeypatch):
     import system.host.scanner_telemetry as telemetry
 
-    monkeypatch.setattr(telemetry, "_enabled", False)
+    monkeypatch.setattr(telemetry, "_backend", "disabled")
     controller, _, _, scan_ref = make_scanned_controller(tmp_path, monkeypatch)
     assert controller.artifact_store.get_verified(scan_ref.artifact_id, 1)
     # Only identifiers are passed to the span, no candidate bytes or evidence.
