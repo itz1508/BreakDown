@@ -57,13 +57,26 @@ jobs:
         run: uv run --no-sync python scripts/check_retired_paths.py
       - name: Validate installed provider selection
         run: uv run --no-sync pytest -q tests/test_config.py
-      - name: Check source imports, Catalog, and checkpoint ordering
+      - name: Check source imports, Catalog, checkpoint, Host dispatch and Researcher boundaries
         run: |
           uv run --no-sync pytest -q \
             tests/boundaries/test_imports.py \
             tests/test_research_catalog.py \
-            tests/builder/test_skill_runner.py
+            tests/builder/test_skill_runner.py \
+            tests/runtime/test_skill_dispatch.py \
+            tests/researcher/test_skill_runner.py
       - name: Build and inspect installable package
         run: |
           uv build --wheel
           uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/builder/file_operations.py", "system/host/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
+      - name: Bundle exact source and dependency lock (candidate only)
+        if: matrix.python-version == '3.11'
+        run: git archive --format=zip --output=dist/breakdown-source-candidate.zip HEAD
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always() && matrix.python-version == '3.11'
+        with:
+          name: breakdown-consolidation-candidate
+          path: |
+            dist/*.whl
+            dist/breakdown-source-candidate.zip
+          if-no-files-found: error
