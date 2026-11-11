@@ -16,6 +16,10 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["agent", "contracts", "system", "api_fundamentals"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"config/config.yaml" = "config/config.yaml"
+"config/providers/meta.yaml" = "config/providers/meta.yaml"
+
 [project.optional-dependencies]
 meta = ["openai>=1.0"]
 claude = ["claude-agent-sdk"]

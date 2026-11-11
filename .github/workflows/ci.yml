@@ -55,6 +55,8 @@ jobs:
       - run: uv sync --locked --extra meta
       - name: Enforce retired-path and draft exclusion rules
         run: uv run --no-sync python scripts/check_retired_paths.py
+      - name: Validate installed provider selection
+        run: uv run --no-sync pytest -q tests/test_config.py
       - name: Check source imports, Catalog, and checkpoint ordering
         run: |
           uv run --no-sync pytest -q \
@@ -64,4 +66,4 @@ jobs:
       - name: Build and inspect installable package
         run: |
           uv build --wheel
-          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/builder/file_operations.py", "system/host/research_catalog.py"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/builder/file_operations.py", "system/host/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'

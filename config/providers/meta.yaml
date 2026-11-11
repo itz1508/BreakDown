@@ -1,0 +1,12 @@
+provider_id: meta
+protocol: openai_compatible
+sdk: openai
+api_key_env: MODEL_API_KEY
+base_url: https://api.meta.ai/v1
+base_url_env: META_MODEL_BASE_URL
+model: muse-spark-1.3
+model_env: META_MODEL_ID
+timeout_seconds: 60
+max_retries: 0
+capabilities: {}
+options: {}
