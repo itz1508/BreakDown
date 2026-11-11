@@ -2,8 +2,11 @@
 
 from unittest.mock import Mock
 
-from system.host.skill_dispatch import BuildArguments
+import pytest
+
+from agent.skills.builder import file_operations
 from agent.skills.builder.build import run
+from system.host.skill_dispatch import BuildArguments
 
 
 def test_builder_delegates_admitted_effect() -> None:
@@ -22,8 +25,6 @@ def test_builder_delegates_admitted_effect() -> None:
         expected_source_digest=None, wave=None,
     )
     context.host.receipt_store.issue_verified.assert_not_called()
-
-from agent.skills.builder import file_operations
 
 
 def test_builder_file_operations_create_modify_move_remove(tmp_path) -> None:
@@ -46,8 +47,6 @@ def test_builder_file_operations_create_modify_move_remove(tmp_path) -> None:
 
 
 def test_builder_atomic_write_cleans_temporary_file_on_failure(tmp_path, monkeypatch) -> None:
-    import pytest
-
     target = tmp_path / "keep.py"
     target.write_text("original", encoding="utf-8")
 
