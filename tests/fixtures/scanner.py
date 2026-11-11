@@ -2,7 +2,7 @@
 
 from contracts.workflow.planner.scanner import ScannerEvidence
 from contracts.workflow.system.tool_registry import SandboxProfile, ToolEffect, ToolInvocation, ToolRegistrySnapshot, ToolSpec
-from system.host.workflow_control import HostController
+from system.host.sys_controller import HostController
 from system.host.host_gap_analyzer import StructuralGapOutcome
 from system.host.scanner_check_registry import (
     ScannerCheck,

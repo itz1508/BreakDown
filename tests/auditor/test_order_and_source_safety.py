@@ -1,12 +1,10 @@
-"""Auditor order, source containment, and CodeDesign handoff regressions."""
+"""Auditor static scan order and source containment regressions."""
 
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
-from agent.skills.auditor.checks.core import CAPABILITY_ORDER, safe_read_text, scan
-from agent.skills.auditor.code_design import review_questions
+from agent.skills.auditor.review.core import CAPABILITY_ORDER, safe_read_text, scan
 
 
 def test_canonical_order_and_selected_subset(tmp_path: Path) -> None:
@@ -68,12 +66,3 @@ def test_symlink_inside_root_is_not_read_as_audited_source(tmp_path: Path) -> No
     alias.symlink_to(real)
     with pytest.raises(ValueError, match="symlink"):
         safe_read_text(tmp_path, alias)
-
-
-def test_code_design_questions_have_evidence_first_sequence() -> None:
-    questions = review_questions(SimpleNamespace(intent_origin="existing_implementation_gap"))
-    assert questions[0].key == "existing-contract"
-    assert questions[-1].key == "gap-causality"
-    assert len({q.key for q in questions}) == len(questions)
-    with pytest.raises(ValueError, match="unsupported CodeDesign"):
-        review_questions(SimpleNamespace(intent_origin="unregistered"))

@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from system.host.workflow_control import TransitionError
+from system.host.sys_controller import TransitionError
 from system.host.skill_dispatch import AuditArguments, SkillContext, execute_skill, registered_skills
 
 

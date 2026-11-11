@@ -3,7 +3,7 @@
 from unittest.mock import Mock
 
 from system.host.skill_dispatch import BuildArguments
-from agent.skills.builder.build import run
+from agent.skills.builder.building import run
 
 
 def test_builder_delegates_admitted_effect() -> None:

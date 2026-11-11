@@ -14,7 +14,7 @@ from fastapi.testclient import TestClient
 
 from contracts.workflow.auditor._report import AuditFindingsRecord
 from system.storage.canonical_serialization import digest_model
-from system.host.workflow_control import Stage
+from system.host.sys_controller import Stage
 
 
 @pytest.fixture()
@@ -245,7 +245,7 @@ class TestAuditAdversarial:
             execute_audit(service, task["task_id"])
 
     def test_audit_unknown_capabilities_raises(self, service: object, workspace: Path):
-        from agent.skills.auditor.checks.core import scan
+        from agent.skills.auditor.review.core import scan
 
         with pytest.raises(ValueError, match="unknown audit capabilities"):
             scan(workspace, ".", ("nonexistent_capability",))
@@ -394,13 +394,13 @@ class TestAuditModeAndRecovery:
             execute_audit(service, task["task_id"])
 
     def test_blocked_audit_persists_findings_but_never_advances(self, service, monkeypatch):
-        from agent.skills.auditor.checks.core import AuditResult
+        from agent.skills.auditor.review.core import AuditResult
         from mvp.research_host import execute_audit
 
         def blocked_scan(root, scope=".", request=""):
             return AuditResult(str(root), ".", ("paths",), (), (), ("scanner unavailable",), "blocked", request)
 
-        monkeypatch.setattr("agent.skills.auditor.checks.scan", blocked_scan)
+        monkeypatch.setattr("agent.skills.auditor.review.scan", blocked_scan)
         task = service.create("Audit blocked", purpose="audit")
         output = execute_audit(service, task["task_id"])
         assert output["status"] == "blocked"
@@ -460,7 +460,7 @@ class TestAuditModeAndRecovery:
         def fail_scan(*_args, **_kwargs):
             raise RuntimeError("injected scanner interruption")
 
-        monkeypatch.setattr("agent.skills.auditor.checks.scan", fail_scan)
+        monkeypatch.setattr("agent.skills.auditor.review.scan", fail_scan)
         with pytest.raises(MVPError, match="Audit execution blocked"):
             execute_audit(first, task["task_id"])
         second = MVPService(state_root)
