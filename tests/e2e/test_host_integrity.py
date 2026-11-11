@@ -14,10 +14,10 @@ from contracts.workflow.system.host import ReceiptRef
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.host.workflow_control import HostController, Stage, TransitionError
-from mvp.mcp_research import research_artifact_id
-from mvp.research_host import execute_research
-from mvp.service import MVPError, MVPService
+from system.host.sys_controller import HostController, Stage, TransitionError
+from app.mcp_research import research_artifact_id
+from system.host.research_execution import execute_research
+from app.service import MVPError, MVPService
 
 
 class _Evidence(BaseModel):

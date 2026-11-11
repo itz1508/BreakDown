@@ -3,9 +3,9 @@ name: Host integrity connected tests
 on:
   pull_request:
     paths:
-      - 'system/host/workflow_control.py'
+      - 'system/host/sys_controller.py'
       - 'system/storage/receipt_store.py'
-      - 'mvp/**'
+      - 'app/**'
       - 'tests/e2e/test_host_integrity.py'
       - 'tests/e2e/test_host_dispatch.py'
       - 'tests/e2e/test_mvp_*.py'
@@ -25,9 +25,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv python install ${{ matrix.python-version }}
-      - run: uv sync --locked --extra meta --extra mvp
+      - run: uv sync --locked --extra meta --extra api
       - name: Validate host types
-        run: uv run --no-sync mypy agent/
+        run: uv run --no-sync mypy agent contracts system app
       - name: Verify host and HTTP regression tests
         run: |
           uv run --no-sync pytest -q \

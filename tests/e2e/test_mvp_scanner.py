@@ -10,8 +10,8 @@ from fastapi.testclient import TestClient
 from agent.cli import cmd_scan
 from contracts.workflow.system.host import ReceiptRef
 from contracts.workflow.planner.scanner import ScannerRunInput
-from system.host.workflow_control import HostController
-from mvp.service import MVPService
+from system.host.sys_controller import HostController
+from app.service import MVPService
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record
 
 
@@ -39,12 +39,12 @@ def prepared_scanner(tmp_path):
 
 
 def test_scanner_http_requires_host_receipt_and_operator_permission(tmp_path, monkeypatch):
-    import mvp.api
+    import app.api
 
     service, task_id, request = prepared_scanner(tmp_path)
-    monkeypatch.setattr(mvp.api, "service", service)
+    monkeypatch.setattr(app.api, "service", service)
     monkeypatch.setenv("ONESHOT_OPERATOR_TOKEN", "token-expected")
-    client = TestClient(mvp.api.app)
+    client = TestClient(app.api.app)
     endpoint = f"/api/tasks/{task_id}/scanner"
     payload = request.model_dump(mode="json")
     assert client.post(endpoint, json=payload).status_code == 403
@@ -55,14 +55,14 @@ def test_scanner_http_requires_host_receipt_and_operator_permission(tmp_path, mo
 
 
 def test_real_http_host_scan_sse_replay_and_cli_share_one_event_store(tmp_path, monkeypatch, capsys):
-    import mvp.api
+    import app.api
 
     service, task_id, request = prepared_scanner(tmp_path)
-    monkeypatch.setattr(mvp.api, "service", service)
+    monkeypatch.setattr(app.api, "service", service)
     monkeypatch.delenv("ONESHOT_OPERATOR_TOKEN", raising=False)
     # Substitute only upstream structural-gap receipt, not Scanner checks or EventStore.
     monkeypatch.setattr(HostController, "_verify_structural_gap", lambda *args: None)
-    client = TestClient(mvp.api.app)
+    client = TestClient(app.api.app)
     initial = service.events(task_id)
     cursor = initial[-1]["sequence"]
     endpoint = f"/api/tasks/{task_id}/scanner"
@@ -113,12 +113,12 @@ def test_real_http_host_scan_sse_replay_and_cli_share_one_event_store(tmp_path, 
 
 
 def test_scanner_api_rejects_cross_run_and_non_planning_stage(tmp_path, monkeypatch):
-    import mvp.api
+    import app.api
 
     service, task_id, request = prepared_scanner(tmp_path)
-    monkeypatch.setattr(mvp.api, "service", service)
+    monkeypatch.setattr(app.api, "service", service)
     monkeypatch.delenv("ONESHOT_OPERATOR_TOKEN", raising=False)
-    client = TestClient(mvp.api.app)
+    client = TestClient(app.api.app)
     endpoint = f"/api/tasks/{task_id}/scanner"
     wrong_run = request.model_copy(update={"run_id": "different-run"})
     response = client.post(endpoint, json=wrong_run.model_dump(mode="json"))
@@ -157,7 +157,7 @@ def test_cli_module_command_dispatches_the_same_host_scan(tmp_path, monkeypatch,
 
 
 def test_real_host_structural_gap_receipt_allows_http_scanner_without_stub(tmp_path, monkeypatch):
-    import mvp.api
+    import app.api
     from tests.fixtures.structural_gap import build_gap_inputs
 
     service, task_id, scan_input = prepared_scanner(tmp_path)
@@ -170,9 +170,9 @@ def test_real_host_structural_gap_receipt_allows_http_scanner_without_stub(tmp_p
     exact = scan_input.model_copy(
         update={"gap_result_ref": outcome.result_ref, "gap_receipt_ref": outcome.completion_receipt_ref}
     )
-    monkeypatch.setattr(mvp.api, "service", service)
+    monkeypatch.setattr(app.api, "service", service)
     monkeypatch.delenv("ONESHOT_OPERATOR_TOKEN", raising=False)
-    response = TestClient(mvp.api.app).post(f"/api/tasks/{task_id}/scanner", json=exact.model_dump(mode="json"))
+    response = TestClient(app.api.app).post(f"/api/tasks/{task_id}/scanner", json=exact.model_dump(mode="json"))
     assert response.status_code == 200
     scan = response.json()
     assert scan["outcome"] == "blocked"
@@ -181,12 +181,12 @@ def test_real_host_structural_gap_receipt_allows_http_scanner_without_stub(tmp_p
 
 
 def test_duplicate_requested_capability_is_rejected(tmp_path, monkeypatch):
-    import mvp.api
+    import app.api
 
     service, task_id, request = prepared_scanner(tmp_path)
-    monkeypatch.setattr(mvp.api, "service", service)
+    monkeypatch.setattr(app.api, "service", service)
     payload = request.model_dump(mode="json")
     payload["capabilities"] = ["dependency_readiness", "dependency_readiness"]
-    response = TestClient(mvp.api.app).post(f"/api/tasks/{task_id}/scanner", json=payload)
+    response = TestClient(app.api.app).post(f"/api/tasks/{task_id}/scanner", json=payload)
     assert response.status_code == 422
     assert not [e for e in service.events(task_id) if e["type"].startswith("scanner_")]

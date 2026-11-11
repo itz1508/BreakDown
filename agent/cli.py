@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from contracts.workflow.planner.scanner import ScannerOutcome, ScannerRunInput
-from system.host.workflow_control import HostController, Stage, TransitionError
+from system.host.sys_controller import HostController, Stage, TransitionError
 
 
 def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:
@@ -53,8 +53,8 @@ def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:
 
 def cmd_run(task_id: str, state_root: str = "/tmp/oneshot-state") -> int:
     """Execute an existing Research task through the registered host, never simulate completion."""
-    from mvp.research_host import execute_research
-    from mvp.service import MVPError, MVPService
+    from system.host.research_execution import execute_research
+    from app.service import MVPError, MVPService
 
     service = MVPService(state_root)
     state = service.host.get_state(task_id)
@@ -80,7 +80,7 @@ def cmd_scan(task_id: str, request_file: str, state_root: str = "/tmp/oneshot-st
     """Run the API's exact host scanner and print persisted events as JSON lines."""
     from pydantic import ValidationError
 
-    from mvp.service import MVPError, MVPService
+    from app.service import MVPError, MVPService
 
     try:
         request = ScannerRunInput.model_validate_json(Path(request_file).read_bytes())

@@ -1,11 +1,11 @@
-# Researcher — sourced evidence execution
+# Researcher — sourced evidence investigation
 
-**Executable:** `agent.skills.researcher.research.run(context, envelope, ResearchArguments)`.
+**Mini-pipeline:** `research.yaml` now contains the original `review`, `retrieve`, and `main` segments. The former `search.yaml` declarations were moved without registering new executable search operations.
 
-**Input:** Verified Research dispatch, existing task, injected `MVPService` sharing the Host state root.
+**Python:** `researching.run(context, envelope, arguments)` preserves the original Host-managed Research delegation and state-root consistency check.
 
-**Tools:** Existing `mvp.research_host.execute_research`, MCP research adapter and host-owned `ResearchLifecycle`. Catalog templates are guidance, not evidence.
+**Searching:** No standalone `searching.py` implementation exists in the repository. Declared retrieval operation IDs remain unbound. Do not fabricate network/search behavior or bypass Host tool authorization.
 
-**Output:** Existing Research result payload and independently persisted host artifacts. The skill cannot mint trusted receipts or unilaterally advance a stage.
+**Shared Catalog:** Templates remain at `agent/catalog/` for Auditor PRE and Researcher; matching synthetic examples is not verification evidence.
 
-**Runtime:** Host verifies task/run/stage/request/revision/input digest and return route. Uncertain effects require reconciliation.
+**Boundary:** No independent stage transitions, architectural decisions, approvals, effects or trusted receipts.

@@ -1,9 +1,9 @@
 name: CI
 on:
   push:
-    branches: [main, feat/mvp-mcp-research-adapter]
+    branches: [main, breakdown-staging, feat/breakdown-package-20261110]
   pull_request:
-    branches: [main, feat/mvp-mcp-research-adapter]
+    branches: [main, feat/breakdown-package-20261110]
 
 jobs:
   test:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         run: uv python install ${{ matrix.python-version }}
       - name: Install dependencies
-        run: uv sync --locked --extra meta --extra mvp
+        run: uv sync --locked --extra meta --extra api
       - name: Dependency check
         run: uv run --no-sync deptry .
       - name: Lint
@@ -26,9 +26,22 @@ jobs:
       - name: Format check
         run: uv run --no-sync ruff format --check .
       - name: Type check
-        run: uv run --no-sync mypy agent contracts system
-      - name: Validate Modal 1.6.3 ASGI image declaration (no cloud access)
-        run: uv run --no-sync --with modal==1.6.3 python -c "import modal_app; assert modal_app.APP_NAME; print('Modal declaration OK')"
+        run: uv run --no-sync mypy agent contracts system app
+      - name: Build distribution wheel
+        run: uv build --wheel
+      - name: Verify bundled skill and catalog resources
+        run: |
+          python - <<'PY'
+          import glob
+          import zipfile
+          paths = glob.glob("dist/*.whl")
+          assert len(paths) == 1, paths
+          with zipfile.ZipFile(paths[0]) as wheel:
+              names = set(wheel.namelist())
+          required = {"app/api.py", "system/host/sys_controller.py", "agent/catalog/research_samples.yaml", "agent/skills/researcher/research.yaml", "agent/skills/builder/build.yaml"}
+          assert required <= names, sorted(required - names)
+          print("Verified wheel resources:", len(required))
+          PY
       - name: Focused scanner regression
         run: uv run --no-sync pytest -q tests/planner/test_decision_trace.py tests/planner/test_stream_events.py tests/e2e/test_mvp_scanner.py
       - name: Scanner cache and legacy-oracle benchmark

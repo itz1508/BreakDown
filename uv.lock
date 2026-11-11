@@ -1052,8 +1052,8 @@ wheels = [
 ]
 
 [[package]]
-name = "oneshot"
-version = "0.1.0"
+name = "breakdown"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "logfire" },
@@ -1072,7 +1072,7 @@ codex = [
 meta = [
     { name = "openai" },
 ]
-mvp = [
+api = [
     { name = "fastapi" },
     { name = "mcp" },
     { name = "uvicorn" },
@@ -1091,17 +1091,17 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "claude-agent-sdk", marker = "extra == 'claude'" },
-    { name = "fastapi", marker = "extra == 'mvp'", specifier = ">=0.115,<1" },
+    { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.115,<1" },
     { name = "logfire", specifier = ">=5.4,<6" },
-    { name = "mcp", marker = "extra == 'mvp'", specifier = ">=2,<3" },
+    { name = "mcp", marker = "extra == 'api'", specifier = ">=2,<3" },
     { name = "openai", marker = "extra == 'meta'", specifier = ">=1.0" },
     { name = "openai-codex", marker = "extra == 'codex'" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "pyyaml", specifier = ">=6" },
     { name = "rfc8785", specifier = ">=0.1.4" },
-    { name = "uvicorn", marker = "extra == 'mvp'", specifier = ">=0.30,<1" },
+    { name = "uvicorn", marker = "extra == 'api'", specifier = ">=0.30,<1" },
 ]
-provides-extras = ["meta", "claude", "codex", "mvp"]
+provides-extras = ["meta", "claude", "codex", "api"]
 
 [package.metadata.requires-dev]
 dev = [

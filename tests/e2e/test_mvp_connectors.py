@@ -11,22 +11,22 @@ pytest.importorskip("httpx")
 
 from fastapi.testclient import TestClient
 
-import mvp.api
+import app.api
 from system.host.providers.base import ProviderError
-from mvp.service import MVPService
+from app.service import MVPService
 
 
 @pytest.fixture()
 def client(tmp_path, monkeypatch):
     monkeypatch.setenv("ONESHOT_STATE_ROOT", str(tmp_path))
-    monkeypatch.setattr(mvp.api, "DEFAULT_ROOT", tmp_path)
-    monkeypatch.setattr(mvp.api, "service", MVPService(tmp_path))
-    return TestClient(mvp.api.app)
+    monkeypatch.setattr(app.api, "DEFAULT_ROOT", tmp_path)
+    monkeypatch.setattr(app.api, "service", MVPService(tmp_path))
+    return TestClient(app.api.app)
 
 
 def test_mcp_connect_persists_tools_but_not_bearer_token(client, monkeypatch):
     monkeypatch.setattr(
-        "mvp.connector_store.discover_mcp_tools_sync",
+        "app.connector_store.discover_mcp_tools_sync",
         lambda url, bearer_token=None: [
             {"name": "oneshot_research", "description": "Research tool"},
             {"name": "source_lookup", "description": "Lookup source data"},
@@ -50,7 +50,7 @@ def test_mcp_connect_persists_tools_but_not_bearer_token(client, monkeypatch):
 
 def test_mcp_test_persists_connection_settings(client, monkeypatch):
     monkeypatch.setattr(
-        "mvp.connector_store.discover_mcp_tools_sync",
+        "app.connector_store.discover_mcp_tools_sync",
         lambda url, bearer_token=None: [{"name": "oneshot_research", "description": "Research tool"}],
     )
     response = client.post(
@@ -82,7 +82,7 @@ def test_mcp_connection_failure_returns_502(client, monkeypatch):
     def broken(*_args, **_kwargs):
         raise ProviderError("connection failed")
 
-    monkeypatch.setattr("mvp.connector_store.discover_mcp_tools_sync", broken)
+    monkeypatch.setattr("app.connector_store.discover_mcp_tools_sync", broken)
     response = client.post(
         "/api/connectors/mcp/connect",
         json={"url": "http://127.0.0.1:9222/mcp", "auth_type": "none", "bearer_token": ""},
@@ -94,10 +94,10 @@ def test_mcp_connection_failure_returns_502(client, monkeypatch):
 def test_operator_token_gates_connector_changes(tmp_path, monkeypatch):
     monkeypatch.setenv("ONESHOT_STATE_ROOT", str(tmp_path))
     monkeypatch.setenv("ONESHOT_OPERATOR_TOKEN", "operator-secret")
-    monkeypatch.setattr(mvp.api, "DEFAULT_ROOT", tmp_path)
-    monkeypatch.setattr(mvp.api, "service", MVPService(tmp_path))
-    monkeypatch.setattr("mvp.connector_store.discover_mcp_tools_sync", lambda *_args, **_kwargs: [])
-    locked = TestClient(mvp.api.app)
+    monkeypatch.setattr(app.api, "DEFAULT_ROOT", tmp_path)
+    monkeypatch.setattr(app.api, "service", MVPService(tmp_path))
+    monkeypatch.setattr("app.connector_store.discover_mcp_tools_sync", lambda *_args, **_kwargs: [])
+    locked = TestClient(app.api.app)
     denied = locked.post(
         "/api/connectors/mcp/connect",
         json={"url": "http://127.0.0.1:9222/mcp", "auth_type": "none", "bearer_token": ""},
@@ -112,7 +112,7 @@ def test_operator_token_gates_connector_changes(tmp_path, monkeypatch):
 
 
 def test_model_save_and_test_persist_non_sensitive_settings(client, monkeypatch):
-    monkeypatch.setattr("mvp.connector_store.test_model_provider_sync", lambda *_args: "provider-ready")
+    monkeypatch.setattr("app.connector_store.test_model_provider_sync", lambda *_args: "provider-ready")
     saved = client.post(
         "/api/connectors/model/save",
         json={
@@ -141,7 +141,7 @@ def test_model_save_and_test_persist_non_sensitive_settings(client, monkeypatch)
 
 def test_model_connection_failure_returns_502(client, monkeypatch):
     monkeypatch.setattr(
-        "mvp.connector_store.test_model_provider_sync",
+        "app.connector_store.test_model_provider_sync",
         lambda *_args: (_ for _ in ()).throw(ProviderError("provider unavailable")),
     )
     response = client.post(

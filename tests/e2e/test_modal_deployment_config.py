@@ -161,9 +161,9 @@ def test_audit_root_set_before_api_import_and_mutations_committed(monkeypatch: A
             return register
 
     backend = FakeHTTPApp()
-    fake_api = types.ModuleType("mvp.api")
+    fake_api = types.ModuleType("app.api")
     fake_api.app = backend  # type: ignore[attr-defined]
-    monkeypatch.setitem(sys.modules, "mvp.api", fake_api)
+    monkeypatch.setitem(sys.modules, "app.api", fake_api)
     monkeypatch.setenv("MCP_TRUSTED_ANCESTRY", "false")
     monkeypatch.setenv("MCP_WORKSPACE_ROOT", "/tmp/untrusted")
     monkeypatch.setenv("ONESHOT_STATE_ROOT", "/tmp/old-state")

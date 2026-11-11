@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import CAPABILITY_ORDER, scan
+from agent.skills.auditor.review.core import CAPABILITY_ORDER, scan
 
 
 def main() -> int:

@@ -12,15 +12,15 @@ import pytest
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
 from system.host.providers.base import ProviderError, ProviderRequest
-from mvp.mcp_research import (
+from app.mcp_research import (
     MCPResearchAdapter,
     _tool_json,
     mcp_child_environment,
     register_mcp_research,
     research_artifact_id,
 )
-from mvp.research_host import execute_research
-from mvp.service import MVPError, MVPService
+from system.host.research_execution import execute_research
+from app.service import MVPError, MVPService
 
 
 @pytest.fixture(autouse=True)
@@ -91,7 +91,7 @@ def test_adapter_preserves_configured_server_model(monkeypatch):
         result["model"] = "another-model"
         return result
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     result = MCPResearchAdapter().generate(request(task_id))
     assert result.provider == "another-provider"
     assert result.model == "another-model"
@@ -116,7 +116,7 @@ def test_real_host_persistence_and_stage_advance(tmp_path, monkeypatch):
         assert arguments["run_id"] == task["run_id"]
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     outcome = execute_research(service, task_id)
     assert outcome["status"] == "completed"
     assert outcome["current_stage"] == "audit_discovery"
@@ -155,7 +155,7 @@ def test_digest_forgery_never_advances(tmp_path, monkeypatch):
     async def invoke(_arguments):
         return response(task_id, wrong_digest=True)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     with pytest.raises(MVPError, match="blocked"):
         execute_research(service, task_id)
     assert service.host.get_state(task_id).current_stage.value == "research"
@@ -171,7 +171,7 @@ def test_mismatched_response_identity_rejected(monkeypatch):
         reply["run_id"] = "run-wrong"
         return reply
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     with pytest.raises(ProviderError, match="identity mismatch"):
         MCPResearchAdapter().generate(request(task_id))
 
@@ -180,7 +180,7 @@ def test_unstructured_prompt_fails_without_call(monkeypatch):
     async def never(_arguments):
         raise AssertionError("should not run")
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", never)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", never)
     with pytest.raises(ProviderError, match="invalid host"):
         MCPResearchAdapter().generate(ProviderRequest(run_id="run-a", prompt="plain language"))
 
@@ -199,11 +199,11 @@ def test_http_research_endpoint_advances_only_after_host_receipts(tmp_path, monk
     pytest.importorskip("httpx")
     from fastapi.testclient import TestClient
 
-    import mvp.api
+    import app.api
 
     service = MVPService(tmp_path)
-    monkeypatch.setattr(mvp.api, "service", service)
-    client = TestClient(mvp.api.app)
+    monkeypatch.setattr(app.api, "service", service)
+    client = TestClient(app.api.app)
     created = client.post("/api/tasks", json={"prompt": "Research actual sources"})
     assert created.status_code == 201
     task_id = created.json()["task_id"]
@@ -211,7 +211,7 @@ def test_http_research_endpoint_advances_only_after_host_receipts(tmp_path, monk
     async def invoke(arguments):
         return response(json.loads(arguments["prompt"])["task_id"])
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     executed = client.post(f"/api/tasks/{task_id}/research")
     assert executed.status_code == 200
     assert executed.json()["current_stage"] == "audit_discovery"
@@ -225,17 +225,17 @@ def test_http_forged_digest_is_502_and_stage_remains_open(tmp_path, monkeypatch)
     pytest.importorskip("httpx")
     from fastapi.testclient import TestClient
 
-    import mvp.api
+    import app.api
 
     service = MVPService(tmp_path)
-    monkeypatch.setattr(mvp.api, "service", service)
-    client = TestClient(mvp.api.app)
+    monkeypatch.setattr(app.api, "service", service)
+    client = TestClient(app.api.app)
     task_id = client.post("/api/tasks", json={"prompt": "Research sources"}).json()["task_id"]
 
     async def invoke(_arguments):
         return response(task_id, wrong_digest=True)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     failed = client.post(f"/api/tasks/{task_id}/research")
     assert failed.status_code == 502
     assert client.get(f"/api/tasks/{task_id}").json()["current_stage"] == "research"
@@ -253,7 +253,7 @@ def test_research_binds_latest_input_and_locks_later_changes(tmp_path, monkeypat
         assert payload["stage_payload"]["input_digest"] == service.get(task_id)["input_digest"]
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     execute_research(service, task_id)
     with pytest.raises(MVPError, match="input locked"):
         service.revise_input(task_id, "Stale after Research", expected_revision=2)
@@ -302,7 +302,7 @@ def test_concurrent_research_invocation_rejected_without_duplicate_upstream_call
         assert release.wait(timeout=10)
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     with ThreadPoolExecutor(max_workers=2) as pool:
         result = pool.submit(execute_research, service, task_id)
         try:
@@ -330,7 +330,7 @@ def test_edit_rejected_during_research_and_not_persisted(tmp_path, monkeypatch):
         assert release.wait(timeout=10)
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     with ThreadPoolExecutor(max_workers=2) as pool:
         result = pool.submit(execute_research, service, task_id)
         try:
@@ -359,7 +359,7 @@ def test_recovery_event_reports_inner_failure_class(tmp_path, monkeypatch):
         return response(task_id, wrong_digest=True)
 
     monkeypatch.setattr(service.host.work_todos, "set_status", status_with_failed_recovery)
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     with pytest.raises(MVPError, match="Research execution blocked"):
         execute_research(service, task_id)
     recovery = [e for e in service.events(task_id) if e["type"] == "mcp_research_recovery_required"]
@@ -384,7 +384,7 @@ def test_host_evidence_paths_are_forwarded_to_real_mcp_request(tmp_path, monkeyp
         captured.append(_json.loads(arguments["prompt"])["stage_payload"]["evidence_sources"])
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     assert execute_research(service, task_id)["status"] == "completed"
     assert captured == [{"workspace_paths": ["README.md", "contracts/workflow/researcher/research.py"], "snapshots": []}]
 
@@ -441,7 +441,7 @@ def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch)
         assert route["request_id"] == f"research-{task_id}"
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     outcome = execute_research(service, task_id)
     assert outcome["current_stage"] == "audit_discovery"
     envelope = HostDispatchEnvelope.model_validate_json(
@@ -462,7 +462,7 @@ def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch)
 def test_dispatch_rejects_wrong_workflow_role_before_upstream_call(tmp_path, monkeypatch):
     from contracts.workflow.common import ArtifactRef
     from system.storage.canonical_serialization import SERIALIZER_PROFILE
-    from system.host.workflow_control import TransitionError
+    from system.host.sys_controller import TransitionError
 
     service = MVPService(tmp_path)
     task = service.create("Inspect authorized repository evidence")
@@ -493,7 +493,7 @@ def test_cli_run_executes_existing_host_research(tmp_path, monkeypatch, capsys):
         assert json.loads(arguments["prompt"])["task_id"] == task_id
         return response(task_id)
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", invoke)
     assert cmd_run(task_id, state_root=str(tmp_path)) == 0
     result = json.loads(capsys.readouterr().out)
     assert result["status"] == "completed"
@@ -520,7 +520,7 @@ def test_cli_run_blocks_missing_upstream_provider(tmp_path, monkeypatch, capsys)
     async def unavailable(_arguments):
         raise ProviderError("provider not configured")
 
-    monkeypatch.setattr("mvp.mcp_research._invoke_tool", unavailable)
+    monkeypatch.setattr("app.mcp_research._invoke_tool", unavailable)
     assert cmd_run(task_id, state_root=str(tmp_path)) == 1
     assert "Research blocked" in capsys.readouterr().err
     assert service.host.get_state(task_id).current_stage.value == "research"

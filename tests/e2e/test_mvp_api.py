@@ -9,7 +9,7 @@ pytest.importorskip("httpx")
 
 from fastapi.testclient import TestClient
 
-from mvp.api import app
+from app.api import app
 
 
 def test_health_reports_api_and_transport_configuration(monkeypatch):
@@ -76,20 +76,20 @@ def test_real_http_create_restore_and_revision():
 
 
 def test_sse_database_error_is_classified_and_does_not_create_fake_events(tmp_path, monkeypatch):
-    import mvp.api
-    from mvp.service import MVPService
+    import app.api
+    from app.service import MVPService
 
     service = MVPService(tmp_path)
     task_id = service.create("Check SSE recovery")["task_id"]
     original_events = service.events
     recorded_before = original_events(task_id)
-    monkeypatch.setattr(mvp.api, "service", service)
+    monkeypatch.setattr(app.api, "service", service)
 
     def broken_events(_task_id, _cursor=0):
         raise sqlite3.OperationalError("private database details must not leak")
 
     monkeypatch.setattr(service, "events", broken_events)
-    response = TestClient(mvp.api.app).get(f"/api/tasks/{task_id}/stream")
+    response = TestClient(app.api.app).get(f"/api/tasks/{task_id}/stream")
     assert response.status_code == 200
     assert "event: stream_error\ndata:" in response.text
     assert '"code":"EVENT_READ_FAILED"' in response.text

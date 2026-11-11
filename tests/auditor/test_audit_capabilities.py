@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from agent.skills.auditor.checks.core import scan
+from agent.skills.auditor.review.core import scan
 
 
 def test_static_findings_are_not_e2e_success(tmp_path: Path) -> None:
@@ -124,7 +124,7 @@ def test_unrecognized_static_api_route_reports_candidate(tmp_path: Path) -> None
 def test_mvp_import_targets_are_checked(tmp_path: Path) -> None:
     (tmp_path / "mvp").mkdir()
     (tmp_path / "mvp" / "__init__.py").write_text("")
-    (tmp_path / "mvp" / "service.py").write_text("import mvp.missing\n")
+    (tmp_path / "mvp" / "service.py").write_text("import app.missing\n")
     result = scan(tmp_path, capabilities=("contracts",))
     assert [item.code for item in result.findings] == ["INTERNAL_IMPORT_MISSING"]
 

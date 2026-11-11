@@ -15,7 +15,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   webServer: [
     {
-      command: `uv run --no-sync --python ${pythonVersion} uvicorn mvp.api:app --host 127.0.0.1 --port 8000`,
+      command: `uv run --no-sync --python ${pythonVersion} uvicorn app.api:app --host 127.0.0.1 --port 8000`,
       cwd: repoRoot,
       env: {
         ONESHOT_STATE_ROOT: process.env.ONESHOT_STATE_ROOT || join(tmpdir(), 'oneshot-playwright-audit'),

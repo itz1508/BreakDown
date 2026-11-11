@@ -9,8 +9,8 @@ from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchRes
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from contracts.workflow.planner.work_todo import WorkStatus
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.host.workflow_control import HostController, Stage, TransitionError
-from mvp.service import MVPService
+from system.host.sys_controller import HostController, Stage, TransitionError
+from app.service import MVPService
 from tests.e2e.test_real_workflow import _advance_with_receipt
 
 

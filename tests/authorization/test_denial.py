@@ -2,7 +2,7 @@
 
 import pytest
 
-from system.host.policy_enforce import (
+from system.host.sys_policy_enforcer import (
     AuthorizationEngine,
     AuthorizationError,
     Capability,

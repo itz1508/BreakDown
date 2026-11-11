@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from system.host.skill_dispatch import PlanningArguments
-from agent.skills.planner.plan import run
+from agent.skills.planner.planning import run
 
 
 def test_scanner_dispatch_uses_bound_candidate() -> None:

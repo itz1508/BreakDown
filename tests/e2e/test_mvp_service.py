@@ -2,7 +2,7 @@
 
 import pytest
 
-from mvp.service import MVPError, MVPService
+from app.service import MVPError, MVPService
 
 
 def test_create_read_and_restart(tmp_path):
