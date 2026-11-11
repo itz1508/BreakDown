@@ -14,7 +14,7 @@ Inspect source and contracts, implementation completeness, imports and paths, AP
 
 Within the static Audit capability: paths → contracts → dependencies → security → completeness → wiring → frontend → integration → state → recovery → verification. Explicit subsets retain that relative order. A symlinked/out-of-root source cannot be read by a scanner; an incomplete requested check blocks the disposition.
 
-The full Audit Discovery workflow has a separate Host-owned order: load accepted Research and repository instructions; capture source entry identity; inspect actual source; assess accepted requirements; record findings; prepare evidence-grounded CodeDesign and unknowns; capture source exit identity; submit the exact bound artifact for Host validation. The static scanner neither creates Research references nor attests source stability or completes this stage. CodeDesign questions are advisory and must follow evidence, not manufacture it.
+The legacy Host-owned Audit Discovery workflow still binds Research and repository evidence to its existing persisted contract. The inactive target graph instead places Auditor PRE before Research, followed by a standalone CodeDesign capability after Research. The existing static scanner cannot supply the PRE handoff or complete Research-to-source correlation. CodeDesign questions are advisory; see `agent/skills/coder/SKILL.md`. No source-identity receipts, Host transitions, or persisted wire fields change in this packaging refactor.
 
 ## Capability modules
 
@@ -43,7 +43,7 @@ Every observation must bind capability, code, severity, relative path/line, sour
 ## Example
 
 ```bash
-python -m agent.skills.auditor.checks --root /absolute/authorized/repo --scope . --request "Inspect integration completeness"
+python -m agent.skills.auditor --root /absolute/authorized/repo --scope . --request "Inspect integration completeness"
 ```
 
 The CLI intentionally performs no shell commands, network calls, or source writes. Connected E2E requires separately authorized host execution and independent evidence.

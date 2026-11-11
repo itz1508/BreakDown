@@ -7,8 +7,8 @@ import sys
 import pytest
 
 from agent.skills.tools.sys_scan import sys_scan
-from agent.skills.tools.verify_all import AcceptedCheck, verify_all
-from contracts.workflow.common import ArtifactRef, DiagnosticStatus
+from agent.skills.tools.scanner_trace_comparison import AcceptedCheck, verify_all
+from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
 from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,

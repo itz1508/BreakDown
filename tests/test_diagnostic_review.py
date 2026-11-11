@@ -10,7 +10,7 @@ import pytest
 from pydantic import ValidationError
 
 from agent.skills.builder.traceback_report import normalize_exception
-from contracts.workflow.common import ArtifactRef, DiagnosticStatus
+from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
 from contracts.workflow.planner.scanner import ScannerResult, ScannerFinding
 from contracts.workflow.system.diagnostic import (
     DiagnosticReview, Recommendation, RecommendationStatus,

@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 
 from agent.skills.builder import file_operations
-from agent.skills.builder.build import run
+from agent.skills.builder.building import run
 from system.host.skill_dispatch import BuildArguments
 
 

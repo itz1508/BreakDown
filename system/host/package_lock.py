@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.host import PackageLockReceipt, ReceiptRef
 from system.storage.artifact_store import ArtifactStore
 from system.storage.receipt_store import ReceiptStore

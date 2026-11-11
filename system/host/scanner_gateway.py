@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,

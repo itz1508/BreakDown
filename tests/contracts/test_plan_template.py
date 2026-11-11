@@ -3,7 +3,7 @@
 import pytest
 from pydantic import BaseModel, ValidationError
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.template import PlanTemplate, TemplateStatus
 from system.storage.artifact_store import ArtifactStore
 from system.storage.canonical_serialization import SERIALIZER_PROFILE

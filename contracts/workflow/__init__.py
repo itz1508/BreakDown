@@ -1,6 +1,6 @@
 """OneShot contract schemas — Pydantic v2 typed primitives and stage records."""
 
-from contracts.workflow.common import (
+from contracts.workflow.shared import (
     ArtifactRef,
     ContractModel,
     CriterionId,

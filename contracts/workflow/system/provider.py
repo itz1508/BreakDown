@@ -7,7 +7,7 @@ from typing import Any
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ContractModel
+from contracts.workflow.shared import ContractModel
 
 
 class ProviderProtocol(StrEnum):

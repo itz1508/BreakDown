@@ -1,6 +1,6 @@
 """Scanner exact digest tests — SCN01-SCN10."""
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from contracts.workflow.planner.scanner import ScannerCapabilityID, ScannerOutcome, ScannerRequest
 from system.storage.artifact_store import ArtifactStore

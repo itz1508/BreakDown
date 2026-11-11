@@ -12,7 +12,7 @@ latest persisted revision is loaded and verified.
 
 from __future__ import annotations
 
-from contracts.workflow.common import EvidenceRef
+from contracts.workflow.shared import EvidenceRef
 from contracts.workflow.researcher.research import (
     AdmissionDisposition,
     ExecutionStatus,

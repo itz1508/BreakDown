@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from contracts.workflow.auditor._discovery import AuditDiscoveryPackage
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 
 
 def validate_research_lineage(package: AuditDiscoveryPackage, expected_research_ref: ArtifactRef) -> list[str]:

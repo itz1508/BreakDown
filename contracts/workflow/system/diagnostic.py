@@ -6,7 +6,7 @@ import re
 from enum import StrEnum
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ArtifactRef, ContractModel, DiagnosticStatus, Sha256
+from contracts.workflow.shared import ArtifactRef, ContractModel, DiagnosticStatus, Sha256
 
 
 class FrameEvidence(ContractModel):

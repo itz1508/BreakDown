@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ArtifactRef, ContractModel, DiagnosticStatus, Sha256, StepStatus
+from contracts.workflow.shared import ArtifactRef, ContractModel, DiagnosticStatus, Sha256, StepStatus
 from contracts.workflow.system.tool_registry import ToolInvocation, safe_relative_path
 
 

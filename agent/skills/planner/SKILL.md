@@ -1,11 +1,19 @@
-# Planner — design review and Scanner
+# Planner — candidate planning and evidence review
 
-**Executable:** `agent.skills.planner.plan.run(context, envelope, PlanningArguments)`.
+**Mini-pipeline:** `plan.yaml#main` traces requirements, inspects patterns,
+drafts a candidate before scanning, records findings, and calls Fixturer to
+prepare unverified fixture drafts. No approval or freeze operation is defined.
 
-**Input:** Verified Planning dispatch and typed `ScannerRunInput`, including candidate digest, repository identity, gap evidence and receipt.
+**Python API:** `agent.skills.planner.planning.run` retains the exact
+Host-bound Scanner behavior. `planning.create(request, context)` is a
+reserved fail-closed entrypoint pending trusted operation integration.
 
-**Checks:** `checks/gap_analysis.py` and existing deterministic Scanner detectors through `HostController.scan_planning_candidate`. Scanner check registry, trace evidence, storage and receipts remain Runtime-owned. Draft repair requires separate host authorization and CAS.
+**Review:** `review/gap_analysis.py` is the canonical implementation.
+The previous `checks/gap_analysis.py` module was removed after consumers
+were migrated to `review/gap_analysis.py`.
 
-**Output:** `ScannerResult`, findings and evidence requests; not Build Admission. Audit Discovery owns preparatory `CodeDesign` questions and source-grounded candidates; Planning owns `CodeDesignReview`, design decisions and downstream specification work. Neither may issue Build Admission.
+**Fixturer:** `agent.skills.fixturer.Fixturer.prepare` only copies declared
+fixture specifications into drafts; it does not test, certify or approve them.
 
-**Runtime:** Host dispatches and persists the scan. Missing evidence blocks dependent activity.
+**Boundary:** Planner owns candidate design, not authorization, trusted
+receipts, Host transitions, sandbox execution, or independent acceptance.

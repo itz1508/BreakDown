@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contracts.workflow.common import ContractModel
+from contracts.workflow.shared import ContractModel
 from contracts.workflow.planner.specification import IssueType
 
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.host import ReceiptRef
 from contracts.workflow.planner.coverage import planning_coverage
 from contracts.workflow.planner.scanner import ScannerEvidence, ScannerOutcome, ScannerResult

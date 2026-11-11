@@ -12,7 +12,7 @@ from contracts.workflow.verifier.build_validation import (
     ObservedCriterionResult,
     ValidationIssueInput,
 )
-from contracts.workflow.common import ArtifactRef, DiagnosticStatus
+from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
 from contracts.workflow.system.host import (
     BuildAdmissionReceipt,
     PackageLockReceipt,

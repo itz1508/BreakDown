@@ -13,7 +13,7 @@ from contracts.workflow.auditor._discovery import (
     RepositoryIdentity,
     RequirementAssessment,
 )
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.validation.audit_discovery import (
     validate_code_intents,
     validate_repository_identity_pair,

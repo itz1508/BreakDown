@@ -7,7 +7,7 @@ from typing import Annotated, Literal
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import (
+from contracts.workflow.shared import (
     ArtifactRef,
     ContractModel,
     CriterionId,

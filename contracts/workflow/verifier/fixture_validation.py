@@ -6,7 +6,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from contracts.workflow.common import ArtifactRef, ContractModel, StepResult
+from contracts.workflow.shared import ArtifactRef, ContractModel, StepResult
 
 
 class FixtureOutcome(StrEnum):

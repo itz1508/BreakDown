@@ -2,7 +2,7 @@
 
 import pytest
 
-from contracts.workflow.common import (
+from contracts.workflow.shared import (
     CoverageStatus,
     CriteriaStatus,
     DiagnosticStatus,

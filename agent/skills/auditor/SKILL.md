@@ -1,15 +1,11 @@
-# Auditor — read-only repository inspection
+# Auditor — repository context and source inspection
 
-**Executable:** `agent.skills.auditor.audit.run(context, envelope, AuditArguments)`.
+**Target position:** Auditor PRE before Research. `audit.yaml#pre` declares scoped intake and Research-question preparation; its operations are **unbound**.
 
-**Input:** Host-persisted audit-discovery dispatch, Runtime workspace root, requested capabilities and bounded scope. Existing persisted role ID `audit_discovery` is preserved.
+**Current executable:** `auditing.run(context, envelope, arguments)` still delegates to the existing read-only source inspection registry. It is registered through the legacy `audit_discovery` Host identity. **It is not yet an implementation of Auditor PRE**, and no Host routing has been changed.
 
-**Checks (fixed order):** paths, contracts, dependencies, security, completeness, wiring, frontend, integration, state, recovery, verification. The CLI and Host use the same `CAPABILITY_ORDER` and fail closed on unreadable or symlinked sources.
+**CodeDesign:** The evidence-question capability is now the separate `agent.skills.coder` skill after Research and before Planning. Auditor no longer owns its Python implementation. Existing AuditDiscovery/CodeIntent wire contracts remain unchanged pending an independently approved migration.
 
-**CodeDesign preparation:** After repository inspection, requirement assessment and findings—and before Planning, `agent.skills.auditor.code_design.review_questions` supplies evidence questions for existing CodeDesign candidate origins. Audit Discovery records source-grounded candidates and unknowns; it does not choose an implementation design or modify application source.
+**Shared Catalog:** `agent/catalog/research_samples.yaml` contains synthetic guidance, not verified source evidence.
 
-**Output:** Source-grounded `AuditResult` with findings and limitations. Candidate CodeDesign requirements remain informational until Planner review. No repository edits, approved Build actions, trusted receipts, or stage transitions.
-
-**Boundary:** The standalone CLI and MVP Audit capability return static `AuditResult` / `AuditFindingsRecord`, not the full Research-bound `AuditDiscoveryPackage`. Source entry/exit checkpoints, requirement assessments, CodeDesign candidate publication and stage transition are Host-owned and cannot be inferred from a static scan.
-
-**Runtime:** `system.host.skill_dispatch.execute_skill` validates persisted routing before loading this role. References: `references/audit_guidance.md`.
+**Boundary:** No Planner decisions, project-source mutations, approvals, independent verification or trusted receipts. Read `references/audit_guidance.md` for known static inspection limitations.

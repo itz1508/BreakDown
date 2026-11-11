@@ -9,7 +9,7 @@ from contracts.workflow.verifier.build_validation import (
     ObservedCriterionResult,
     ValidationIssueInput,
 )
-from contracts.workflow.common import DiagnosticStatus
+from contracts.workflow.shared import DiagnosticStatus
 
 ISSUE_TYPES = (
     "compatibility",

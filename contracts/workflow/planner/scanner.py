@@ -7,7 +7,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ArtifactRef, ContractModel, Sha256
+from contracts.workflow.shared import ArtifactRef, ContractModel, Sha256
 from contracts.workflow.system.coverage import PlanningCoverage
 from contracts.workflow.system.host import ReceiptRef
 

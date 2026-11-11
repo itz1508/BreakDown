@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.validation.structural import (
     CONCERNS,
     ConcernCell,
@@ -17,7 +17,7 @@ from contracts.workflow.validation.structural import (
     SourceDeclaration,
     TraceStep,
 )
-from agent.skills.planner.checks.gap_analysis import (
+from agent.skills.planner.review.gap_analysis import (
     ComparableSystemAnalysis,
     GapBacktestCorpus,
     KnownCriticalBacktest,
@@ -29,7 +29,7 @@ from agent.skills.planner.checks.gap_analysis import (
     WorkflowContractBundle,
     WorkflowExecutionTrace,
 )
-from system.host.workflow_control import HostController
+from system.host.sys_controller import HostController
 from system.host.host_gap_analyzer import StructuralGapOutcome
 
 

@@ -8,7 +8,7 @@ from time import perf_counter_ns
 import pytest
 from pydantic import BaseModel
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import (
     BuildSpecification,
     CandidateSpecification,
@@ -28,8 +28,8 @@ from contracts.workflow.validation.planning import (
     scan_action_dependencies,
 )
 from system.storage.artifact_store import ArtifactStore
-from system.host.policy_enforce import AuthorizationError, Capability
-from system.host.workflow_control import HostController, TransitionError
+from system.host.sys_policy_enforcer import AuthorizationError, Capability
+from system.host.sys_controller import HostController, TransitionError
 from system.host.scanner_gateway import ScannerGateway
 
 

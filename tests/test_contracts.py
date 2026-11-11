@@ -9,7 +9,7 @@ from contracts.workflow.auditor._discovery import (
     NewFeatureIntent,
     RepositoryIdentity,
 )
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import IssueEvidenceStatus, IssueResolutionStatus, PlanningIssue
 from contracts.workflow.validation import validate_code_intents
 

@@ -6,7 +6,7 @@ from enum import StrEnum
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ArtifactRef, ContractModel
+from contracts.workflow.shared import ArtifactRef, ContractModel
 from contracts.workflow.system.host import ReceiptRef
 
 

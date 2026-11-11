@@ -9,7 +9,7 @@ from typing import Annotated, Literal
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ContractModel, Sha256
+from contracts.workflow.shared import ContractModel, Sha256
 
 ToolId = Annotated[str, Field(pattern=r"^[a-z][a-z0-9_-]{0,63}$")]
 StageId = Literal[

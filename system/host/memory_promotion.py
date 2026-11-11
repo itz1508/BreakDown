@@ -13,7 +13,7 @@ from pydantic import BaseModel
 from contracts.workflow.builder.build import BuildActionStatus, BuildRecord
 from contracts.context.build_memory import VerifiedBuildKnowledge
 from contracts.workflow.verifier.build_validation import BuildValidationRecord, CriterionResult
-from contracts.workflow.common import ArtifactRef, StepStatus
+from contracts.workflow.shared import ArtifactRef, StepStatus
 from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, ReceiptRef, admission_receipt_subject
 from contracts.workflow.planner.template import PlanTemplate, TemplateStatus
 from contracts.workflow.system.stage_log import StageLogEvent

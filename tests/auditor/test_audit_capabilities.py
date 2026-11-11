@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from agent.skills.auditor.checks.core import scan
+from agent.skills.auditor.review.core import scan
 
 
 def test_static_findings_are_not_e2e_success(tmp_path: Path) -> None:

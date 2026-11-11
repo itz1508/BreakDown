@@ -460,9 +460,9 @@ def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch)
 
 
 def test_dispatch_rejects_wrong_workflow_role_before_upstream_call(tmp_path, monkeypatch):
-    from contracts.workflow.common import ArtifactRef
+    from contracts.workflow.shared import ArtifactRef
     from system.storage.canonical_serialization import SERIALIZER_PROFILE
-    from system.host.workflow_control import TransitionError
+    from system.host.sys_controller import TransitionError
 
     service = MVPService(tmp_path)
     task = service.create("Inspect authorized repository evidence")

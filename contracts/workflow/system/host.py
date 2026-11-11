@@ -11,7 +11,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from contracts.workflow.common import ArtifactRef, ContractModel, OperationState, Sha256
+from contracts.workflow.shared import ArtifactRef, ContractModel, OperationState, Sha256
 
 
 class HostDispatchEnvelope(ContractModel):

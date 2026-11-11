@@ -1,0 +1,44 @@
+# Candidate planning steps, not an approved or frozen specification.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: planner.plan
+owner: planner
+artifact_contract_refs:
+- contracts/workflow/planner/input.py
+- contracts/workflow/planner/specification.py
+- contracts/workflow/planner/scanner.py
+public_api_intent: planning.create(request, context)
+segments:
+- id: main
+  steps:
+  - id: trace_requirements
+    operation_id: planner.trace_requirements
+    status: unbound
+  - id: inspect_existing_patterns
+    depends_on: [trace_requirements]
+    operation_id: planner.inspect_patterns
+    status: unbound
+  - id: draft_candidate
+    depends_on: [inspect_existing_patterns]
+    operation_id: planner.draft_candidate
+    status: unbound
+  - id: scan_candidate
+    depends_on: [draft_candidate]
+    operation_id: planner.scan
+    status: unbound
+  - id: record_scan_findings
+    depends_on: [scan_candidate]
+    operation_id: planner.record_findings
+    status: unbound
+  - id: prepare_fixture_drafts
+    depends_on: [record_scan_findings]
+    operation_id: planner.prepare_fixtures
+    status: unbound
+  - id: return_candidate
+    depends_on: [prepare_fixture_drafts]
+    operation_id: planner.return_candidate
+    status: unbound
+policy:
+  can_approve_or_freeze: false
+  correction_route_owner: external_host
+  on_failed_scan: block_publish_until_host_disposition

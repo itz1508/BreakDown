@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import (
     BuildPhase,
     BuildSpecification,

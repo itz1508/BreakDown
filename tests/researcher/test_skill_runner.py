@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from system.host.skill_dispatch import ResearchArguments, SkillContext
-from agent.skills.researcher.research import run
+from agent.skills.researcher.researching import run
 
 
 def test_researcher_rejects_different_state_roots(tmp_path: Path) -> None:

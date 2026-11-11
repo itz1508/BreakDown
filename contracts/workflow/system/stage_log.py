@@ -7,7 +7,7 @@ from typing import Literal
 
 from pydantic import Field, field_validator
 
-from contracts.workflow.common import ContractModel
+from contracts.workflow.shared import ContractModel
 
 StageName = Literal["search", "audit", "plan", "build", "mem"]
 

@@ -11,7 +11,7 @@ import re
 from hashlib import sha256
 from typing import Protocol
 
-from contracts.workflow.common import ArtifactRef, DiagnosticStatus
+from contracts.workflow.shared import ArtifactRef, DiagnosticStatus
 from contracts.workflow.planner.scanner import ScannerResult
 from contracts.workflow.system.diagnostic import (
     DiagnosticDossier,

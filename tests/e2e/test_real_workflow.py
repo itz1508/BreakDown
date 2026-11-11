@@ -7,7 +7,7 @@ import pytest
 from pydantic import BaseModel
 
 from contracts.workflow.builder.build import BuildActionStatus
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.host import ReceiptRef
 from contracts.workflow.researcher.research import (
     AuthorizationStatus,
@@ -19,11 +19,11 @@ from contracts.workflow.researcher.research import (
 from contracts.workflow.planner.scanner import ScannerFinding
 from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
 from system.storage.artifact_store import ArtifactStore
-from system.host.policy_enforce import AuthorizationEngine
+from system.host.sys_policy_enforcer import AuthorizationEngine
 from system.host.build_admission import BuildAdmission, BuildAdmissionError
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
 from system.storage.checkpoint_store import CheckpointStore
-from system.host.workflow_control import STAGE_ORDER, HostController, Stage, TransitionError
+from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
 from system.host.effect_executor import EffectExecutor
 from system.storage.receipt_store import ReceiptStore
 from system.host.scanner_gateway import ScannerGateway

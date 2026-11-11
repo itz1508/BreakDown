@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.planner.specification import BuildSpecification, CreateAction
 from contracts.workflow.system.tool_registry import (
     ParamKind,

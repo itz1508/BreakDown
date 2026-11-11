@@ -11,6 +11,7 @@ import json
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
+from importlib.resources import files
 from typing import Any
 
 import yaml
@@ -61,17 +62,18 @@ class ResearchCatalog:
     """
 
     def __init__(self, samples_path: str | Path | None = None) -> None:
-        if samples_path is None:
-            samples_path = Path(__file__).parent.parent / "catalog" / "research_samples.yaml"
-        self._samples_path = Path(samples_path)
+        self._samples_path = Path(samples_path) if samples_path is not None else None
         self._samples: list[CatalogSample] = []
         self._version = ""
         self._loaded = False
 
     def load(self) -> None:
         """Load and validate catalog from YAML."""
-        with open(self._samples_path) as f:
-            data = yaml.safe_load(f)
+        if self._samples_path is None:
+            content = files("agent.catalog").joinpath("research_samples.yaml").read_text(encoding="utf-8")
+        else:
+            content = self._samples_path.read_text(encoding="utf-8")
+        data = yaml.safe_load(content)
 
         self._version = str(data.get("version", ""))
         if not self._version:

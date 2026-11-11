@@ -8,7 +8,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ContractModel, Sha256
+from contracts.workflow.shared import ContractModel, Sha256
 
 
 class GitObjectFormat(StrEnum):
