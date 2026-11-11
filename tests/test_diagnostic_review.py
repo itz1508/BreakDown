@@ -163,7 +163,7 @@ def test_dossier_is_a_read_only_verified_reference_projection():
 
 
 def test_missing_evidence_is_uncertainty():
-    store, view = dossier(with_source=False, with_scanner=False)
+    _store, view = dossier(with_source=False, with_scanner=False)
     assert view.evidence_status == DiagnosticStatus.UNCERTAINTY
     assert len(view.evidence_keys) == 0
     assert "source_ref_unavailable" in view.limitations
