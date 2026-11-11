@@ -9,6 +9,8 @@ from __future__ import annotations
 from enum import StrEnum
 from pathlib import Path
 
+from system.host.sys_path import PathSafetyError, resolve_allowed_path
+
 from pydantic import BaseModel, Field
 
 
@@ -100,16 +102,10 @@ class AuthorizationEngine:
 
         Returns the resolved path if safe. Raises AuthorizationError otherwise.
         """
-        resolved = Path(path).resolve()
-        if not self._allowed_roots:
-            raise AuthorizationError("no allowed roots configured")
-        for root in self._allowed_roots:
-            try:
-                resolved.relative_to(root)
-                return resolved
-            except ValueError:
-                continue
-        raise AuthorizationError(f"path outside allowed roots: {path}")
+        try:
+            return resolve_allowed_path(path, self._allowed_roots)
+        except PathSafetyError as exc:
+            raise AuthorizationError(str(exc)) from exc
 
     def is_authorized(self, principal: str, capability: Capability, scope: str) -> bool:
         """Check if a capability is authorized without raising."""
@@ -146,22 +142,14 @@ class PathAuthorizer:
 
     def authorize_write(self, path: str | Path) -> Path:
         """Authorize a write path. Returns resolved path or raises AuthorizationError."""
-        resolved = Path(path).resolve()
-        for root in self._resolved_write:
-            try:
-                resolved.relative_to(root)
-                return resolved
-            except ValueError:
-                continue
-        raise AuthorizationError(f"Write path outside allowed roots: {path}")
+        try:
+            return resolve_allowed_path(path, self._resolved_write)
+        except PathSafetyError as exc:
+            raise AuthorizationError(f"Write path outside allowed roots: {path}") from exc
 
     def authorize_read(self, path: str | Path) -> Path:
         """Authorize a read path. Returns resolved path or raises AuthorizationError."""
-        resolved = Path(path).resolve()
-        for root in self._resolved_read:
-            try:
-                resolved.relative_to(root)
-                return resolved
-            except ValueError:
-                continue
-        raise AuthorizationError(f"Read path outside allowed roots: {path}")
+        try:
+            return resolve_allowed_path(path, self._resolved_read)
+        except PathSafetyError as exc:
+            raise AuthorizationError(f"Read path outside allowed roots: {path}") from exc

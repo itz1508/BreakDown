@@ -14,7 +14,7 @@ from fastapi.testclient import TestClient
 
 from contracts.workflow.auditor._report import AuditFindingsRecord
 from system.storage.canonical_serialization import digest_model
-from system.host.workflow_control import Stage
+from system.host.sys_controller import Stage
 
 
 @pytest.fixture()

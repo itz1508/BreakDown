@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, TypeAlias
 from contracts.workflow.builder.schedule import BuildWave
 from contracts.workflow.system.host import BuildAdmissionReceipt, HostDispatchEnvelope
 from contracts.workflow.planner.scanner import ScannerRunInput
-from system.host.workflow_control import HostController, TransitionError
+from system.host.sys_controller import HostController, TransitionError
 from system.host.effect_executor import EffectExecutor
 
 if TYPE_CHECKING:

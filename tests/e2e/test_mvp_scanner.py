@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 from agent.cli import cmd_scan
 from contracts.workflow.system.host import ReceiptRef
 from contracts.workflow.planner.scanner import ScannerRunInput
-from system.host.workflow_control import HostController
+from system.host.sys_controller import HostController
 from mvp.service import MVPService
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record
 
