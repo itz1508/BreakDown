@@ -9,12 +9,6 @@ import pytest
 from pydantic import BaseModel
 
 from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.specification import (
-    BuildSpecification,
-    CandidateSpecification,
-    CreateAction,
-    PlanningRecord,
-)
 from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -23,14 +17,20 @@ from contracts.workflow.planner.scanner import (
     ScannerResult,
     ScannerTraceStep,
 )
+from contracts.workflow.planner.specification import (
+    BuildSpecification,
+    CandidateSpecification,
+    CreateAction,
+    PlanningRecord,
+)
 from contracts.workflow.validation.planning import (
     parse_action_dependency_facts,
     scan_action_dependencies,
 )
-from system.storage.artifact_store import ArtifactStore
-from system.host.sys_policy_enforcer import AuthorizationError, Capability
-from system.host.sys_controller import HostController, TransitionError
 from system.host.scanner_gateway import ScannerGateway
+from system.host.sys_controller import HostController, TransitionError
+from system.host.sys_policy_enforcer import AuthorizationError, Capability
+from system.storage.artifact_store import ArtifactStore
 
 
 class CandidatePayload(BaseModel):

@@ -10,8 +10,8 @@ from agent.skills.builder.file_operations import move_file, remove_file, write_a
 from contracts.workflow.builder.build import BuildActionExecution, BuildActionStatus
 from contracts.workflow.builder.schedule import BuildWave, VerifiedWaveResult
 from contracts.workflow.system.host import BuildAdmissionReceipt, admission_receipt_subject
-from system.storage.artifact_store import ArtifactStore
 from system.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
+from system.storage.artifact_store import ArtifactStore
 from system.storage.checkpoint_store import CheckpointStore
 from system.storage.receipt_store import ReceiptStore
 

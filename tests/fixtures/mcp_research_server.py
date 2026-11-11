@@ -5,10 +5,10 @@ from __future__ import annotations
 import json
 
 from mcp.server.mcpserver import MCPServer
+from mvp.mcp_research import research_artifact_id
 
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
-from mvp.mcp_research import research_artifact_id
 
 server = MCPServer("oneshot-research-test")
 

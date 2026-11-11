@@ -19,10 +19,10 @@ from contracts.workflow.researcher.research import (
     ResearchIntent,
     ReviewDisposition,
 )
+from system.host.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
 from system.storage.artifact_store import ArtifactStore
 from system.storage.event_store import EventStore
 from system.storage.receipt_store import ReceiptStore
-from system.host.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
 
 
 class _DummyReport(BaseModel):

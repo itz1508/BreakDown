@@ -10,16 +10,21 @@ import re
 
 from pydantic import BaseModel
 
-from contracts.workflow.builder.build import BuildActionStatus, BuildRecord
 from contracts.context.build_memory import VerifiedBuildKnowledge
-from contracts.workflow.verifier.build_validation import BuildValidationRecord, CriterionResult
+from contracts.workflow.builder.build import BuildActionStatus, BuildRecord
 from contracts.workflow.common import ArtifactRef, StepStatus
-from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, ReceiptRef, admission_receipt_subject
 from contracts.workflow.planner.template import PlanTemplate, TemplateStatus
+from contracts.workflow.system.host import (
+    BuildAdmissionReceipt,
+    PackageLockReceipt,
+    ReceiptRef,
+    admission_receipt_subject,
+)
 from contracts.workflow.system.stage_log import StageLogEvent
+from contracts.workflow.verifier.build_validation import BuildValidationRecord, CriterionResult
+from system.host.plan_templates import PlanTemplateService
 from system.storage.artifact_store import ArtifactStore
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.host.plan_templates import PlanTemplateService
 from system.storage.receipt_store import ReceiptStore
 from system.storage.stage_journal import StageJournalService
 

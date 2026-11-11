@@ -8,10 +8,6 @@ from collections.abc import Callable
 from functools import lru_cache
 from time import perf_counter_ns
 
-from contracts.workflow.planner.specification import (
-    BuildSpecification,
-    PlanningRecord,
-)
 from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -19,6 +15,10 @@ from contracts.workflow.planner.scanner import (
     ScannerFinding,
     ScannerTraceStep,
     TracedDetectorResult,
+)
+from contracts.workflow.planner.specification import (
+    BuildSpecification,
+    PlanningRecord,
 )
 
 

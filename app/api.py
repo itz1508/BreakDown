@@ -17,10 +17,6 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import FileResponse, RedirectResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
-from contracts.workflow.planner.scanner import ScannerRunInput
-from system.host.sys_controller import TransitionError
-from system.host.providers.base import ProviderError
-from system.host.scanner_telemetry import configure_logfire
 from app.connector_store import (
     ConnectorError,
     MCPAuthType,
@@ -34,6 +30,10 @@ from app.connector_store import (
 )
 from app.mcp_research import mcp_transport_config
 from app.service import MVPError, MVPService
+from contracts.workflow.planner.scanner import ScannerRunInput
+from system.host.providers.base import ProviderError
+from system.host.scanner_telemetry import configure_logfire
+from system.host.sys_controller import TransitionError
 
 DEFAULT_ROOT = Path(os.environ.get("ONESHOT_STATE_ROOT", "./.oneshot-state"))
 WEB_LIVE_HTML = Path(__file__).resolve().parents[1] / "web" / "public" / "live.html"

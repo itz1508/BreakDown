@@ -24,8 +24,17 @@ from starlette.routing import Route
 # Hop-by-hop fields cannot cross proxy connections. Connection-nominated fields
 # must also be discarded (RFC 9110, Section 7.6.1).
 HOP_HEADERS = frozenset(
-    {"connection", "keep-alive", "proxy-connection", "proxy-authenticate", "proxy-authorization",
-     "te", "trailer", "transfer-encoding", "upgrade"}
+    {
+        "connection",
+        "keep-alive",
+        "proxy-connection",
+        "proxy-authenticate",
+        "proxy-authorization",
+        "te",
+        "trailer",
+        "transfer-encoding",
+        "upgrade",
+    }
 )
 SPOOFABLE_HEADERS = frozenset({"forwarded", "x-forwarded-for", "x-forwarded-host", "x-forwarded-proto", "x-tenant-id"})
 HOST_LABEL = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
@@ -139,7 +148,7 @@ class Router:
         async with self._lock:
             group_pos = self._group_next.get(tenant.name, 0)
             self._group_next[tenant.name] = group_pos + 1
-            groups = tenant.groups[group_pos % len(tenant.groups):] + tenant.groups[:group_pos % len(tenant.groups)]
+            groups = tenant.groups[group_pos % len(tenant.groups) :] + tenant.groups[: group_pos % len(tenant.groups)]
             result: list[Endpoint] = []
             for group_index, group in enumerate(groups):
                 key = (tenant.name, group.name)
@@ -155,9 +164,7 @@ class Router:
 def _filtered_headers(headers: Iterable[tuple[str, str]], *, request: bool) -> list[tuple[str, str]]:
     pairs = list(headers)
     nominated = {
-        part.strip().lower()
-        for name, value in pairs if name.lower() == "connection"
-        for part in value.split(",")
+        part.strip().lower() for name, value in pairs if name.lower() == "connection" for part in value.split(",")
     }
     banned = HOP_HEADERS | nominated | {"content-length"}
     if request:

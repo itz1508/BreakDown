@@ -9,15 +9,15 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.system.host import ReceiptRef
-from contracts.workflow.researcher.research import Requirement, ResearchRecord
-from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
-from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.host.sys_controller import HostController, Stage, TransitionError
 from app.mcp_research import research_artifact_id
-from system.host.research_execution import execute_research
 from app.service import MVPError, MVPService
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from contracts.workflow.system.host import ReceiptRef
+from system.host.research_execution import execute_research
+from system.host.sys_controller import HostController, Stage, TransitionError
+from system.storage.canonical_serialization import SERIALIZER_PROFILE
 
 
 class _Evidence(BaseModel):

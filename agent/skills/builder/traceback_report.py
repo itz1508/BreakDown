@@ -55,9 +55,7 @@ def normalize_exception(
     if not 1 <= max_frames <= _MAX_FRAMES or not 0 <= max_chain <= _MAX_CHAIN:
         raise ValueError("invalid traceback limits")
     # extract_tb reads stack metadata only; never retrieve locals or lines.
-    frames = traceback.StackSummary.extract(
-        traceback.walk_tb(error.__traceback__), limit=None, lookup_lines=False
-    )
+    frames = traceback.StackSummary.extract(traceback.walk_tb(error.__traceback__), limit=None, lookup_lines=False)
     selected = frames[-max_frames:]
     normalized_frames = tuple(
         FrameEvidence(

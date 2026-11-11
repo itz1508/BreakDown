@@ -12,8 +12,8 @@ pytest.importorskip("httpx")
 from fastapi.testclient import TestClient
 
 import app.api
-from system.host.providers.base import ProviderError
 from app.service import MVPService
+from system.host.providers.base import ProviderError
 
 
 @pytest.fixture()

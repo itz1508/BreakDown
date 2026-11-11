@@ -13,8 +13,8 @@ pytest.importorskip("httpx")
 from fastapi.testclient import TestClient
 
 from contracts.workflow.auditor._report import AuditFindingsRecord
-from system.storage.canonical_serialization import digest_model
 from system.host.sys_controller import Stage
+from system.storage.canonical_serialization import digest_model
 
 
 @pytest.fixture()
@@ -124,8 +124,8 @@ class TestAuditAuthorization:
     """V-03: Authorized versus unauthorized scope."""
 
     def test_audit_requires_trusted_ancestry(self, service: object, monkeypatch: pytest.MonkeyPatch):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         monkeypatch.delenv("MCP_TRUSTED_ANCESTRY", raising=False)
         task = service.create("test", purpose="audit")
@@ -133,8 +133,8 @@ class TestAuditAuthorization:
             execute_audit(service, task["task_id"])
 
     def test_audit_requires_absolute_workspace_root(self, service: object, monkeypatch: pytest.MonkeyPatch):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         monkeypatch.setenv("MCP_WORKSPACE_ROOT", "relative/path")
         task = service.create("test", purpose="audit")
@@ -142,8 +142,8 @@ class TestAuditAuthorization:
             execute_audit(service, task["task_id"])
 
     def test_audit_rejects_missing_workspace_root(self, service: object, monkeypatch: pytest.MonkeyPatch):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         monkeypatch.delenv("MCP_WORKSPACE_ROOT", raising=False)
         task = service.create("test", purpose="audit")
@@ -216,8 +216,8 @@ class TestAuditAdversarial:
     """V-03: Adversarial scenarios."""
 
     def test_duplicate_audit_blocked(self, service: object):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         task = service.create("Duplicate audit", purpose="audit")
         execute_audit(service, task["task_id"])
@@ -226,15 +226,15 @@ class TestAuditAdversarial:
             execute_audit(service, task["task_id"])
 
     def test_audit_on_nonexistent_task(self, service: object):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         with pytest.raises(MVPError, match="not found"):
             execute_audit(service, "0" * 32)
 
     def test_audit_cannot_advance_research_stage(self, service: object):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         task = service.create("Stage test", purpose="audit")
         execute_audit(service, task["task_id"])
@@ -255,8 +255,8 @@ class TestAuditRestart:
     """V-03: Task restart and event replay."""
 
     def test_audit_state_preserved_across_restart(self, workspace: Path, monkeypatch: pytest.MonkeyPatch):
-        from system.host.research_execution import execute_audit
         from app.service import MVPService
+        from system.host.research_execution import execute_audit
 
         monkeypatch.setenv("MCP_WORKSPACE_ROOT", str(workspace))
         monkeypatch.setenv("MCP_TRUSTED_ANCESTRY", "true")
@@ -356,8 +356,8 @@ class TestAuditModeAndRecovery:
         assert service.read_input(task["task_id"])[0].purpose == "audit"
 
     def test_finished_audit_locks_input_revision(self, service):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         task = service.create("Check initial", purpose="audit")
         execute_audit(service, task["task_id"])
@@ -365,8 +365,8 @@ class TestAuditModeAndRecovery:
             service.revise_input(task["task_id"], "Stale findings", 1)
 
     def test_audit_rejects_research_task_without_effects(self, service):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         task = service.create("Research only")
         with pytest.raises(MVPError, match="purpose"):
@@ -374,8 +374,8 @@ class TestAuditModeAndRecovery:
         assert service.host.get_state(task["task_id"]).active_work_artifact_id is None
 
     def test_research_rejects_audit_task_before_provider(self, service):
-        from system.host.research_execution import execute_research
         from app.service import MVPError
+        from system.host.research_execution import execute_research
 
         task = service.create("Audit only", purpose="audit")
         with pytest.raises(MVPError, match="purpose"):
@@ -383,8 +383,8 @@ class TestAuditModeAndRecovery:
         assert service.host.get_state(task["task_id"]).active_work_artifact_id is None
 
     def test_workspace_identity_cannot_be_switched(self, service, tmp_path, monkeypatch):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError
+        from system.host.research_execution import execute_audit
 
         other = tmp_path / "different-workspace"
         other.mkdir()
@@ -418,8 +418,8 @@ class TestAuditModeAndRecovery:
         assert client.post(f"/api/tasks/{audit['task_id']}/research").status_code == 400
 
     def test_crash_after_persisted_findings_recovers_without_rescanning(self, workspace, tmp_path, monkeypatch):
-        from system.host.research_execution import audit_artifact_id, execute_audit
         from app.service import MVPError, MVPService
+        from system.host.research_execution import audit_artifact_id, execute_audit
 
         monkeypatch.setenv("MCP_WORKSPACE_ROOT", str(workspace))
         monkeypatch.setenv("MCP_TRUSTED_ANCESTRY", "true")
@@ -448,8 +448,8 @@ class TestAuditModeAndRecovery:
         assert "audit_reconciled" in [event["type"] for event in second.events(task_id)]
 
     def test_uncertain_effect_without_audit_artifact_fails_closed(self, workspace, tmp_path, monkeypatch):
-        from system.host.research_execution import execute_audit
         from app.service import MVPError, MVPService
+        from system.host.research_execution import execute_audit
 
         monkeypatch.setenv("MCP_WORKSPACE_ROOT", str(workspace))
         monkeypatch.setenv("MCP_TRUSTED_ANCESTRY", "true")

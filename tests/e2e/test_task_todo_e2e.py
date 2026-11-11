@@ -22,8 +22,8 @@ from system.host.build_admission import BuildAdmission
 from system.host.build_todos import compile_build
 from system.host.effect_executor import EffectExecutionError, EffectExecutor
 from system.host.package_lock import PackageLock
-from system.host.work_todo import WorkTodoError
 from system.host.sys_controller import HostController
+from system.host.work_todo import WorkTodoError
 from system.storage.artifact_store import DuplicateArtifactError
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
 

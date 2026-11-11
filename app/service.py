@@ -20,13 +20,13 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
+from app.mcp_research import register_mcp_research, research_artifact_id
 from contracts.workflow.planner.scanner import ScannerResult, ScannerRunInput
 from contracts.workflow.planner.work_todo import WorkStatus
-from system.storage.artifact_store import ArtifactStore, StaleRevisionError
-from system.host.sys_policy_enforcer import Capability
 from system.host.sys_controller import HostController, Stage
+from system.host.sys_policy_enforcer import Capability
 from system.host.work_todo import WorkTodoManager
-from app.mcp_research import register_mcp_research, research_artifact_id
+from system.storage.artifact_store import ArtifactStore, StaleRevisionError
 
 _ID = re.compile(r"^[0-9a-f]{32}$")
 

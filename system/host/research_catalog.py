@@ -8,9 +8,9 @@ synthetic with no factual authority.
 from __future__ import annotations
 
 import json
-from importlib.resources import files
 from dataclasses import dataclass
 from hashlib import sha256
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 

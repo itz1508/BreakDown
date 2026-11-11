@@ -77,9 +77,7 @@ def scanner_span(task_id: str, run_id: str, artifact_id: str) -> Iterator[None]:
         if _backend == "logfire":
             import logfire
 
-            span = logfire.span(
-                "scanner.run", task_id=task_id, run_id=run_id, artifact_id=artifact_id
-            )
+            span = logfire.span("scanner.run", task_id=task_id, run_id=run_id, artifact_id=artifact_id)
         else:
             from opentelemetry import trace
 

@@ -53,8 +53,8 @@ def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:
 
 def cmd_run(task_id: str, state_root: str = "/tmp/oneshot-state") -> int:
     """Execute an existing Research task through the registered host, never simulate completion."""
-    from system.host.research_execution import execute_research
     from app.service import MVPError, MVPService
+    from system.host.research_execution import execute_research
 
     service = MVPService(state_root)
     state = service.host.get_state(task_id)

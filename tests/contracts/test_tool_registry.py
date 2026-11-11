@@ -18,15 +18,15 @@ from contracts.workflow.system.tool_registry import (
     resolve_invocation,
 )
 from contracts.workflow.validation.structural import tool_invocation_gaps
-from system.storage.artifact_store import ArtifactStore
 from system.host.build_admission import BuildAdmission, BuildAdmissionError
 from system.host.package_lock import PackageLock
-from system.storage.receipt_store import ReceiptStore
 from system.host.tool_registry import (
     ToolRegistryError,
     load_pinned_tool_registry,
     pin_tool_registry,
 )
+from system.storage.artifact_store import ArtifactStore
+from system.storage.receipt_store import ReceiptStore
 
 DIGEST = "a" * 64
 IMAGE = "example.invalid/build@sha256:" + "b" * 64

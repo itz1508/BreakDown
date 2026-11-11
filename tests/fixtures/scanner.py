@@ -1,8 +1,13 @@
 """Synthetic pinned Scanner checks for host gate tests only."""
 
 from contracts.workflow.planner.scanner import ScannerEvidence
-from contracts.workflow.system.tool_registry import SandboxProfile, ToolEffect, ToolInvocation, ToolRegistrySnapshot, ToolSpec
-from system.host.sys_controller import HostController
+from contracts.workflow.system.tool_registry import (
+    SandboxProfile,
+    ToolEffect,
+    ToolInvocation,
+    ToolRegistrySnapshot,
+    ToolSpec,
+)
 from system.host.host_gap_analyzer import StructuralGapOutcome
 from system.host.scanner_check_registry import (
     ScannerCheck,
@@ -10,6 +15,7 @@ from system.host.scanner_check_registry import (
     pin_scanner_check_registry,
 )
 from system.host.scanner_evidence import persist_scan_result
+from system.host.sys_controller import HostController
 from system.host.tool_registry import pin_tool_registry
 
 

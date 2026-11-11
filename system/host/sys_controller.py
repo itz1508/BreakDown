@@ -14,18 +14,13 @@ from uuid import uuid4
 from pydantic import BaseModel, Field
 
 from contracts.workflow.common import ArtifactRef
-from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
-from contracts.workflow.planner.specification import PlanningRecord
 from contracts.workflow.planner.coverage import planning_coverage
 from contracts.workflow.planner.scanner import CriterionResult, ScannerOutcome, ScannerResult
+from contracts.workflow.planner.specification import PlanningRecord
+from contracts.workflow.planner.work_todo import TodoList, WorkBinding
+from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
 from contracts.workflow.validation.planning import validate_action_graph
 from contracts.workflow.validation.structural import CONCERNS
-from contracts.workflow.planner.work_todo import TodoList, WorkBinding
-from system.storage.artifact_store import ArtifactStore
-from system.host.sys_policy_enforcer import AuthorizationEngine, Capability
-from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.storage.checkpoint_store import CheckpointStore, CompetingWriterError
-from system.storage.event_store import EventStore
 from system.host.host_gap_analyzer import (
     HostGapAnalyzer,
     SkeletonRunner,
@@ -35,17 +30,21 @@ from system.host.host_gap_analyzer import (
     structural_gap_receipt_subject,
 )
 from system.host.providers.registry import ProviderRegistry
-from system.storage.receipt_store import ReceiptStore
 from system.host.recovery import BoundedRecovery
 from system.host.scanner_check_registry import ScannerCheckRegistry
 from system.host.scanner_gateway import ScannerGateway
 from system.host.scanner_telemetry import scanner_span
+from system.host.sys_policy_enforcer import AuthorizationEngine, Capability
 from system.host.work_todo import WorkTodoError, WorkTodoManager
-
+from system.storage.artifact_store import ArtifactStore
+from system.storage.canonical_serialization import SERIALIZER_PROFILE
+from system.storage.checkpoint_store import CheckpointStore, CompetingWriterError
+from system.storage.event_store import EventStore
+from system.storage.receipt_store import ReceiptStore
 
 if TYPE_CHECKING:
-    from system.host.skill_dispatch import RoleArguments
     from app.service import MVPService
+    from system.host.skill_dispatch import RoleArguments
 
 
 class Stage(StrEnum):
@@ -735,10 +734,10 @@ class HostController:
             raw = self.artifact_store.get_verified(output.artifact_id, output.artifact_revision)
             from contracts.workflow.auditor._discovery import AuditDiscoveryPackage
             from contracts.workflow.builder.build import BuildRecord
-            from contracts.workflow.verifier.build_validation import BuildValidationRecord
-            from contracts.workflow.verifier.fixture_validation import FixtureValidationRecord
             from contracts.workflow.planner.specification import PlanningRecord
             from contracts.workflow.researcher.research import ResearchRecord
+            from contracts.workflow.verifier.build_validation import BuildValidationRecord
+            from contracts.workflow.verifier.fixture_validation import FixtureValidationRecord
 
             contracts: dict[Stage, tuple[str, type[BaseModel]]] = {
                 Stage.RESEARCH: ("research_record", ResearchRecord),
@@ -758,7 +757,11 @@ class HostController:
             ):
                 raise ValueError("agent result task/run identity mismatch")
             if Stage(envelope.stage) is Stage.BUILD:
-                from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, admission_receipt_subject
+                from contracts.workflow.system.host import (
+                    BuildAdmissionReceipt,
+                    PackageLockReceipt,
+                    admission_receipt_subject,
+                )
 
                 build = BuildRecord.model_validate(verified_record)
                 admission_bytes = self.artifact_store.get_verified(

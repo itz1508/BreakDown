@@ -31,8 +31,12 @@ class VerifiedArtifactReader(Protocol):
 
 class ArtifactWriter(VerifiedArtifactReader, Protocol):
     def put_immutable(
-        self, model: DiagnosticReview, artifact_id: str, revision: int,
-        contract_id: str, contract_version: str,
+        self,
+        model: DiagnosticReview,
+        artifact_id: str,
+        revision: int,
+        contract_id: str,
+        contract_version: str,
     ) -> str: ...
 
 
@@ -55,8 +59,7 @@ def _require_verified(reader: VerifiedArtifactReader, ref: ArtifactRef, *, max_b
 
 def _safe_label(value: str, *, maximum: int = 96) -> str:
     """Remove prompt control characters from scanner-owned labels, not facts."""
-    if (isinstance(value, str) and 0 < len(value) <= maximum
-        and re.fullmatch(r"[A-Za-z0-9_.:/-]+", value)):
+    if isinstance(value, str) and 0 < len(value) <= maximum and re.fullmatch(r"[A-Za-z0-9_.:/-]+", value):
         return value
     return "redacted-" + sha256(str(value).encode("utf-8", "backslashreplace")).hexdigest()[:16]
 
@@ -96,11 +99,13 @@ def assemble_dossier(
             raise ValueError("scanner task/run identity mismatch")
         keys.append(evidence_key(scanner_result_ref, role="scanner"))
         for finding in scanner.findings[:16]:
-            findings.append(DossierFinding(
-                finding_id=_safe_label(finding.finding_id),
-                capability=_safe_label(finding.capability),
-                severity=_safe_label(finding.severity, maximum=32),
-            ))
+            findings.append(
+                DossierFinding(
+                    finding_id=_safe_label(finding.finding_id),
+                    capability=_safe_label(finding.capability),
+                    severity=_safe_label(finding.severity, maximum=32),
+                )
+            )
         if len(scanner.findings) > 16:
             limitations.append("scanner_findings_truncated")
         # Content verification alone does NOT authenticate scanner execution.
@@ -166,8 +171,11 @@ def recommend(dossier: DiagnosticDossier, provider: object | None) -> Diagnostic
     # Do not trust model_copy(update=...) instances supplied across boundaries.
     dossier = DiagnosticDossier.model_validate(dossier.model_dump(mode="json"))
     if provider is None:
-        return DiagnosticReview(dossier=dossier, recommendation_status=RecommendationStatus.UNAVAILABLE,
-                                reason_code="provider_not_configured")
+        return DiagnosticReview(
+            dossier=dossier,
+            recommendation_status=RecommendationStatus.UNAVAILABLE,
+            reason_code="provider_not_configured",
+        )
     prompt = _prompt(dossier)
     request_digest = sha256(prompt.encode("utf-8")).hexdigest()
     configuration = getattr(provider, "config", None)
@@ -185,33 +193,60 @@ def recommend(dossier: DiagnosticDossier, provider: object | None) -> Diagnostic
         else:
             generate = getattr(provider, "generate", None)
             if not callable(generate):
-                return DiagnosticReview(dossier=dossier, recommendation_status=RecommendationStatus.UNAVAILABLE,
-                                        reason_code="provider_capability_unavailable")
-            response = generate(ProviderRequest(
-                run_id=dossier.run_id, prompt=prompt,
-                system_prompt="Diagnose only. Do not authorize actions. Return JSON matching the supplied fields.",
-                temperature=0.0, max_tokens=512,
-            ))
+                return DiagnosticReview(
+                    dossier=dossier,
+                    recommendation_status=RecommendationStatus.UNAVAILABLE,
+                    reason_code="provider_capability_unavailable",
+                )
+            response = generate(
+                ProviderRequest(
+                    run_id=dossier.run_id,
+                    prompt=prompt,
+                    system_prompt="Diagnose only. Do not authorize actions. Return JSON matching the supplied fields.",
+                    temperature=0.0,
+                    max_tokens=512,
+                )
+            )
             if not isinstance(response.content, str) or len(response.content) > 16384:
                 raise ValueError("provider content exceeds limit")
             proposal = Recommendation.model_validate_json(response.content)
             provider_id = _safe_label(str(getattr(response, "provider", None) or provider_id), maximum=100)
             model_id = _safe_label(str(getattr(response, "model", None) or model_id), maximum=160)
     except (ValueError, TypeError, AttributeError, KeyError):
-        return DiagnosticReview(dossier=dossier, recommendation_status=RecommendationStatus.REJECTED,
-                                reason_code="invalid_model_output", provider_id=provider_id,
-                                model_id=model_id, request_digest=request_digest)
+        return DiagnosticReview(
+            dossier=dossier,
+            recommendation_status=RecommendationStatus.REJECTED,
+            reason_code="invalid_model_output",
+            provider_id=provider_id,
+            model_id=model_id,
+            request_digest=request_digest,
+        )
     except Exception:
-        return DiagnosticReview(dossier=dossier, recommendation_status=RecommendationStatus.UNAVAILABLE,
-                                reason_code="provider_request_failed", provider_id=provider_id,
-                                model_id=model_id, request_digest=request_digest)
+        return DiagnosticReview(
+            dossier=dossier,
+            recommendation_status=RecommendationStatus.UNAVAILABLE,
+            reason_code="provider_request_failed",
+            provider_id=provider_id,
+            model_id=model_id,
+            request_digest=request_digest,
+        )
     if not set(proposal.supporting_evidence_keys).issubset(dossier.evidence_keys):
-        return DiagnosticReview(dossier=dossier, recommendation_status=RecommendationStatus.REJECTED,
-                                reason_code="unverified_evidence_reference", provider_id=provider_id,
-                                model_id=model_id, request_digest=request_digest)
-    return DiagnosticReview(dossier=dossier, recommendation_status=RecommendationStatus.PROPOSED,
-                            recommendation=proposal, provider_id=provider_id,
-                            model_id=model_id, request_digest=request_digest)
+        return DiagnosticReview(
+            dossier=dossier,
+            recommendation_status=RecommendationStatus.REJECTED,
+            reason_code="unverified_evidence_reference",
+            provider_id=provider_id,
+            model_id=model_id,
+            request_digest=request_digest,
+        )
+    return DiagnosticReview(
+        dossier=dossier,
+        recommendation_status=RecommendationStatus.PROPOSED,
+        recommendation=proposal,
+        provider_id=provider_id,
+        model_id=model_id,
+        request_digest=request_digest,
+    )
 
 
 def persist_review(store: ArtifactWriter, review: DiagnosticReview) -> ArtifactRef:
@@ -227,7 +262,10 @@ def persist_review(store: ArtifactWriter, review: DiagnosticReview) -> ArtifactR
     if digest != content_digest:
         raise ValueError("persisted diagnostic content does not match canonical payload")
     return ArtifactRef(
-        artifact_id=artifact_id, artifact_revision=1, artifact_digest=digest,
-        contract_id="diagnostic_review", contract_version="1.0",
+        artifact_id=artifact_id,
+        artifact_revision=1,
+        artifact_digest=digest,
+        contract_id="diagnostic_review",
+        contract_version="1.0",
         serializer_profile=SERIALIZER_PROFILE,
     )
