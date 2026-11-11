@@ -97,3 +97,9 @@ jobs:
       - name: Type checks
         if: always()
         run: uv run --no-sync mypy agent contracts system
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always() && github.ref_name == 'consolidation/baseline-20261110'
+        with:
+          name: breakdown-ruff-tooling
+          path: .venv/bin/ruff
+          if-no-files-found: error
