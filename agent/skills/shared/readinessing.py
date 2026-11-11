@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
-from contracts.workflow.common import ArtifactRef, ContractModel, DiagnosticStatus
+from agent.contracts.common import ArtifactRef, ContractModel, DiagnosticStatus
 from agent.skills.shared.storage.storing import ArtifactStore
 from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
 

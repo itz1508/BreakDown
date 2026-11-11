@@ -13,14 +13,14 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.coverage import planning_coverage
-from contracts.workflow.planner.scanner import CriterionResult, ScannerOutcome, ScannerResult
-from contracts.workflow.planner.specification import PlanningRecord
-from contracts.workflow.planner.work_todo import TodoList, WorkBinding
-from agent.skills.planner.tools._structural import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
-from contracts.workflow.validation.planning import validate_action_graph
-from contracts.workflow.validation.structural import CONCERNS
+from agent.contracts.common import ArtifactRef
+from agent.contracts.planning_coverage import planning_coverage
+from agent.contracts.scanner import CriterionResult, ScannerOutcome, ScannerResult
+from agent.contracts.planning import PlanningRecord
+from agent.contracts.work_todo import TodoList, WorkBinding
+from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+from agent.contracts.validation.planning import validate_action_graph
+from agent.contracts.validation.structural import CONCERNS
 from agent.skills.analyzer.analyzing import (
     HostGapAnalyzer,
     SkeletonRunner,
@@ -732,12 +732,12 @@ class HostController:
             raise TransitionError("agent result output artifact digest mismatch")
         try:
             raw = self.artifact_store.get_verified(output.artifact_id, output.artifact_revision)
-            from contracts.workflow.auditor._discovery import AuditDiscoveryPackage
-            from contracts.workflow.builder.build import BuildRecord
-            from contracts.workflow.planner.specification import PlanningRecord
-            from contracts.workflow.researcher.research import ResearchRecord
-            from contracts.workflow.verifier.build_validation import BuildValidationRecord
-            from contracts.workflow.verifier.fixture_validation import FixtureValidationRecord
+            from agent.contracts.audit_discovery import AuditDiscoveryPackage
+            from agent.contracts.build import BuildRecord
+            from agent.contracts.planning import PlanningRecord
+            from agent.contracts.research import ResearchRecord
+            from agent.contracts.build_validation import BuildValidationRecord
+            from agent.contracts.fixture_validation import FixtureValidationRecord
 
             contracts: dict[Stage, tuple[str, type[BaseModel]]] = {
                 Stage.RESEARCH: ("research_record", ResearchRecord),

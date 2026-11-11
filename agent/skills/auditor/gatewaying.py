@@ -5,8 +5,8 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.scanner import (
+from agent.contracts.common import ArtifactRef
+from agent.contracts.scanner import (
     CriterionResult,
     CriterionValidity,
     ObservationState,
@@ -17,7 +17,7 @@ from contracts.workflow.planner.scanner import (
     ScannerTraceStep,
     TracedDetectorResult,
 )
-from contracts.workflow.validation.planning import scan_action_dependencies
+from agent.contracts.validation.planning import scan_action_dependencies
 
 if TYPE_CHECKING:
     from agent.skills.shared.storage.storing import ArtifactStore

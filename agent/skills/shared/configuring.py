@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from contracts.workflow.system.provider import ProviderConfig
+from agent.contracts.provider import ProviderConfig
 
 
 class ProviderConfigurationError(RuntimeError):

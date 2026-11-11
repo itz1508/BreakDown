@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.coverage import planning_coverage
-from contracts.workflow.planner.scanner import ScannerEvidence, ScannerOutcome, ScannerResult
-from agent.skills.planner.tools._structural import ReceiptRef
-from contracts.workflow.validation.structural import CONCERNS
+from agent.contracts.common import ArtifactRef
+from agent.contracts.planning_coverage import planning_coverage
+from agent.contracts.scanner import ScannerEvidence, ScannerOutcome, ScannerResult
+from agent.contracts.host import ReceiptRef
+from agent.contracts.validation.structural import CONCERNS
 from agent.skills.auditor.checking import ScannerCheckRegistry
 from agent.skills.shared.storage.storing import ArtifactStore
 from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes, digest_raw

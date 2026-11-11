@@ -16,7 +16,7 @@ from typing import Any
 
 import yaml
 
-from contracts.workflow.researcher.research import (
+from agent.contracts.research import (
     CatalogMatch,
     CatalogMatchStatus,
     ResearchIntent,

@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-from contracts.workflow.planner.specification import BuildSpecification, CandidateSpecification, PlanningRecord
-from agent.skills.planner.tools._structural import (
+from agent.contracts.planning import BuildSpecification, CandidateSpecification, PlanningRecord
+from agent.contracts.host import (
     BuildAdmissionReceipt,
     PackageLockReceipt,
     ReceiptRef,
     admission_receipt_subject,
 )
-from contracts.workflow.validation.structural import tool_invocation_gaps
+from agent.contracts.validation.structural import tool_invocation_gaps
 from agent.skills.shared.tooling import load_pinned_tool_registry
 from agent.skills.shared.storage.storing import ArtifactStore
 from agent.skills.shared.storage.serializing import digest_raw

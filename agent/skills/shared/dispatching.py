@@ -11,9 +11,9 @@ from importlib import import_module
 from pathlib import Path
 from typing import TYPE_CHECKING, TypeAlias
 
-from contracts.workflow.builder.schedule import BuildWave
-from contracts.workflow.planner.scanner import ScannerRunInput
-from agent.skills.planner.tools._structural import BuildAdmissionReceipt, HostDispatchEnvelope
+from agent.contracts.build_schedule import BuildWave
+from agent.contracts.scanner import ScannerRunInput
+from agent.contracts.host import BuildAdmissionReceipt, HostDispatchEnvelope
 from agent.skills.builder.executing import EffectExecutor
 from agent.skills.shared.controlling import HostController, TransitionError
 

@@ -12,8 +12,8 @@ latest persisted revision is loaded and verified.
 
 from __future__ import annotations
 
-from contracts.workflow.common import EvidenceRef
-from contracts.workflow.researcher.research import (
+from agent.contracts.common import EvidenceRef
+from agent.contracts.research import (
     AdmissionDisposition,
     ExecutionStatus,
     FixtureSpecification,

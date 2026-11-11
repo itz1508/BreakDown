@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.specification import (
+from agent.contracts.common import ArtifactRef
+from agent.contracts.planning import (
     BuildAction,
     BuildSpecification,
     CreateAction,
@@ -11,8 +11,8 @@ from contracts.workflow.planner.specification import (
     MoveAction,
     RemoveAction,
 )
-from contracts.workflow.planner.task_todo import Build, TaskTodo, paths_overlap
-from contracts.workflow.system.tool_registry import safe_relative_path
+from agent.contracts.task_todo import Build, TaskTodo, paths_overlap
+from agent.contracts.tool_registry import safe_relative_path
 
 
 def _paths(action: BuildAction) -> tuple[str, ...]:

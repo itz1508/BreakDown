@@ -8,7 +8,7 @@ from typing import Any, TypeVar
 
 from pydantic import BaseModel
 
-from contracts.workflow.system.provider import ProviderConfig
+from agent.contracts.provider import ProviderConfig
 from agent.skills.shared.configuring import resolve_api_key, resolve_base_url, resolve_model
 from agent.skills.shared.streaming import StreamEvent, StreamEventType
 
