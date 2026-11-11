@@ -49,3 +49,15 @@ def test_failed_host_receipt_check_blocks_dispatch(tmp_path: Path) -> None:
                 AuditArguments(),
             )
     imported.assert_not_called()
+
+def test_host_dispatch_role_uses_registered_skill_not_removed_workflow(tmp_path: Path) -> None:
+    from system.host.workflow_control import HostController, Stage
+
+    host = HostController(tmp_path)
+    assert host._declared_dispatch_role(Stage.RESEARCH) == "researcher"
+    assert host._declared_dispatch_role(Stage.AUDIT_DISCOVERY) == "audit_discovery"
+    assert host._declared_dispatch_role(Stage.PLANNING) == "planner"
+    assert host._declared_dispatch_role(Stage.BUILD) == "builder"
+    for stage in (Stage.FIXTURE_VALIDATION, Stage.BUILD_VALIDATION):
+        with pytest.raises(TransitionError, match="registered workflow role unavailable"):
+            host._declared_dispatch_role(stage)

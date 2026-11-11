@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-import yaml
 from pydantic import BaseModel, Field
 
 from contracts.workflow.common import ArtifactRef
@@ -584,19 +583,17 @@ class HostController:
         return completed
 
     def _declared_dispatch_role(self, stage: Stage) -> str:
-        """Resolve the single workflow-owned stage role, rejecting missing configuration."""
-        config_path = Path(__file__).resolve().parents[2] / ".agents" / "contracts" / "workflow.yaml"
-        try:
-            config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
-            bundle = config["bundle"]
-            declared = config["role_workflows"][stage.value]
-            role = declared["workflow"]["role_id"]
-            stage_id = declared["workflow"]["stage_id"]
-        except (OSError, KeyError, TypeError, ValueError, AttributeError) as exc:
-            raise TransitionError("registered workflow role unavailable") from exc
-        if bundle.get("transition_owner") != "host_controller" or stage_id != stage.value or not isinstance(role, str):
-            raise TransitionError("workflow dispatch ownership or stage mismatch")
-        return role
+        """Resolve only an installed Host-owned skill route.
+
+        A persisted stage with no executable skill remains unavailable; its
+        presence in Stage is not an execution grant.
+        """
+        from system.host.skill_dispatch import registered_skills
+
+        matches = [entry["contract_role"] for entry in registered_skills() if entry["stage"] == stage.value]
+        if len(matches) != 1 or not matches[0]:
+            raise TransitionError("registered workflow role unavailable")
+        return matches[0]
 
     @staticmethod
     def _dispatch_ref(envelope: HostDispatchEnvelope, digest: str) -> ArtifactRef:
