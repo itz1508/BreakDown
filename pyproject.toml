@@ -5,6 +5,7 @@ requires-python = ">=3.11"
 dependencies = [
     "pydantic>=2,<3",
     "logfire>=5.4,<6",
+    "opentelemetry-api>=1.45.2,<2",
     "pyyaml>=6",
     "rfc8785>=0.1.4",
 ]

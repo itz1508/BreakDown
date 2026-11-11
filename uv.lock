@@ -1057,6 +1057,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "logfire" },
+    { name = "opentelemetry-api" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "rfc8785" },
@@ -1096,6 +1097,7 @@ requires-dist = [
     { name = "mcp", marker = "extra == 'mvp'", specifier = ">=2,<3" },
     { name = "openai", marker = "extra == 'meta'", specifier = ">=1.0" },
     { name = "openai-codex", marker = "extra == 'codex'" },
+    { name = "opentelemetry-api", specifier = ">=1.45.2,<2" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "pyyaml", specifier = ">=6" },
     { name = "rfc8785", specifier = ">=0.1.4" },
