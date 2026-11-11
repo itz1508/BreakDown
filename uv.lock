@@ -1057,6 +1057,7 @@ version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "logfire" },
+    { name = "opentelemetry-api" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "rfc8785" },
@@ -1077,6 +1078,10 @@ api = [
     { name = "mcp" },
     { name = "uvicorn" },
 ]
+proxy = [
+    { name = "httpx" },
+    { name = "starlette" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -1093,15 +1098,18 @@ requires-dist = [
     { name = "claude-agent-sdk", marker = "extra == 'claude'" },
     { name = "fastapi", marker = "extra == 'api'", specifier = ">=0.115,<1" },
     { name = "logfire", specifier = ">=5.4,<6" },
+    { name = "httpx", marker = "extra == 'proxy'", specifier = ">=0.27,<1" },
+    { name = "opentelemetry-api", specifier = ">=1,<2" },
     { name = "mcp", marker = "extra == 'api'", specifier = ">=2,<3" },
     { name = "openai", marker = "extra == 'meta'", specifier = ">=1.0" },
     { name = "openai-codex", marker = "extra == 'codex'" },
     { name = "pydantic", specifier = ">=2,<3" },
     { name = "pyyaml", specifier = ">=6" },
     { name = "rfc8785", specifier = ">=0.1.4" },
+    { name = "starlette", marker = "extra == 'proxy'", specifier = ">=1,<2" },
     { name = "uvicorn", marker = "extra == 'api'", specifier = ">=0.30,<1" },
 ]
-provides-extras = ["meta", "claude", "codex", "api"]
+provides-extras = ["meta", "claude", "codex", "api", "proxy"]
 
 [package.metadata.requires-dev]
 dev = [
