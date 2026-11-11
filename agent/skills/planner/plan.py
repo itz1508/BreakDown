@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from contracts.workflow.system.host import HostDispatchEnvelope
 from contracts.workflow.planner.scanner import ScannerResult
+from contracts.workflow.system.host import HostDispatchEnvelope
 from system.host.skill_dispatch import PlanningArguments, SkillContext
 
 

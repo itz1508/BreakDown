@@ -467,21 +467,33 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             producers=(
                 CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("reference_gaps",)),
             ),
-            consumers=(CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="reference_gaps"),),
+            consumers=(
+                CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="reference_gaps"),
+            ),
         ),
         CapabilityRequirement(
             capability_id="execution_trace",
-            producers=(CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("trace_gaps",)),),
+            producers=(
+                CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("trace_gaps",)),
+            ),
             consumers=(CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="trace_gaps"),),
         ),
         CapabilityRequirement(
             capability_id="concern_matrix",
-            producers=(CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("concern_gaps",)),),
-            consumers=(CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="concern_gaps"),),
+            producers=(
+                CapabilityProducer(path="contracts/workflow/validation/structural.py", symbols=("concern_gaps",)),
+            ),
+            consumers=(
+                CapabilityConsumer(path="agent/skills/planner/checks/gap_analysis.py", reference="concern_gaps"),
+            ),
         ),
         CapabilityRequirement(
             capability_id="historical_backtest",
-            producers=(CapabilityProducer(path="agent/skills/planner/checks/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)),),
+            producers=(
+                CapabilityProducer(
+                    path="agent/skills/planner/checks/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)
+                ),
+            ),
         ),
         CapabilityRequirement(
             capability_id="walking_skeleton",
@@ -503,7 +515,9 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
         ),
         CapabilityRequirement(
             capability_id="registered_command_resolver",
-            producers=(CapabilityProducer(path="contracts/workflow/system/tool_registry.py", symbols=("resolve_invocation",)),),
+            producers=(
+                CapabilityProducer(path="contracts/workflow/system/tool_registry.py", symbols=("resolve_invocation",)),
+            ),
             consumers=(
                 CapabilityConsumer(path="contracts/workflow/validation/structural.py", reference="resolve_invocation"),
             ),

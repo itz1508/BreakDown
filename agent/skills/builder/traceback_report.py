@@ -15,9 +15,12 @@ _MAX_CHAIN = 4
 
 
 def _safe_name(value: object, *, dotted: bool = False) -> str:
-    if isinstance(value, str) and len(value) <= (160 if dotted else 96):
-        if (_MODULE if dotted else _IDENTIFIER).fullmatch(value):
-            return value
+    if (
+        isinstance(value, str)
+        and len(value) <= (160 if dotted else 96)
+        and (_MODULE if dotted else _IDENTIFIER).fullmatch(value)
+    ):
+        return value
     return "unknown"
 
 
@@ -55,9 +58,7 @@ def normalize_exception(
     if not 1 <= max_frames <= _MAX_FRAMES or not 0 <= max_chain <= _MAX_CHAIN:
         raise ValueError("invalid traceback limits")
     # extract_tb reads stack metadata only; never retrieve locals or lines.
-    frames = traceback.StackSummary.extract(
-        traceback.walk_tb(error.__traceback__), limit=None, lookup_lines=False
-    )
+    frames = traceback.StackSummary.extract(traceback.walk_tb(error.__traceback__), limit=None, lookup_lines=False)
     selected = frames[-max_frames:]
     normalized_frames = tuple(
         FrameEvidence(

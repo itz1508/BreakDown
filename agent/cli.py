@@ -77,11 +77,7 @@ def cmd_scan(task_id: str, request_file: str, state_root: str = "/tmp/oneshot-st
 
     host = HostController(state_root)
     state = host.get_state(task_id)
-    if (
-        state is None
-        or state.run_id != request.run_id
-        or state.current_stage is not Stage.PLANNING
-    ):
+    if state is None or state.run_id != request.run_id or state.current_stage is not Stage.PLANNING:
         print("Scanner blocked: task/run/stage mismatch", file=sys.stderr)
         return 1
 

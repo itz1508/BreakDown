@@ -93,6 +93,7 @@ class IntentBase(ContractModel):
     def design_id(self) -> str:
         """Preferred API name; persisted intent_id remains stable."""
         return self.intent_id
+
     requirement_ids: tuple[RequirementId, ...] = Field(min_length=1)
     acceptance_criteria_ids: tuple[CriterionId, ...] = Field(min_length=1)
     evidence_refs: tuple[str, ...] = Field(min_length=1)
@@ -181,6 +182,7 @@ class AuditDiscoveryPackage(ContractModel):
     contradictions: tuple[str, ...] = ()
     unknowns: tuple[str, ...] = ()
     step_results: tuple[StepResult, ...] = ()
+
     @property
     def code_designs(self) -> tuple[CodeDesign, ...]:
         """Preferred read-only view of the existing persisted field."""
