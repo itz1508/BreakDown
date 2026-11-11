@@ -64,7 +64,7 @@ def observed(root):
         raise_behind_boundary()
     except RuntimeError as exc:
         return normalize_exception(exc, source_root=root)
-    assert False
+    raise AssertionError("expected a RuntimeError from the nested exception")
 
 
 def dossier(store=None, root=None, *, with_scanner=True, with_source=True, findings=True):
@@ -305,7 +305,10 @@ def test_fallback_existing_generate_provider_json():
             assert request.run_id == view.run_id
             assert request.temperature == 0
             return SimpleNamespace(
-                content='{"hypothesis":"Import unresolved","recommended_checks":["Inspect imports"],"supporting_evidence_keys":[]}'
+                content=(
+                    '{"hypothesis":"Import unresolved","recommended_checks":["Inspect imports"],'
+                    '"supporting_evidence_keys":[]}'
+                )
             )
 
     result = recommend(view, Provider())

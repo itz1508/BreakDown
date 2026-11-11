@@ -160,7 +160,7 @@ def test_invalid_or_duplicate_criteria_rejected():
     accepted = AcceptedCheck("dependency_present", "candidate@1", True)
     with pytest.raises(ValueError, match="duplicate"):
         verify_all(_result(), checks=[accepted, accepted])
-    with pytest.raises(ValueError, match="1..128"):
+    with pytest.raises(ValueError, match=r"1\.\.128"):
         verify_all(_result(), checks=[])
     with pytest.raises(ValueError, match="invalid accepted criterion"):
         verify_all(_result(), checks=[AcceptedCheck("dependency_present", "candidate@1", float("nan"))])

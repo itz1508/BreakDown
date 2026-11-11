@@ -102,7 +102,8 @@ class HostMemoryManager:
             raise MemoryPromotionError("template lineage is not the verified Build lineage")
         self._verify_receipt(
             lock.receipt_ref,
-            f"{lock.research_ref.artifact_digest}:{lock.audit_ref.artifact_digest}:{lock.frozen_spec_ref.artifact_digest}"
+            f"{lock.research_ref.artifact_digest}:{lock.audit_ref.artifact_digest}:"
+            f"{lock.frozen_spec_ref.artifact_digest}"
             + (f":{lock.tool_registry_ref.artifact_digest}" if lock.tool_registry_ref else ""),
         )
         admission = self._load(build.admission_ref, BuildAdmissionReceipt)

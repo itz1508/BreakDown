@@ -76,7 +76,7 @@ async def test_round_robin_hierarchical_and_tenant_isolation(config: ProxyConfig
     assert results == ["a1", "a3", "a2", "a3", "a1"]
     assert beta == "b1"
     assert next_alpha == "a3"
-    assert observed == results + [beta, next_alpha]
+    assert observed == [*results, beta, next_alpha]
     await backend.aclose()
 
 

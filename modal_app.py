@@ -1,6 +1,7 @@
 """Modal ASGI wrapper for OneShot's existing FastAPI MVP.
 
-The public deployment provides a source-bundle Audit demo only. Build execution is not exposed by this ASGI deployment. A model-backed
+The public deployment provides a source-bundle Audit demo only.
+Build execution is not exposed by this ASGI deployment. A model-backed
 Research deployment needs separate access controls and MCP configuration.
 """
 
