@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
-from typing import TYPE_CHECKING, TypeAlias
+from typing import Protocol, TypeAlias
 
 from contracts.workflow.builder.schedule import BuildWave
 from contracts.workflow.system.host import BuildAdmissionReceipt, HostDispatchEnvelope
@@ -17,8 +17,13 @@ from contracts.workflow.planner.scanner import ScannerRunInput
 from system.host.workflow_control import HostController, TransitionError
 from system.host.effect_executor import EffectExecutor
 
-if TYPE_CHECKING:
-    from mvp.service import MVPService
+class ResearchExecutionService(Protocol):
+    """Host-provided executor; no service implementation is inferred."""
+
+    @property
+    def host(self) -> HostController: ...
+
+    def execute_research(self, task_id: str) -> dict[str, object]: ...
 
 
 _ROLE_MODULES = {
@@ -66,14 +71,14 @@ class SkillContext:
 
     host: HostController
     workspace_root: Path
-    research_service: MVPService | None = None
+    research_service: ResearchExecutionService | None = None
 
     @classmethod
     def from_host(
         cls,
         host: HostController,
         workspace_root: str | Path,
-        research_service: MVPService | None = None,
+        research_service: ResearchExecutionService | None = None,
     ) -> SkillContext:
         root = Path(workspace_root).resolve(strict=True)
         if not root.is_dir():

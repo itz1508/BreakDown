@@ -45,8 +45,7 @@ from system.host.work_todo import WorkTodoError, WorkTodoManager
 
 
 if TYPE_CHECKING:
-    from system.host.skill_dispatch import RoleArguments
-    from mvp.service import MVPService
+    from system.host.skill_dispatch import ResearchExecutionService, RoleArguments
 
 
 class Stage(StrEnum):
@@ -121,7 +120,7 @@ class HostController:
         envelope: HostDispatchEnvelope,
         arguments: RoleArguments,
         *,
-        research_service: MVPService | None = None,
+        research_service: ResearchExecutionService | None = None,
     ) -> object:
         """Execute a registered role through the host-owned workspace and stores.
 

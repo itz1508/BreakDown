@@ -52,35 +52,22 @@ def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:
 
 
 def cmd_run(task_id: str, state_root: str = "/tmp/oneshot-state") -> int:
-    """Execute an existing Research task through the registered host, never simulate completion."""
-    from mvp.research_host import execute_research
-    from mvp.service import MVPError, MVPService
-
-    service = MVPService(state_root)
-    state = service.host.get_state(task_id)
+    """Fail closed until an independently registered Research executor is available."""
+    host = HostController(state_root)
+    state = host.get_state(task_id)
     if state is None:
         print(f"Task {task_id}: not found; submit a task with an input artifact first", file=sys.stderr)
         return 1
     if state.current_stage is not Stage.RESEARCH:
-        print(
-            f"Task {task_id}: no executable runner registered for stage {state.current_stage.value}",
-            file=sys.stderr,
-        )
+        print(f"Task {task_id}: no runner for stage {state.current_stage.value}", file=sys.stderr)
         return 1
-    try:
-        outcome = execute_research(service, task_id)
-    except (MVPError, ValueError) as exc:
-        print(f"Task {task_id}: Research blocked: {exc}", file=sys.stderr)
-        return 1
-    print(json.dumps(outcome, sort_keys=True))
-    return 0
+    print(f"Task {task_id}: Research blocked; no Host-provisioned execution service configured", file=sys.stderr)
+    return 2
 
 
 def cmd_scan(task_id: str, request_file: str, state_root: str = "/tmp/oneshot-state") -> int:
-    """Run the API's exact host scanner and print persisted events as JSON lines."""
+    """Execute the existing Host Scanner with a verified request and run identity."""
     from pydantic import ValidationError
-
-    from mvp.service import MVPError, MVPService
 
     try:
         request = ScannerRunInput.model_validate_json(Path(request_file).read_bytes())
@@ -88,15 +75,33 @@ def cmd_scan(task_id: str, request_file: str, state_root: str = "/tmp/oneshot-st
         print(f"Invalid scanner request file: {type(exc).__name__}", file=sys.stderr)
         return 1
 
+    host = HostController(state_root)
+    state = host.get_state(task_id)
+    if (
+        state is None
+        or state.run_id != request.run_id
+        or state.current_stage is not Stage.PLANNING
+    ):
+        print("Scanner blocked: task/run/stage mismatch", file=sys.stderr)
+        return 1
+
     def show(event: dict[str, object]) -> None:
         print(json.dumps(event, sort_keys=True), flush=True)
 
     try:
-        result = MVPService(state_root).scan_candidate(task_id, request, on_event=show)
-    except (MVPError, TransitionError) as exc:
-        print(f"Scanner blocked: {exc}", file=sys.stderr)
+        result = host.scan_planning_candidate(
+            task_id=task_id,
+            run_id=request.run_id,
+            candidate_ref=request.candidate_ref,
+            repository_identity=request.repository_identity,
+            capabilities=request.capabilities,
+            gap_result_ref=request.gap_result_ref,
+            gap_receipt_ref=request.gap_receipt_ref,
+            on_event=show,
+        )
+    except (TransitionError, ValueError, LookupError) as exc:
+        print(f"Scanner blocked: {type(exc).__name__}: {exc}", file=sys.stderr)
         return 1
-
     print(json.dumps({"type": "scanner_result", "result": result.model_dump(mode="json")}, sort_keys=True))
     return 0 if result.outcome is ScannerOutcome.PASS else 2
 

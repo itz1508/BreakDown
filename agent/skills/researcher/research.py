@@ -14,6 +14,4 @@ def run(
         raise ValueError("Research service is not configured")
     if context.research_service.host.state_root.resolve() != context.host.state_root.resolve():
         raise ValueError("Research service and dispatch host use different state roots")
-    from mvp.research_host import execute_research
-
-    return execute_research(context.research_service, envelope.task_id)
+    return context.research_service.execute_research(envelope.task_id)
