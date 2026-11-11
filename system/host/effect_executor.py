@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import os
-import tempfile
 from pathlib import Path
 
+from agent.skills.builder.file_operations import move_file, remove_file, write_atomic
 from contracts.workflow.builder.build import BuildActionExecution, BuildActionStatus
 from contracts.workflow.builder.schedule import BuildWave, VerifiedWaveResult
 from contracts.workflow.system.host import BuildAdmissionReceipt, admission_receipt_subject
@@ -85,21 +85,8 @@ class EffectExecutor:
         return str(real_candidate)
 
     def _write_atomic(self, path: Path, content: str) -> None:
-        """Write content atomically: write to temp file, then rename."""
-        fd, tmp_name = tempfile.mkstemp(
-            dir=str(path.parent),
-            prefix=".oneshot-tmp-",
-            suffix=".tmp",
-        )
-        try:
-            with os.fdopen(fd, "w") as f:
-                f.write(content)
-            os.replace(tmp_name, str(path))
-        except Exception:
-            # Clean up temp file on failure
-            if os.path.exists(tmp_name):
-                os.unlink(tmp_name)
-            raise
+        """Delegate the physical write to Builder's standard-library file operations."""
+        write_atomic(path, content)
 
     def _pre_effect_checkpoint(
         self,
@@ -300,7 +287,7 @@ class EffectExecutor:
                     )
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 self._pre_effect_checkpoint(action_id, source_path, actual, actual, target_path=target_path)
-                os.replace(source, destination)
+                move_file(source, destination)
                 self._clear_pre_effect_checkpoint(action_id)
                 return BuildActionExecution(
                     action_id=action_id,
@@ -383,7 +370,7 @@ class EffectExecutor:
 
                 self._pre_effect_checkpoint(action_id, source_path, pre_digest, None)
 
-                full_path.unlink()
+                remove_file(full_path)
 
                 self._clear_pre_effect_checkpoint(action_id)
 
