@@ -36,8 +36,11 @@ class TestImportBoundaries:
 
     def test_contracts_no_runtime_imports(self):
         """B01: Contract modules do not import runtime modules."""
-        contracts_dir = pathlib.Path("agent/contracts")
-        for py_file in contracts_dir.rglob("*.py"):
+        contracts_dir = pathlib.Path("contracts")
+        assert contracts_dir.is_dir(), "contract source root missing"
+        files = sorted(path for path in contracts_dir.rglob("*.py") if path.name != "__init__.py")
+        assert files, "boundary test cannot pass without scanning contract modules"
+        for py_file in files:
             if py_file.name == "__init__.py":
                 continue
             imports = self._get_imports(py_file)
@@ -49,6 +52,8 @@ class TestImportBoundaries:
     def test_validation_no_io_imports(self):
         """B01b: Validation modules do not import IO modules."""
         validation_dir = pathlib.Path("contracts/workflow/validation")
+        assert validation_dir.is_dir(), "validation source root missing"
+        assert any(validation_dir.rglob("*.py")), "validation boundary must scan source files"
         io_modules = {"sqlite3", "os", "pathlib", "shutil", "subprocess", "socket"}
         for py_file in validation_dir.rglob("*.py"):
             if py_file.name == "__init__.py":
@@ -58,3 +63,12 @@ class TestImportBoundaries:
                 root = imp.split(".")[0]
                 if root in io_modules:
                     raise AssertionError(f"validation module {py_file} imports IO module {imp}")
+
+
+def test_non_restoration_policy_blocks_removed_and_competing_sources() -> None:
+    from scripts.check_retired_paths import forbidden_paths
+
+    paths = ("contracts/workflow/common.py", "mvp/service.py", ".agents/contracts/workflow.yaml",
+             "agent/runtime/controller.py", "conftest.py", "MVP/api.py")
+    assert forbidden_paths(paths) == tuple(sorted(paths[1:]))
+    assert forbidden_paths(("system/host/scanner_gateway.py", "agent/skills/builder/file_operations.py")) == ()
