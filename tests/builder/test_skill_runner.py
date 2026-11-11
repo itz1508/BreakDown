@@ -59,3 +59,33 @@ def test_builder_atomic_write_cleans_temporary_file_on_failure(tmp_path, monkeyp
 
     assert target.read_text(encoding="utf-8") == "original"
     assert list(tmp_path.glob(".oneshot-tmp-*")) == []
+
+
+def test_failed_pre_effect_checkpoint_cannot_create_parent_directory(tmp_path, monkeypatch) -> None:
+    """A failed durable checkpoint must not cause even a parent mkdir."""
+    from contracts.workflow.builder.build import BuildActionStatus
+    from contracts.workflow.system.host import BuildAdmissionReceipt, ReceiptRef
+    from system.host.effect_executor import EffectExecutor
+
+    receipts = Mock()
+    receipts.verify.return_value = True
+    checkpoints = Mock()
+    checkpoints.load_checkpoint.return_value = None
+    authorization = Mock()
+    workspace = tmp_path / "workspace"
+    executor = EffectExecutor(authorization, checkpoints, receipts, workspace)
+    lock_ref = ReceiptRef(receipt_id="lock", receipt_digest="0" * 64, issuer_id="host")
+    admission_ref = ReceiptRef(receipt_id="admission", receipt_digest="1" * 64, issuer_id="host")
+    admitted = BuildAdmissionReceipt(
+        admission_id="test", lock_receipt_ref=lock_ref,
+        authorized_action_ids=("action-1",), receipt_ref=admission_ref,
+    )
+    monkeypatch.setattr(
+        executor, "_pre_effect_checkpoint", Mock(side_effect=OSError("checkpoint unavailable")),
+    )
+    result = executor.execute_admitted(
+        action_id="action-1", action_kind="create", admission_receipt=admitted,
+        target_path="uncreated/subdir/data.txt", content="data",
+    )
+    assert result.status is BuildActionStatus.FAILED
+    assert not (workspace / "uncreated").exists()

@@ -285,8 +285,8 @@ class EffectExecutor:
                         status=BuildActionStatus.BLOCKED,
                         error="move destination is not pinned absent",
                     )
-                destination.parent.mkdir(parents=True, exist_ok=True)
                 self._pre_effect_checkpoint(action_id, source_path, actual, actual, target_path=target_path)
+                destination.parent.mkdir(parents=True, exist_ok=True)
                 move_file(source, destination)
                 self._clear_pre_effect_checkpoint(action_id)
                 return BuildActionExecution(
@@ -298,7 +298,6 @@ class EffectExecutor:
 
             if action_kind == "create" and target_path and content is not None:
                 full_path = Path(resolved_target)  # type: ignore[arg-type]
-                full_path.parent.mkdir(parents=True, exist_ok=True)
                 pre_digest = None
                 if full_path.exists():
                     pre_digest = hashlib.sha256(full_path.read_bytes()).hexdigest()
@@ -306,6 +305,7 @@ class EffectExecutor:
                 # Durable pre-effect checkpoint
                 expected_post = hashlib.sha256(content.encode()).hexdigest()
                 self._pre_effect_checkpoint(action_id, target_path, pre_digest, expected_post)
+                full_path.parent.mkdir(parents=True, exist_ok=True)
 
                 # Atomic write
                 self._write_atomic(full_path, content)
