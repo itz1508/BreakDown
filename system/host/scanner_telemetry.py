@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 import sys
 from collections.abc import Iterator
-from contextlib import contextmanager, suppress
+from contextlib import AbstractContextManager, contextmanager, suppress
 from typing import Literal
 
 Backend = Literal["disabled", "logfire", "opentelemetry"]
@@ -74,6 +74,7 @@ def scanner_span(task_id: str, run_id: str, artifact_id: str) -> Iterator[None]:
         yield
         return
     try:
+        span: AbstractContextManager[object]
         if _backend == "logfire":
             import logfire
 
