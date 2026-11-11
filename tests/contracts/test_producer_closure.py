@@ -7,16 +7,16 @@ import pytest
 from contracts.workflow.builder.build import BuildActionStatus
 from contracts.workflow.builder.schedule import BuildBatch, BuildTask, BuildWave, VerifiedWaveResult
 from contracts.workflow.common import ArtifactRef
-from contracts.workflow.system.host import ReceiptRef
-from contracts.workflow.researcher.research import ResearchIntent
 from contracts.workflow.planner.task_todo import TaskTodo
+from contracts.workflow.researcher.research import ResearchIntent
+from contracts.workflow.system.host import ReceiptRef
+from system.host.build_admission import BuildAdmission
+from system.host.effect_executor import EffectExecutor
+from system.host.policy_enforce import AuthorizationEngine
 from system.host.research_catalog import ResearchCatalog
 from system.storage.artifact_store import ArtifactStore
-from system.host.policy_enforce import AuthorizationEngine
-from system.host.build_admission import BuildAdmission
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
 from system.storage.checkpoint_store import CheckpointStore
-from system.host.effect_executor import EffectExecutor
 from system.storage.receipt_store import ReceiptStore
 from system.storage.runtime_root_registry import RuntimeRootRegistry
 

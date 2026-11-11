@@ -9,11 +9,11 @@ import pytest
 pytest.importorskip("fastapi")
 pytest.importorskip("httpx")
 
-from fastapi.testclient import TestClient
-
 import mvp.api
-from system.host.providers.base import ProviderError
+from fastapi.testclient import TestClient
 from mvp.service import MVPService
+
+from system.host.providers.base import ProviderError
 
 
 @pytest.fixture()

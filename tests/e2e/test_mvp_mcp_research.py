@@ -8,10 +8,6 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-
-from contracts.workflow.researcher.research import Requirement, ResearchRecord
-from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
-from system.host.providers.base import ProviderError, ProviderRequest
 from mvp.mcp_research import (
     MCPResearchAdapter,
     _tool_json,
@@ -21,6 +17,10 @@ from mvp.mcp_research import (
 )
 from mvp.research_host import execute_research
 from mvp.service import MVPError, MVPService
+
+from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from system.host.providers.base import ProviderError, ProviderRequest
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
 
 
 @pytest.fixture(autouse=True)
@@ -197,9 +197,8 @@ def test_error_result_and_nontext_result_fail_closed():
 def test_http_research_endpoint_advances_only_after_host_receipts(tmp_path, monkeypatch):
     pytest.importorskip("fastapi")
     pytest.importorskip("httpx")
-    from fastapi.testclient import TestClient
-
     import mvp.api
+    from fastapi.testclient import TestClient
 
     service = MVPService(tmp_path)
     monkeypatch.setattr(mvp.api, "service", service)
@@ -223,9 +222,8 @@ def test_http_research_endpoint_advances_only_after_host_receipts(tmp_path, monk
 def test_http_forged_digest_is_502_and_stage_remains_open(tmp_path, monkeypatch):
     pytest.importorskip("fastapi")
     pytest.importorskip("httpx")
-    from fastapi.testclient import TestClient
-
     import mvp.api
+    from fastapi.testclient import TestClient
 
     service = MVPService(tmp_path)
     monkeypatch.setattr(mvp.api, "service", service)
@@ -386,7 +384,9 @@ def test_host_evidence_paths_are_forwarded_to_real_mcp_request(tmp_path, monkeyp
 
     monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
     assert execute_research(service, task_id)["status"] == "completed"
-    assert captured == [{"workspace_paths": ["README.md", "contracts/workflow/researcher/research.py"], "snapshots": []}]
+    assert captured == [
+        {"workspace_paths": ["README.md", "contracts/workflow/researcher/research.py"], "snapshots": []}
+    ]
 
 
 @pytest.mark.parametrize(
@@ -461,8 +461,8 @@ def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch)
 
 def test_dispatch_rejects_wrong_workflow_role_before_upstream_call(tmp_path, monkeypatch):
     from contracts.workflow.common import ArtifactRef
-    from system.storage.canonical_serialization import SERIALIZER_PROFILE
     from system.host.workflow_control import TransitionError
+    from system.storage.canonical_serialization import SERIALIZER_PROFILE
 
     service = MVPService(tmp_path)
     task = service.create("Inspect authorized repository evidence")

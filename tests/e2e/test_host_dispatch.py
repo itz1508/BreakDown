@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import pytest
+from mvp.service import MVPService
 
 from contracts.workflow.common import ArtifactRef
-from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
-from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from contracts.workflow.planner.work_todo import WorkStatus
-from system.storage.canonical_serialization import SERIALIZER_PROFILE
+from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
 from system.host.workflow_control import HostController, Stage, TransitionError
-from mvp.service import MVPService
+from system.storage.canonical_serialization import SERIALIZER_PROFILE
 from tests.e2e.test_real_workflow import _advance_with_receipt
 
 

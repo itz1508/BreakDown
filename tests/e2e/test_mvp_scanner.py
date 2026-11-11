@@ -6,12 +6,12 @@ import json
 import sqlite3
 
 from fastapi.testclient import TestClient
+from mvp.service import MVPService
 
 from agent.cli import cmd_scan
-from contracts.workflow.system.host import ReceiptRef
 from contracts.workflow.planner.scanner import ScannerRunInput
+from contracts.workflow.system.host import ReceiptRef
 from system.host.workflow_control import HostController
-from mvp.service import MVPService
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record
 
 
@@ -158,6 +158,7 @@ def test_cli_module_command_dispatches_the_same_host_scan(tmp_path, monkeypatch,
 
 def test_real_host_structural_gap_receipt_allows_http_scanner_without_stub(tmp_path, monkeypatch):
     import mvp.api
+
     from tests.fixtures.structural_gap import build_gap_inputs
 
     service, task_id, scan_input = prepared_scanner(tmp_path)

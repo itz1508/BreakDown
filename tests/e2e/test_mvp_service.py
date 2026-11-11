@@ -1,7 +1,6 @@
 """Real host-backed MVP behavior: state, immutable input, events, and recovery."""
 
 import pytest
-
 from mvp.service import MVPError, MVPService
 
 
