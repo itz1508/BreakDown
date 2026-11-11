@@ -467,17 +467,26 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             producers=(
                 CapabilityProducer(path="agent/contracts/validation/structural.py", symbols=("reference_gaps",)),
             ),
-            consumers=(CapabilityConsumer(path="agent/gap_analysis.py", reference="reference_gaps"),),
+            consumers=(
+                CapabilityConsumer(path="agent/gap_analysis.py", reference="reference_gaps"),
+                CapabilityConsumer(path="agent/skills/analyzer/analyzing.py", reference="reference_gaps"),
+            ),
         ),
         CapabilityRequirement(
             capability_id="execution_trace",
             producers=(CapabilityProducer(path="agent/contracts/validation/structural.py", symbols=("trace_gaps",)),),
-            consumers=(CapabilityConsumer(path="agent/gap_analysis.py", reference="trace_gaps"),),
+            consumers=(
+                CapabilityConsumer(path="agent/gap_analysis.py", reference="trace_gaps"),
+                CapabilityConsumer(path="agent/skills/analyzer/analyzing.py", reference="trace_gaps"),
+            ),
         ),
         CapabilityRequirement(
             capability_id="concern_matrix",
             producers=(CapabilityProducer(path="agent/contracts/validation/structural.py", symbols=("concern_gaps",)),),
-            consumers=(CapabilityConsumer(path="agent/gap_analysis.py", reference="concern_gaps"),),
+            consumers=(
+                CapabilityConsumer(path="agent/gap_analysis.py", reference="concern_gaps"),
+                CapabilityConsumer(path="agent/skills/analyzer/analyzing.py", reference="concern_gaps"),
+            ),
         ),
         CapabilityRequirement(
             capability_id="historical_backtest",
@@ -490,6 +499,18 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                     path="agent/runtime/host_gap_analyzer.py",
                     symbols=("HostGapAnalyzer._run_skeleton",),
                 ),
+            ),
+        ),
+        CapabilityRequirement(
+            capability_id="audit_source_scan",
+            producers=(
+                CapabilityProducer(
+                    path="agent/audit/core.py",
+                    symbols=("scan", "AuditResult", "Finding"),
+                ),
+            ),
+            consumers=(
+                CapabilityConsumer(path="agent/skills/auditor/auditing.py", reference="scan"),
             ),
         ),
         CapabilityRequirement(
