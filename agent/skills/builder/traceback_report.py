@@ -62,7 +62,7 @@ def normalize_exception(
     normalized_frames = tuple(
         FrameEvidence(
             path=_safe_location(frame.filename, source_root),
-            line=max(1, frame.lineno),
+            line=max(1, frame.lineno or 1),
             function=_safe_name(frame.name),
         )
         for frame in selected

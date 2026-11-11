@@ -41,3 +41,27 @@ jobs:
         run: uv run --no-sync --with scikit-learn==1.8.0 python tests/planner/evaluate_gap_sklearn.py
       - name: Tests
         run: uv run --no-sync pytest -q
+
+  package-integrity:
+    name: package-integrity (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf # v3
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync --locked --extra meta
+      - name: Enforce retired-path and draft exclusion rules
+        run: uv run --no-sync python scripts/check_retired_paths.py
+      - name: Check source imports, Catalog, and checkpoint ordering
+        run: |
+          uv run --no-sync pytest -q \
+            tests/boundaries/test_imports.py \
+            tests/test_research_catalog.py \
+            tests/builder/test_skill_runner.py
+      - name: Build and inspect installable package
+        run: |
+          uv build --wheel
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/builder/file_operations.py", "system/host/research_catalog.py"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
