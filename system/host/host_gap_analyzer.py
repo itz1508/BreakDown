@@ -10,8 +10,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
-from contracts.workflow.system.host import ReceiptRef
 from agent.skills.planner.checks.gap_analysis import (
     ComparableSystemAnalysis,
     GapAnalyzer,
@@ -25,6 +23,8 @@ from agent.skills.planner.checks.gap_analysis import (
     WorkflowContractBundle,
     WorkflowExecutionTrace,
 )
+from contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
+from contracts.workflow.system.host import ReceiptRef
 from system.storage.artifact_store import ArtifactStore
 from system.storage.receipt_store import ReceiptStore
 

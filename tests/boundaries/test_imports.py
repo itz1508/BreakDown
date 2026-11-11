@@ -68,7 +68,13 @@ class TestImportBoundaries:
 def test_non_restoration_policy_blocks_removed_and_competing_sources() -> None:
     from scripts.check_retired_paths import forbidden_paths
 
-    paths = ("contracts/workflow/common.py", "mvp/service.py", ".agents/contracts/workflow.yaml",
-             "agent/runtime/controller.py", "conftest.py", "MVP/api.py")
+    paths = (
+        "contracts/workflow/common.py",
+        "mvp/service.py",
+        ".agents/contracts/workflow.yaml",
+        "agent/runtime/controller.py",
+        "conftest.py",
+        "MVP/api.py",
+    )
     assert forbidden_paths(paths) == tuple(sorted(paths[1:]))
     assert forbidden_paths(("system/host/scanner_gateway.py", "agent/skills/builder/file_operations.py")) == ()

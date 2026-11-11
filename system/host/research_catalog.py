@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from importlib.resources import files
 from hashlib import sha256
+from importlib.resources import files
 from pathlib import Path
 from typing import Any
 

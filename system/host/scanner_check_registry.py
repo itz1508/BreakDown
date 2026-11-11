@@ -6,9 +6,9 @@ from pydantic import Field, model_validator
 
 from contracts.workflow.common import ArtifactRef, ContractModel
 from contracts.workflow.system.tool_registry import ToolEffect, ToolInvocation, resolve_invocation
+from system.host.tool_registry import load_pinned_tool_registry
 from system.storage.artifact_store import ArtifactStore
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
-from system.host.tool_registry import load_pinned_tool_registry
 
 
 class ScannerCheck(ContractModel):

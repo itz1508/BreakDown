@@ -13,7 +13,6 @@ import sys
 import tempfile
 from pathlib import Path
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -24,7 +23,7 @@ def check(name: str, status: str, detail: str) -> None:
 def preflight(root: Path) -> str | None:
     """Run before installing or importing any project dependencies."""
     check("python", "passed" if sys.version_info >= (3, 11) else "blocked", platform.python_version())
-    if sys.version_info < (3, 11):
+    if sys.version_info < (3, 11):  # noqa: UP036 -- doctor also runs before uv installs dependencies
         return None
     for name in ("pyproject.toml", "uv.lock", "config/config.yaml"):
         if not (root / name).is_file():

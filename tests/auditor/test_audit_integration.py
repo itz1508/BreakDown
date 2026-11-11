@@ -13,8 +13,8 @@ pytest.importorskip("httpx")
 from fastapi.testclient import TestClient
 
 from contracts.workflow.auditor._report import AuditFindingsRecord
-from system.storage.canonical_serialization import digest_model
 from system.host.workflow_control import Stage
+from system.storage.canonical_serialization import digest_model
 
 
 @pytest.fixture()
@@ -394,8 +394,9 @@ class TestAuditModeAndRecovery:
             execute_audit(service, task["task_id"])
 
     def test_blocked_audit_persists_findings_but_never_advances(self, service, monkeypatch):
-        from agent.skills.auditor.checks.core import AuditResult
         from mvp.research_host import execute_audit
+
+        from agent.skills.auditor.checks.core import AuditResult
 
         def blocked_scan(root, scope=".", request=""):
             return AuditResult(str(root), ".", ("paths",), (), (), ("scanner unavailable",), "blocked", request)

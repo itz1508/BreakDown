@@ -12,10 +12,11 @@ from pathlib import Path
 from typing import Protocol, TypeAlias
 
 from contracts.workflow.builder.schedule import BuildWave
-from contracts.workflow.system.host import BuildAdmissionReceipt, HostDispatchEnvelope
 from contracts.workflow.planner.scanner import ScannerRunInput
-from system.host.workflow_control import HostController, TransitionError
+from contracts.workflow.system.host import BuildAdmissionReceipt, HostDispatchEnvelope
 from system.host.effect_executor import EffectExecutor
+from system.host.workflow_control import HostController, TransitionError
+
 
 class ResearchExecutionService(Protocol):
     """Host-provided executor; no service implementation is inferred."""

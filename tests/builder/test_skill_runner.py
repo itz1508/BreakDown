@@ -14,15 +14,25 @@ def test_builder_delegates_admitted_effect() -> None:
     context = Mock()
     context.build_executor.return_value = executor
     receipt = Mock()
-    args = BuildArguments(action_id="action", action_kind="modify", admission_receipt=receipt,
-                          target_path="src/hello.py", content="print('ok')\n")
+    args = BuildArguments(
+        action_id="action",
+        action_kind="modify",
+        admission_receipt=receipt,
+        target_path="src/hello.py",
+        content="print('ok')\n",
+    )
     expected = object()
     executor.execute_admitted.return_value = expected
     assert run(context, Mock(), args) is expected
     executor.execute_admitted.assert_called_once_with(
-        action_id="action", action_kind="modify", admission_receipt=receipt,
-        target_path="src/hello.py", source_path=None, content="print('ok')\n",
-        expected_source_digest=None, wave=None,
+        action_id="action",
+        action_kind="modify",
+        admission_receipt=receipt,
+        target_path="src/hello.py",
+        source_path=None,
+        content="print('ok')\n",
+        expected_source_digest=None,
+        wave=None,
     )
     context.host.receipt_store.issue_verified.assert_not_called()
 
@@ -77,15 +87,22 @@ def test_failed_pre_effect_checkpoint_cannot_create_parent_directory(tmp_path, m
     lock_ref = ReceiptRef(receipt_id="lock", receipt_digest="0" * 64, issuer_id="host")
     admission_ref = ReceiptRef(receipt_id="admission", receipt_digest="1" * 64, issuer_id="host")
     admitted = BuildAdmissionReceipt(
-        admission_id="test", lock_receipt_ref=lock_ref,
-        authorized_action_ids=("action-1",), receipt_ref=admission_ref,
+        admission_id="test",
+        lock_receipt_ref=lock_ref,
+        authorized_action_ids=("action-1",),
+        receipt_ref=admission_ref,
     )
     monkeypatch.setattr(
-        executor, "_pre_effect_checkpoint", Mock(side_effect=OSError("checkpoint unavailable")),
+        executor,
+        "_pre_effect_checkpoint",
+        Mock(side_effect=OSError("checkpoint unavailable")),
     )
     result = executor.execute_admitted(
-        action_id="action-1", action_kind="create", admission_receipt=admitted,
-        target_path="uncreated/subdir/data.txt", content="data",
+        action_id="action-1",
+        action_kind="create",
+        admission_receipt=admitted,
+        target_path="uncreated/subdir/data.txt",
+        content="data",
     )
     assert result.status is BuildActionStatus.FAILED
     assert not (workspace / "uncreated").exists()
