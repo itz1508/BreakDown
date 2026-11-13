@@ -2,25 +2,69 @@
 
 Migration source: [OneShot-Continuing](https://github.com/itz1508/OneShot-Continuing) at `dbecd79e58b5b43592009d3cc914fcdc2722413b`. Destination baseline: `d53c0e8ace51bd811bc7af39e78a280a52391a21`.
 
-## Product workflow (actual design)
+## Product workflow (reference for the product specification)
 
-```
-User input
-→ Catalog/context preparation
-→ Auditor specification
-→ Edit Preview → Accept & Check          ← confirmation gate 1 (Confirm Search before Research)
-→ Researcher
-→ POST reconciliation
-→ Coder → Refactor, if needed
-→ Planning → Fixture → Gap Resolution → TaskTodo
-→ verify_all → freeze hashes → preflight
-→ final plan preview                      ← confirmation gate 2 (Confirm Build before Builder)
-→ user confirms plan
-→ Builder verifies hashes → creates sandbox → executes
-→ sync results → Completion
+```mermaid
+flowchart TD
+    A[User Input] --> B[Catalog / Context Preparation]
+    B --> C[Auditor Specification]
+    C --> D[Edit Preview]
+    D --> E{Accept & Check}
+    E -- Accept --> F[Researcher]
+    E -- Revise --> C
+    F --> G[POST Reconciliation]
+    G --> H[Coder]
+    H --> I{Refactor needed?}
+    I -- Yes --> J[Refactor]
+    I -- No --> K[Planning]
+    J --> K
+    K --> L[Fixture]
+    L --> M[Gap Resolution]
+    M --> N[TaskTodo]
+    N --> O[verify_all]
+    O --> P[Freeze Hashes]
+    P --> Q[Preflight]
+    Q --> R[Final Plan Preview]
+    R --> S{User Confirms Plan}
+    S -- Confirm --> T[Builder Verifies Hashes]
+    S -- Revise --> K
+    T --> U[Create Sandbox]
+    U --> V[Execute TaskTodo]
+    V --> W[Synchronize Results]
+    W --> X[Completion]
 ```
 
-Both confirmation gates are part of the design: **Confirm Search before Research** (Accept & Check after Auditor specification) and **Confirm Build before Builder** (final plan preview). Build and Rebuild use the same workflow; only their implementation baseline differs. A post-Completion validation stage is optional and intentionally not implemented.
+### Two confirmation gates
+
+| Gate | Purpose | Authorizes |
+| --- | --- | --- |
+| Accept & Check | Review Auditor specification through Edit Preview | Researcher execution |
+| User Confirms Plan | Review final plan and frozen execution materials | Builder execution |
+
+### Ownership distinctions
+
+| Component | Responsibility |
+| --- | --- |
+| Catalog | Context and reusable knowledge preparation |
+| Auditor | Specification and PRE/POST reconciliation |
+| Researcher | Evidence collection |
+| Coder | Code analysis and refactoring when necessary |
+| Planner | Planning, fixtures, gap resolution and TaskTodo preparation |
+| `verify_all` | Required pre-build verification |
+| Builder | Verify hashes, create sandbox and execute TaskTodo |
+| Storage | Synchronize and retain actual results |
+
+### Critical execution rules
+
+1. No Researcher execution before Accept & Check.
+2. Coder does not automatically refactor; refactoring is conditional.
+3. Planning must resolve gaps and prepare TaskTodo before `verify_all`.
+4. Hashes are frozen before Preflight and final plan confirmation.
+5. Builder independently checks the confirmed hashes before creating the sandbox.
+6. Sandbox execution must use the confirmed TaskTodo and scope.
+7. Synchronize actual execution results before Completion.
+
+Post-completion validation is optional, not a mandatory workflow stage. `verify_all` remains in its specified pre-build position. Build and Rebuild use this exact same workflow; only their implementation baseline differs.
 
 ## Role packages (contract / entry / runtime implementation)
 
