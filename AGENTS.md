@@ -182,6 +182,37 @@ If they disagree or competing lockfiles exist, resolve the conflict before insta
 - Preserve other established managers rather than silently switching to npm or pnpm.
 - Inspect unfamiliar install scripts and diagnostic commands before execution.
 
+## Testing instructions
+
+- Read `.github/workflows/` and `pyproject.toml` for the actual checks.
+- Run commands from the project directory owning the manifest.
+- Sync dependencies: `uv sync --locked` with the extras required by those checks.
+- Run tests: `uv run --no-sync pytest -q`.
+- Focus a file: `uv run --no-sync pytest -q tests/<path>/test_<name>.py`.
+- Focus a test: `uv run --no-sync pytest -q -k "<test_name>"`.
+- Lint: `uv run --no-sync ruff check .`.
+- Format check: `uv run --no-sync ruff format --check .`.
+- Check dependencies: `uv run --no-sync deptry .`.
+- Check lock consistency: `uv lock --check`.
+- Run the type-check command declared by current CI; verify its package paths.
+- After moving files or changing imports, check affected callers, entrypoints,
+  configuration references and package resources—not just syntax.
+- Add or update meaningful tests for changed behavior.
+- Fix introduced failures without weakening assertions or hiding missing functionality.
+- Compare against the unchanged baseline before claiming failures are pre-existing.
+- Report commands, results and checks not performed. Do not claim readiness
+  while required checks remain unresolved.
+- For frontend changes, use `web/package.json`, its selected package manager
+  and existing lockfile. Run its declared scripts; do not assume pnpm/Turbo/Vitest.
+
+## Commit and PR instructions
+
+- Review the complete diff and stage only task-related changes.
+- Before committing, run applicable tests, lint, formatting and type checks.
+- PR title: `[<component>] <concise change description>`.
+- Describe the requested outcome, actual changes, verification and remaining issues.
+- Commit, push, open a PR or merge only within the user's authorization.
+
 ## Python library guidance
 
 Prefer existing implementations and suitable standard-library modules.
