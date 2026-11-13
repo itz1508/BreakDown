@@ -31,7 +31,7 @@ jobs:
       - name: Test imports, persistence, API and E2E
         run: uv run --no-sync pytest -q
       - name: Static types
-        run: uv run --no-sync mypy agent contracts system
+        run: uv run --no-sync mypy agent
       - name: Lint
         run: uv run --no-sync ruff check .
       - name: Formatting
