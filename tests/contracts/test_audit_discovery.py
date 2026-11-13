@@ -3,6 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
+from agent.host.contracts.common import ArtifactRef
 from agent.skills.auditor.contracts._discovery import (
     AssessmentStatus,
     AuditDiscoveryPackage,
@@ -13,8 +14,7 @@ from agent.skills.auditor.contracts._discovery import (
     RepositoryIdentity,
     RequirementAssessment,
 )
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.validation.audit_discovery import (
+from agent.skills.planner.contracts.validation.audit_discovery import (
     validate_code_intents,
     validate_repository_identity_pair,
     validate_requirement_assessments,

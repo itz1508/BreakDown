@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import Checkpoint
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import Checkpoint
 
 
 def project_context(

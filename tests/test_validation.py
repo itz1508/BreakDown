@@ -1,5 +1,6 @@
 """Test cross-stage validation: audit lineage and build specification."""
 
+from agent.host.contracts.common import ArtifactRef
 from agent.skills.auditor.contracts._discovery import (
     AssessmentStatus,
     AuditDiscoveryPackage,
@@ -11,14 +12,13 @@ from agent.skills.planner.contracts.specification import (
     BuildSpecification,
     RequirementCoverage,
 )
+from agent.skills.planner.contracts.validation import validate_audit_lineage, validate_build_specification
 from agent.skills.researcher.contracts.research import (
     AcceptanceCriterion,
     AuthorizationStatus,
     Requirement,
     ResearchRecord,
 )
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.validation import validate_audit_lineage, validate_build_specification
 
 HEX = "a" * 64
 

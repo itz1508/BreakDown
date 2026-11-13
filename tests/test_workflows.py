@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from agent.skills.shared.host.skill_dispatch import role_for_stage
-from agent.skills.shared.host.sys_controller import Stage
+from agent.host.skill_dispatch import role_for_stage
+from agent.host.sys_controller import Stage
 
 SKILLS = {
     "auditor": ("audit.yaml", "auditing.py"),

@@ -2,16 +2,16 @@
 
 import pytest
 
-from agent.skills.shared.providers.providers.base import (
+from agent.host.providers.backends.base import (
     CapabilityDescriptor,
     ProviderError,
     ProviderRequest,
     ProviderResult,
     UnsupportedProviderError,
 )
-from agent.skills.shared.providers.providers.echo import EchoProvider
-from agent.skills.shared.providers.providers.meta import MetaProvider
-from agent.skills.shared.providers.providers.registry import ProviderRegistry
+from agent.host.providers.backends.echo import EchoProvider
+from agent.host.providers.backends.meta import MetaProvider
+from agent.host.providers.backends.registry import ProviderRegistry
 
 
 class TestEchoProvider:

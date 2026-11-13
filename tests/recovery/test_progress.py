@@ -1,6 +1,6 @@
 """Recovery and progress tests — REC01-REC09."""
 
-from agent.skills.shared.host.recovery import (
+from agent.host.recovery import (
     BoundedRecovery,
     ErrorClass,
     RecoveryDecision,

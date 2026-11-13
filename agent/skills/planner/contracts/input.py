@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from agent.skills.shared.contracts.workflow.common import (
+from agent.host.contracts.common import (
     ArtifactRef,
     ContractModel,
     CriterionId,
     RequirementId,
 )
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agent.host.contracts.system.host import ReceiptRef
 
 
 class PlanningResearchInput(ContractModel):

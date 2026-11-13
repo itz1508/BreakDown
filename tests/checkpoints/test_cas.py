@@ -4,7 +4,7 @@ import threading
 
 import pytest
 
-from agent.skills.shared.storage.checkpoint_store import (
+from agent.host.storage.checkpoint_store import (
     CheckpointStore,
     CompetingWriterError,
 )

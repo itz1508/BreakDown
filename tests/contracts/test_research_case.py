@@ -8,6 +8,14 @@ fixture specifications, and negative/security cases.
 import pytest
 from pydantic import ValidationError
 
+from agent.skills.planner.contracts.validation.research import (
+    validate_fixture_spec_completeness,
+    validate_input_admission,
+    validate_output_binding,
+    validate_research_request,
+    validate_review_gating,
+    validate_stale_revision,
+)
 from agent.skills.researcher.contracts.research import (
     AdmissionDisposition,
     ExecutionStatus,
@@ -22,14 +30,6 @@ from agent.skills.researcher.contracts.research import (
     ResearchRequest,
     ReviewDisposition,
     SourceReference,
-)
-from agent.skills.shared.contracts.workflow.validation.research import (
-    validate_fixture_spec_completeness,
-    validate_input_admission,
-    validate_output_binding,
-    validate_research_request,
-    validate_review_gating,
-    validate_stale_revision,
 )
 
 

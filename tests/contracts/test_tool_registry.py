@@ -5,11 +5,8 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from agent.skills.builder.build_admission import BuildAdmission, BuildAdmissionError
-from agent.skills.builder.package_lock import PackageLock
-from agent.skills.planner.contracts.specification import BuildSpecification, CreateAction
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.tool_registry import (
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.tool_registry import (
     ParamKind,
     SandboxProfile,
     ToolEffect,
@@ -19,14 +16,17 @@ from agent.skills.shared.contracts.workflow.system.tool_registry import (
     ToolSpec,
     resolve_invocation,
 )
-from agent.skills.shared.contracts.workflow.validation.structural import tool_invocation_gaps
-from agent.skills.shared.host.tool_registry import (
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.receipt_store import ReceiptStore
+from agent.host.tool_registry import (
     ToolRegistryError,
     load_pinned_tool_registry,
     pin_tool_registry,
 )
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
+from agent.skills.builder.build_admission import BuildAdmission, BuildAdmissionError
+from agent.skills.builder.package_lock import PackageLock
+from agent.skills.planner.contracts.specification import BuildSpecification, CreateAction
+from agent.skills.planner.contracts.validation.structural import tool_invocation_gaps
 
 DIGEST = "a" * 64
 IMAGE = "example.invalid/build@sha256:" + "b" * 64
@@ -217,7 +217,7 @@ def test_build_admission_derives_tools_from_locked_spec(tmp_path) -> None:
 
 
 def test_preflight_refuses_missing_registered_executable(tmp_path) -> None:
-    from agent.skills.shared.host.tool_registry import verify_executable
+    from agent.host.tool_registry import verify_executable
 
     cmd = resolve_invocation(catalog(), invocation(), "build", frozenset())
     executable = tmp_path / "uv"

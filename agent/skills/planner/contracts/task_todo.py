@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
-from agent.skills.shared.contracts.workflow.common import (
+from agent.host.contracts.common import (
     ArtifactRef,
     ContractModel,
     DiagnosticStatus,
     Sha256,
     StepStatus,
 )
-from agent.skills.shared.contracts.workflow.system.tool_registry import ToolInvocation, safe_relative_path
+from agent.host.contracts.system.tool_registry import ToolInvocation, safe_relative_path
 
 
 def paths_overlap(left: str, right: str) -> bool:

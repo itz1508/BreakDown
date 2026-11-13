@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from agent.skills.shared.host.streaming import StreamEventType
+from agent.host.streaming import StreamEventType
 from api_fundamentals.models import StructuredProbeResult
 
 TOOL = {

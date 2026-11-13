@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from agent.host.contracts.system.host import HostDispatchEnvelope
+    from agent.host.skill_dispatch import PlanningArguments, SkillContext
     from agent.skills.planner.contracts.scanner import ScannerResult
-    from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-    from agent.skills.shared.host.skill_dispatch import PlanningArguments, SkillContext
 
 
 class PlanningPipelineNotActive(RuntimeError):

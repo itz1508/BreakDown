@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
+from agent.host.contracts.common import ArtifactRef, ContractModel, Sha256
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.contracts.system.tool_registry import safe_relative_path
 from agent.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, Sha256
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
 
 
 class BuildTask(ContractModel):

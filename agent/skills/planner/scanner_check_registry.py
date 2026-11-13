@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel
-from agent.skills.shared.contracts.workflow.system.tool_registry import ToolEffect, ToolInvocation, resolve_invocation
-from agent.skills.shared.host.tool_registry import load_pinned_tool_registry
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from agent.host.contracts.common import ArtifactRef, ContractModel
+from agent.host.contracts.system.tool_registry import ToolEffect, ToolInvocation, resolve_invocation
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from agent.host.tool_registry import load_pinned_tool_registry
 
 
 class ScannerCheck(ContractModel):

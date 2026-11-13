@@ -2,7 +2,7 @@
 
 import pytest
 
-from agent.skills.shared.host.sys_policy_enforcer import (
+from agent.host.sys_policy_enforcer import (
     AuthorizationEngine,
     AuthorizationError,
     Capability,

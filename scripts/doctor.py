@@ -40,7 +40,7 @@ def runtime_diagnostics(root: Path) -> int:
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
     try:
-        from agent.skills.shared.host.loaders import load_app_config, load_selected_provider
+        from agent.host.loaders import load_app_config, load_selected_provider
 
         app = load_app_config(root / "config/config.yaml")
         provider = load_selected_provider(app, root)

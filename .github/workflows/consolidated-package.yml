@@ -52,10 +52,10 @@ jobs:
               'agent/skills/researcher/research.yaml',
               'agent/skills/auditor/audit.yaml',
               'agent/catalog/research_samples.yaml',
-              'agent/skills/shared/contracts/workflow/common.py',
-              'agent/skills/shared/host/sys_controller.py',
-              'agent/skills/shared/host/sys_path.py',
-              'agent/skills/shared/host/sys_policy_enforcer.py',
+              'agent/host/contracts/common.py',
+              'agent/host/sys_controller.py',
+              'agent/host/sys_path.py',
+              'agent/host/sys_policy_enforcer.py',
           }
           missing = sorted(required - names)
           assert not missing, f'wheel missing files: {missing}'

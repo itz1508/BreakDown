@@ -9,7 +9,7 @@ on:
       - "tests/auditoror/**"
       - "mvp/**"
       - "web/**"
-      - "agent/skills/shared/host/workflow_control.py"
+      - "agent/host/workflow_control.py"
       - ".github/workflows/audit-capabilities.yml"
   pull_request:
     paths:
@@ -18,7 +18,7 @@ on:
       - "tests/auditoror/**"
       - "mvp/**"
       - "web/**"
-      - "agent/skills/shared/host/workflow_control.py"
+      - "agent/host/workflow_control.py"
       - ".github/workflows/audit-capabilities.yml"
   workflow_dispatch:
 

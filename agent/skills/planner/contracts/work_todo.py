@@ -11,7 +11,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel
+from agent.host.contracts.common import ArtifactRef, ContractModel
 
 StageId = Literal["research", "audit_discovery", "planning", "fixture_validation", "build", "build_validation"]
 

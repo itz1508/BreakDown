@@ -4,21 +4,21 @@ from pathlib import Path
 
 import pytest
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from agent.host.storage.checkpoint_store import CheckpointStore
+from agent.host.storage.receipt_store import ReceiptStore
+from agent.host.storage.runtime_root_registry import RuntimeRootRegistry
+from agent.host.sys_policy_enforcer import AuthorizationEngine
 from agent.skills.builder.build_admission import BuildAdmission
 from agent.skills.builder.contracts.build import BuildActionStatus
 from agent.skills.builder.contracts.schedule import BuildBatch, BuildTask, BuildWave, VerifiedWaveResult
+from agent.skills.builder.effect_executor import EffectExecutor
 from agent.skills.planner.contracts.task_todo import TaskTodo
 from agent.skills.researcher.contracts.research import ResearchIntent
 from agent.skills.researcher.research_catalog import ResearchCatalog
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.effect_executor import EffectExecutor
-from agent.skills.shared.host.sys_policy_enforcer import AuthorizationEngine
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
-from agent.skills.shared.storage.checkpoint_store import CheckpointStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
-from agent.skills.shared.storage.runtime_root_registry import RuntimeRootRegistry
 
 
 def move_wave(source_digest: str) -> BuildWave:

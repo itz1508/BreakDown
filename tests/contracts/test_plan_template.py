@@ -3,12 +3,12 @@
 import pytest
 from pydantic import BaseModel, ValidationError
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE
+from agent.host.storage.receipt_store import ReceiptStore
 from agent.skills.planner.contracts.template import PlanTemplate, TemplateStatus
 from agent.skills.planner.plan_templates import PlanTemplateError, PlanTemplateService
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
-from agent.skills.shared.storage.receipt_store import ReceiptStore
 
 
 class Evidence(BaseModel):

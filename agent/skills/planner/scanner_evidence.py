@@ -4,15 +4,15 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+from agent.host.storage.receipt_store import ReceiptStore
 from agent.skills.planner.contracts.coverage import planning_coverage
 from agent.skills.planner.contracts.scanner import ScannerEvidence, ScannerOutcome, ScannerResult
+from agent.skills.planner.contracts.validation.structural import CONCERNS
 from agent.skills.planner.scanner_check_registry import ScannerCheckRegistry
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.contracts.workflow.validation.structural import CONCERNS
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, canonical_bytes, digest_raw
-from agent.skills.shared.storage.receipt_store import ReceiptStore
 
 
 @dataclass(frozen=True)

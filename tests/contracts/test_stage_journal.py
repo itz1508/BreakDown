@@ -5,8 +5,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from agent.skills.shared.contracts.workflow.system.stage_log import StageLogEvent
-from agent.skills.shared.storage.stage_journal import StageJournalError, StageJournalService
+from agent.host.contracts.system.stage_log import StageLogEvent
+from agent.host.storage.stage_journal import StageJournalError, StageJournalService
 
 
 def event(event_id: str = "one", stage: str = "search", **changes):

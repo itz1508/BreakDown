@@ -3,9 +3,9 @@
 import pytest
 from pydantic import BaseModel
 
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.receipt_store import ReceiptStore
 from agent.skills.planner.specification_freezer import SpecificationFreezer
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
 
 
 class SpecDataModel(BaseModel):
@@ -93,7 +93,7 @@ class TestSpecificationFreezer:
             authorization_receipt_id="auth-001",
             authorization_receipt_digest="a" * 64,
         )
-        from agent.skills.shared.storage.artifact_store import DuplicateArtifactError
+        from agent.host.storage.artifact_store import DuplicateArtifactError
 
         with pytest.raises(DuplicateArtifactError):
             freezer.freeze(

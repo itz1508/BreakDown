@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.skills.shared.contracts.context.repository import GitObjectFormat, RepositoryIdentityV2, WorktreeState
+from agent.host.contracts.context.repository import GitObjectFormat, RepositoryIdentityV2, WorktreeState
 
 
 def test_git_object_formats():

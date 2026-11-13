@@ -1,10 +1,10 @@
 """Scanner exact digest tests — SCN01-SCN10."""
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.storage.artifact_store import ArtifactStore
 from agent.skills.planner.contracts.scanner import ScannerCapabilityID, ScannerOutcome, ScannerRequest
 from agent.skills.planner.scanner_gateway import ScannerGateway
 from agent.skills.researcher.contracts.research import Requirement, ResearchRecord
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.storage.artifact_store import ArtifactStore
 
 
 def make_ref(aid="cand-001", rev=1, digest=None):

@@ -9,6 +9,9 @@ unverified claims, and invalid inputs).
 import pytest
 from pydantic import BaseModel
 
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.event_store import EventStore
+from agent.host.storage.receipt_store import ReceiptStore
 from agent.skills.researcher.contracts.research import (
     AdmissionDisposition,
     CatalogMatchStatus,
@@ -20,9 +23,6 @@ from agent.skills.researcher.contracts.research import (
     ReviewDisposition,
 )
 from agent.skills.researcher.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.event_store import EventStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
 
 
 class _DummyReport(BaseModel):

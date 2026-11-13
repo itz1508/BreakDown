@@ -6,14 +6,14 @@ import argparse
 import time
 from pathlib import Path
 
-from agent.skills.shared.contracts.workflow.system.provider import (
+from agent.host.contracts.system.provider import (
     CapabilityResult,
     CapabilityState,
     ProbeStatus,
     ProviderProbeRecord,
 )
-from agent.skills.shared.providers.provider_config import load_provider_config, resolve_model
-from agent.skills.shared.providers.provider_factory import build_provider
+from agent.host.providers.provider_config import load_provider_config, resolve_model
+from agent.host.providers.provider_factory import build_provider
 from api_fundamentals.probes.all import PROBES
 
 

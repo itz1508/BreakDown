@@ -10,6 +10,10 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
+from agent.host.contracts.common import ArtifactRef, ContractModel, StepStatus
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.receipt_store import ReceiptStore
 from agent.skills.planner.review.gap_analysis import (
     ComparableSystemAnalysis,
     GapAnalyzer,
@@ -23,10 +27,6 @@ from agent.skills.planner.review.gap_analysis import (
     WorkflowContractBundle,
     WorkflowExecutionTrace,
 )
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
 
 __all__ = (
     "HostGapAnalyzer",

@@ -3,29 +3,29 @@
 import pytest
 from pydantic import BaseModel
 
-from agent.skills.builder.contracts.build import BuildActionExecution, BuildActionStatus, BuildRecord
-from agent.skills.planner.contracts.template import PlanTemplate
-from agent.skills.planner.plan_templates import PlanTemplateService
-from agent.skills.shared.contracts.context.build_memory import KnowledgeKind, VerifiedBuildKnowledge
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, DiagnosticStatus
-from agent.skills.shared.contracts.workflow.system.host import (
+from agent.host.contracts.common import ArtifactRef, DiagnosticStatus
+from agent.host.contracts.context.build_memory import KnowledgeKind, VerifiedBuildKnowledge
+from agent.host.contracts.system.host import (
     BuildAdmissionReceipt,
     PackageLockReceipt,
     ReceiptRef,
     admission_receipt_subject,
 )
-from agent.skills.shared.contracts.workflow.verifier.build_validation import (
+from agent.host.contracts.verifier.build_validation import (
     BuildValidationRecord,
     CriterionResult,
     E2EResult,
     ObservedCriterionResult,
     ValidationIssueInput,
 )
-from agent.skills.shared.host.memory_promotion import HostMemoryManager, MemoryPromotionError
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
-from agent.skills.shared.storage.receipt_store import ReceiptStore
-from agent.skills.shared.storage.stage_journal import StageJournalService
+from agent.host.memory_promotion import HostMemoryManager, MemoryPromotionError
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE
+from agent.host.storage.receipt_store import ReceiptStore
+from agent.host.storage.stage_journal import StageJournalService
+from agent.skills.builder.contracts.build import BuildActionExecution, BuildActionStatus, BuildRecord
+from agent.skills.planner.contracts.template import PlanTemplate
+from agent.skills.planner.plan_templates import PlanTemplateService
 
 
 class Evidence(BaseModel):

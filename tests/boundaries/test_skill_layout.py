@@ -22,9 +22,8 @@ def test_canonical_skill_file_names() -> None:
         "agent/skills/researcher/research.yaml",
         "agent/skills/tools/verify_all.py",
         "agent/skills/tools/sys_scan.py",
-        "agent/skills/shared/contracts/workflow/verifier/fixture_validation.py",
-        "agent/skills/shared/host/file_operations.py",
-        "agent/skills/shared/host/traceback_report.py",
+        "agent/host/file_operations.py",
+        "agent/host/traceback_report.py",
     ):
         assert (ROOT / path).is_file(), path
 
@@ -36,12 +35,12 @@ def test_obsolete_skill_paths_are_absent() -> None:
         "agent/skills/auditor/tools",
         "agent/skills/planner/checks",
         "agent/skills/planner/tools",
-        "agent/skills/planner/plan.py",
         "agent/skills/fixturer",
         "agent/skills/code_design",
         "agent/skills/executor",
         "contracts",
         "system",
+        "agent/skills/shared",
     ):
         assert not (ROOT / obsolete).exists(), obsolete
 

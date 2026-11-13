@@ -6,8 +6,8 @@ from enum import StrEnum
 
 from pydantic import Field, model_validator
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agent.host.contracts.common import ArtifactRef, ContractModel
+from agent.host.contracts.system.host import ReceiptRef
 
 
 class TemplateStatus(StrEnum):

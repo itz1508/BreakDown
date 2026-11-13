@@ -3,7 +3,7 @@ name: Host integrity connected tests
 on:
   pull_request:
     paths:
-      - 'agent/skills/shared/host/workflow_control.py'
+      - 'agent/host/workflow_control.py'
       - 'system/storage/receipt_store.py'
       - 'mvp/**'
       - 'tests/e2e/test_host_integrity.py'

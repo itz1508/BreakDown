@@ -5,8 +5,8 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from agent.skills.shared.host.skill_dispatch import AuditArguments, SkillContext, execute_skill, registered_skills
-from agent.skills.shared.host.sys_controller import TransitionError
+from agent.host.skill_dispatch import AuditArguments, SkillContext, execute_skill, registered_skills
+from agent.host.sys_controller import TransitionError
 
 
 def test_four_registered_roles() -> None:
@@ -26,7 +26,7 @@ def test_wrong_role_cannot_import(tmp_path: Path) -> None:
     envelope = Mock(stage="build", role="researcher")
     context = SkillContext(host=host, workspace_root=tmp_path)
     with (
-        patch("agent.skills.shared.host.skill_dispatch.import_module") as imported,
+        patch("agent.host.skill_dispatch.import_module") as imported,
         pytest.raises(TransitionError, match="no executable skill"),
     ):
         execute_skill(context, envelope, AuditArguments())
@@ -38,7 +38,7 @@ def test_wrong_args_cannot_import(tmp_path: Path) -> None:
     host = Mock()
     envelope = Mock(stage="build", role="builder")
     with (
-        patch("agent.skills.shared.host.skill_dispatch.import_module") as imported,
+        patch("agent.host.skill_dispatch.import_module") as imported,
         pytest.raises(TransitionError, match="argument type"),
     ):
         execute_skill(SkillContext(host=host, workspace_root=tmp_path), envelope, AuditArguments())
@@ -49,7 +49,7 @@ def test_failed_host_receipt_check_blocks_dispatch(tmp_path: Path) -> None:
     host = Mock()
     host.verify_agent_dispatch.side_effect = TransitionError("stale dispatch")
     with (
-        patch("agent.skills.shared.host.skill_dispatch.import_module") as imported,
+        patch("agent.host.skill_dispatch.import_module") as imported,
         pytest.raises(TransitionError, match="stale dispatch"),
     ):
         execute_skill(
@@ -61,7 +61,7 @@ def test_failed_host_receipt_check_blocks_dispatch(tmp_path: Path) -> None:
 
 
 def test_host_dispatch_role_uses_registered_skill_not_removed_workflow(tmp_path: Path) -> None:
-    from agent.skills.shared.host.sys_controller import HostController, Stage
+    from agent.host.sys_controller import HostController, Stage
 
     host = HostController(tmp_path)
     assert host._declared_dispatch_role(Stage.RESEARCH) == "researcher"

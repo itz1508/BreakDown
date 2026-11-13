@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
+from agent.host.contracts.common import DiagnosticStatus, StepStatus
+from agent.host.sys_controller import HostController, TransitionError
 from agent.skills.planner.contracts.scanner import ScannerOutcome
 from agent.skills.planner.host_gap_analyzer import StructuralGapError
-from agent.skills.shared.contracts.workflow.common import DiagnosticStatus, StepStatus
-from agent.skills.shared.host.sys_controller import HostController, TransitionError
 from tests.fixtures.structural_gap import build_gap_inputs, passing_gap
 
 

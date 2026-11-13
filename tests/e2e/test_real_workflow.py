@@ -1,4 +1,4 @@
-"""E2E workflow tests — E2E01-E2E06, S1-S6, and adversarial security tests."""
+"""E2E workflow tests ??? E2E01-E2E06, S1-S6, and adversarial security tests."""
 
 import os
 from pathlib import Path
@@ -6,8 +6,17 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from agent.host.storage.checkpoint_store import CheckpointStore
+from agent.host.storage.receipt_store import ReceiptStore
+from agent.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+from agent.host.sys_policy_enforcer import AuthorizationEngine
 from agent.skills.builder.build_admission import BuildAdmission, BuildAdmissionError
 from agent.skills.builder.contracts.build import BuildActionStatus
+from agent.skills.builder.effect_executor import EffectExecutor
 from agent.skills.planner.contracts.scanner import ScannerFinding
 from agent.skills.planner.contracts.work_todo import WorkBinding, WorkStatus
 from agent.skills.planner.scanner_gateway import ScannerGateway
@@ -18,15 +27,6 @@ from agent.skills.researcher.contracts.research import (
     Requirement,
     ResearchRecord,
 )
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.effect_executor import EffectExecutor
-from agent.skills.shared.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
-from agent.skills.shared.host.sys_policy_enforcer import AuthorizationEngine
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
-from agent.skills.shared.storage.checkpoint_store import CheckpointStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
 from tests.fixtures.structural_gap import passing_gap
 
 LOCK_SUBJECT = "package_lock"
@@ -232,7 +232,7 @@ class TestE2EWorkflow:
         controller = HostController(state_root=tmp_path)
         result = controller.providers.generate(
             "echo",
-            __import__("agent.skills.shared.providers.providers.base", fromlist=["ProviderRequest"]).ProviderRequest(
+            __import__("agent.host.providers.backends.base", fromlist=["ProviderRequest"]).ProviderRequest(
                 run_id="run-001",
                 prompt="analyze requirements",
             ),
@@ -531,7 +531,7 @@ class TestScenarios:
         executor = EffectExecutor(auth, checkpoints, receipts, workspace)
         admission_receipt = _make_admission(receipts)
 
-        # Try to modify through the symlink — should be blocked
+        # Try to modify through the symlink ??? should be blocked
         result = executor.execute_admitted(
             action_id="act-001",
             action_kind="modify",
@@ -639,7 +639,7 @@ class TestScenarios:
         # Simulate a crash on a NEW executor with same state
         executor2 = EffectExecutor(auth, checkpoints, receipts, workspace)
 
-        # Reconcile — file matches, should complete
+        # Reconcile ??? file matches, should complete
         reconciled = executor2.reconcile_effect("act-002", "output2.py", expected_digest)
         assert reconciled.status is BuildActionStatus.COMPLETED
 
@@ -679,7 +679,7 @@ class TestScenarios:
         assert receipts.verify("reconciled-act-003", receipt_digest, subject)
 
     def test_s7_full_host_controlled_execution(self, tmp_path):
-        """S7: Full host-controlled execution path: lock → admit → execute → verify."""
+        """S7: Full host-controlled execution path: lock ??? admit ??? execute ??? verify."""
         workspace = tmp_path / "workspace"
         workspace.mkdir()
         state = tmp_path / "state"
@@ -739,7 +739,7 @@ class TestScenarios:
         admission_receipt = _make_admission(receipts, action_ids=("act-001",))
 
         # Try to execute act-002 (not authorized)
-        from agent.skills.shared.host.effect_executor import EffectExecutionError
+        from agent.skills.builder.effect_executor import EffectExecutionError
 
         with pytest.raises(EffectExecutionError, match="not authorized"):
             executor.execute_admitted(
@@ -759,7 +759,7 @@ class TestScenarios:
         assert cmd_verify("task-001", str(tmp_path)) == 1
 
     def test_research_to_audit_handoff(self, tmp_path):
-        """Full research→audit handoff with artifact store."""
+        """Full research???audit handoff with artifact store."""
         store = ArtifactStore(tmp_path)
         receipts = ReceiptStore(tmp_path)
         research = ResearchRecord(

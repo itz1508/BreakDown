@@ -10,16 +10,16 @@ from types import SimpleNamespace
 import pytest
 from pydantic import ValidationError
 
-from agent.skills.planner.contracts.scanner import ScannerFinding, ScannerResult
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, DiagnosticStatus
-from agent.skills.shared.contracts.workflow.system.diagnostic import (
+from agent.host.contracts.common import ArtifactRef, DiagnosticStatus
+from agent.host.contracts.system.diagnostic import (
     DiagnosticReview,
     Recommendation,
     RecommendationStatus,
 )
-from agent.skills.shared.host.diagnostic_review import assemble_dossier, persist_review, recommend
-from agent.skills.shared.host.traceback_report import normalize_exception
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, canonical_bytes
+from agent.host.diagnostic_review import assemble_dossier, persist_review, recommend
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE, canonical_bytes
+from agent.host.traceback_report import normalize_exception
+from agent.skills.planner.contracts.scanner import ScannerFinding, ScannerResult
 
 
 class FakeArtifacts:
@@ -416,7 +416,7 @@ def test_direct_recommendation_model_rejects_fabricated_evidence():
 
 
 def test_invalid_frame_metadata_is_rejected():
-    from agent.skills.shared.contracts.workflow.system.diagnostic import FrameEvidence
+    from agent.host.contracts.system.diagnostic import FrameEvidence
 
     for path in ("/private/secrets", "../outside", "C:\\private\\secrets", "path\nINSTRUCTIONS"):
         with pytest.raises(ValidationError, match="normalized relative"):

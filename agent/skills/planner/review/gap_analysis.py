@@ -16,8 +16,8 @@ from pathlib import Path
 
 from pydantic import Field
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, DiagnosticStatus, StepStatus
-from agent.skills.shared.contracts.workflow.validation.structural import (
+from agent.host.contracts.common import ArtifactRef, ContractModel, DiagnosticStatus, StepStatus
+from agent.skills.planner.contracts.validation.structural import (
     ConcernCell,
     ReferenceNeed,
     SourceDeclaration,
@@ -472,7 +472,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="reference_closure",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/contracts/workflow/validation/structural.py",
+                    path="agent/skills/planner/contracts/validation/structural.py",
                     symbols=("reference_gaps",),
                 ),
             ),
@@ -484,7 +484,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="execution_trace",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/contracts/workflow/validation/structural.py",
+                    path="agent/skills/planner/contracts/validation/structural.py",
                     symbols=("trace_gaps",),
                 ),
             ),
@@ -494,7 +494,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="concern_matrix",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/contracts/workflow/validation/structural.py",
+                    path="agent/skills/planner/contracts/validation/structural.py",
                     symbols=("concern_gaps",),
                 ),
             ),
@@ -523,7 +523,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="tool_registry",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/host/tool_registry.py",
+                    path="agent/host/tool_registry.py",
                     symbols=("pin_tool_registry", "load_pinned_tool_registry"),
                 ),
             ),
@@ -532,13 +532,13 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="registered_command_resolver",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/contracts/workflow/system/tool_registry.py",
+                    path="agent/host/contracts/system/tool_registry.py",
                     symbols=("resolve_invocation",),
                 ),
             ),
             consumers=(
                 CapabilityConsumer(
-                    path="agent/skills/shared/contracts/workflow/validation/structural.py",
+                    path="agent/skills/planner/contracts/validation/structural.py",
                     reference="resolve_invocation",
                 ),
             ),
@@ -547,7 +547,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="sandbox_profile_registry",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/contracts/workflow/system/tool_registry.py",
+                    path="agent/host/contracts/system/tool_registry.py",
                     symbols=("SandboxProfile", "ToolRegistrySnapshot"),
                 ),
             ),
@@ -565,7 +565,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="runtime_root_registry",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/storage/runtime_root_registry.py",
+                    path="agent/host/storage/runtime_root_registry.py",
                     symbols=("RuntimeRootRegistry",),
                 ),
             ),
@@ -574,7 +574,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="recovery_readiness",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/host/recovery_readiness.py",
+                    path="agent/host/recovery_readiness.py",
                     symbols=("RecoveryReadiness",),
                 ),
             ),
@@ -598,13 +598,13 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="move_atomicity",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/shared/host/effect_executor.py",
+                    path="agent/skills/builder/effect_executor.py",
                     symbols=("EffectExecutor",),
                 ),
             ),
             consumers=(
                 CapabilityConsumer(
-                    path="agent/skills/shared/host/effect_executor.py",
+                    path="agent/skills/builder/effect_executor.py",
                     reference='action_kind == "move"',
                 ),
             ),
@@ -632,13 +632,13 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             producers=(
                 CapabilityProducer(path="agent/skills/builder/contracts/schedule.py", symbols=("BuildWave",)),
                 CapabilityProducer(
-                    path="agent/skills/shared/host/effect_executor.py",
+                    path="agent/skills/builder/effect_executor.py",
                     symbols=("EffectExecutor.execute_admitted",),
                 ),
             ),
             consumers=(
                 CapabilityConsumer(
-                    path="agent/skills/shared/host/effect_executor.py",
+                    path="agent/skills/builder/effect_executor.py",
                     reference="expected_source_digest",
                 ),
             ),

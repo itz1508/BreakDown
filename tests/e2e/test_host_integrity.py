@@ -7,11 +7,11 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE
+from agent.host.sys_controller import HostController, Stage, TransitionError
 from agent.skills.planner.contracts.work_todo import WorkBinding, WorkStatus
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.sys_controller import HostController, Stage, TransitionError
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
 
 
 class _Evidence(BaseModel):

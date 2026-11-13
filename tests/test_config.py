@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from agent.skills.shared.host.loaders import load_app_config, load_selected_provider
+from agent.host.loaders import load_app_config, load_selected_provider
 
 
 def test_config_loads():

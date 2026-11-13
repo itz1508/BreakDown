@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from agent.host.contracts.system.host import HostDispatchEnvelope
+from agent.host.skill_dispatch import BuildArguments, SkillContext
 from agent.skills.builder.contracts.build import BuildActionExecution
-from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agent.skills.shared.host.skill_dispatch import BuildArguments, SkillContext
 
 
 def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: BuildArguments) -> BuildActionExecution:

@@ -2,18 +2,18 @@
 
 from __future__ import annotations
 
-from agent.skills.planner.contracts.specification import BuildSpecification, CandidateSpecification, PlanningRecord
-from agent.skills.shared.contracts.workflow.system.host import (
+from agent.host.contracts.system.host import (
     BuildAdmissionReceipt,
     PackageLockReceipt,
     ReceiptRef,
     admission_receipt_subject,
 )
-from agent.skills.shared.contracts.workflow.validation.structural import tool_invocation_gaps
-from agent.skills.shared.host.tool_registry import load_pinned_tool_registry
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.canonical_serialization import digest_raw
-from agent.skills.shared.storage.receipt_store import ReceiptStore
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.canonical_serialization import digest_raw
+from agent.host.storage.receipt_store import ReceiptStore
+from agent.host.tool_registry import load_pinned_tool_registry
+from agent.skills.planner.contracts.specification import BuildSpecification, CandidateSpecification, PlanningRecord
+from agent.skills.planner.contracts.validation.structural import tool_invocation_gaps
 
 
 class BuildAdmissionError(Exception):

@@ -4,9 +4,9 @@ from unittest.mock import Mock
 
 import pytest
 
+from agent.host import file_operations
+from agent.host.skill_dispatch import BuildArguments
 from agent.skills.builder.building import run
-from agent.skills.shared.host import file_operations
-from agent.skills.shared.host.skill_dispatch import BuildArguments
 
 
 def test_builder_delegates_admitted_effect() -> None:
@@ -73,9 +73,9 @@ def test_builder_atomic_write_cleans_temporary_file_on_failure(tmp_path, monkeyp
 
 def test_failed_pre_effect_checkpoint_cannot_create_parent_directory(tmp_path, monkeypatch) -> None:
     """A failed durable checkpoint must not cause even a parent mkdir."""
+    from agent.host.contracts.system.host import BuildAdmissionReceipt, ReceiptRef
     from agent.skills.builder.contracts.build import BuildActionStatus
-    from agent.skills.shared.contracts.workflow.system.host import BuildAdmissionReceipt, ReceiptRef
-    from agent.skills.shared.host.effect_executor import EffectExecutor
+    from agent.skills.builder.effect_executor import EffectExecutor
 
     receipts = Mock()
     receipts.verify.return_value = True

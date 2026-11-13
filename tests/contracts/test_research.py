@@ -3,6 +3,10 @@
 import pytest
 from pydantic import ValidationError
 
+from agent.skills.planner.contracts.validation.research import (
+    validate_criterion_binding,
+    validate_research_ids,
+)
 from agent.skills.researcher.contracts.research import (
     AcceptanceCriterion,
     AuthorizationStatus,
@@ -12,10 +16,6 @@ from agent.skills.researcher.contracts.research import (
     Requirement,
     ResearchClaim,
     ResearchRecord,
-)
-from agent.skills.shared.contracts.workflow.validation.research import (
-    validate_criterion_binding,
-    validate_research_ids,
 )
 
 

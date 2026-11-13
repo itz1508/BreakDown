@@ -8,9 +8,9 @@ from uuid import uuid4
 from pydantic import BaseModel
 
 from agent.cli import main
+from agent.host.contracts.system.host import ReceiptRef
+from agent.host.sys_controller import HostController
 from agent.skills.planner.contracts.scanner import ScannerRunInput
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.sys_controller import HostController
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record
 
 

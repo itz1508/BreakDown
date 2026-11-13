@@ -14,18 +14,18 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.storage.artifact_store import DuplicateArtifactError
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from agent.host.sys_controller import HostController
+from agent.host.work_todo import WorkTodoError
 from agent.skills.builder.build_admission import BuildAdmission
 from agent.skills.builder.build_todos import compile_build
+from agent.skills.builder.effect_executor import EffectExecutionError, EffectExecutor
 from agent.skills.builder.package_lock import PackageLock
 from agent.skills.planner.contracts.specification import BuildSpecification
 from agent.skills.planner.contracts.task_todo import Build
 from agent.skills.planner.contracts.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.host.effect_executor import EffectExecutionError, EffectExecutor
-from agent.skills.shared.host.sys_controller import HostController
-from agent.skills.shared.host.work_todo import WorkTodoError
-from agent.skills.shared.storage.artifact_store import DuplicateArtifactError
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
 
 FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "task_todo.json"
 

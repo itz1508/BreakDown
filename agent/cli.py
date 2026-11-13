@@ -6,8 +6,8 @@ import json
 import sys
 from pathlib import Path
 
+from agent.host.sys_controller import HostController, Stage, TransitionError
 from agent.skills.planner.contracts.scanner import ScannerOutcome, ScannerRunInput
-from agent.skills.shared.host.sys_controller import HostController, Stage, TransitionError
 
 
 def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:
@@ -168,7 +168,7 @@ def main() -> int:
         args = parser.parse_args(sys.argv[2:])
         return cmd_scan(args.task_id, args.request_file, args.state_root)
     elif cmd == "skills":
-        from agent.skills.shared.host.skill_dispatch import registered_skills
+        from agent.host.skill_dispatch import registered_skills
 
         print(json.dumps(registered_skills(), sort_keys=True, indent=2))
         return 0

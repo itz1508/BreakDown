@@ -79,7 +79,7 @@ jobs:
       - name: Build and inspect installable package
         run: |
           uv build --wheel
-          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/shared/host/file_operations.py", "agent/skills/researcher/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/host/file_operations.py", "agent/skills/researcher/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
       - name: Bundle exact source and dependency lock (candidate only)
         if: matrix.python-version == '3.11'
         run: git archive --format=zip --output=dist/breakdown-source-candidate.zip HEAD

@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import FreezeReceipt, ReceiptRef
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import FreezeReceipt, ReceiptRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.storage.receipt_store import ReceiptStore
 
 
 class FreezeError(Exception):

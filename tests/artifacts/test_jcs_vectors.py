@@ -4,7 +4,7 @@ import hashlib
 
 from pydantic import BaseModel
 
-from agent.skills.shared.storage.canonical_serialization import (
+from agent.host.storage.canonical_serialization import (
     SERIALIZER_PROFILE,
     canonical_bytes,
     canonical_bytes_from_dict,

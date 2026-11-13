@@ -8,6 +8,10 @@ from time import perf_counter_ns
 import pytest
 from pydantic import BaseModel
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.storage.artifact_store import ArtifactStore
+from agent.host.sys_controller import HostController, TransitionError
+from agent.host.sys_policy_enforcer import AuthorizationError, Capability
 from agent.skills.planner.contracts.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -22,15 +26,11 @@ from agent.skills.planner.contracts.specification import (
     CreateAction,
     PlanningRecord,
 )
-from agent.skills.planner.scanner_gateway import ScannerGateway
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.validation.planning import (
+from agent.skills.planner.contracts.validation.planning import (
     parse_action_dependency_facts,
     scan_action_dependencies,
 )
-from agent.skills.shared.host.sys_controller import HostController, TransitionError
-from agent.skills.shared.host.sys_policy_enforcer import AuthorizationError, Capability
-from agent.skills.shared.storage.artifact_store import ArtifactStore
+from agent.skills.planner.scanner_gateway import ScannerGateway
 
 
 class CandidatePayload(BaseModel):

@@ -4,10 +4,10 @@ from datetime import UTC, datetime
 
 import pytest
 
+from agent.host.contracts.system.host import Checkpoint
+from agent.host.storage.artifact_store import ArtifactStore, DuplicateArtifactError
+from agent.host.storage.checkpoint_store import InMemoryCheckpointStore, StaleCheckpointError
 from agent.skills.researcher.contracts.research import Requirement, ResearchRecord
-from agent.skills.shared.contracts.workflow.system.host import Checkpoint
-from agent.skills.shared.storage.artifact_store import ArtifactStore, DuplicateArtifactError
-from agent.skills.shared.storage.checkpoint_store import InMemoryCheckpointStore, StaleCheckpointError
 
 HEX = "a" * 64
 

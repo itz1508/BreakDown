@@ -3,6 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
+from agent.host.contracts.common import ArtifactRef
 from agent.skills.auditor.contracts._discovery import (
     AuditDiscoveryPackage,
     ExistingGapIntent,
@@ -10,8 +11,7 @@ from agent.skills.auditor.contracts._discovery import (
     RepositoryIdentity,
 )
 from agent.skills.planner.contracts.specification import IssueEvidenceStatus, IssueResolutionStatus, PlanningIssue
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.validation import validate_code_intents
+from agent.skills.planner.contracts.validation import validate_code_intents
 
 HEX = "a" * 64
 

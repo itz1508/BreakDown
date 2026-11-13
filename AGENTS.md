@@ -68,57 +68,80 @@ project ownership, permissions, or runtime controls.
 ## File and folder guidance
 
 Inspect the current tree and approved mapping before creating or moving files.
-This template explains ownership; it does not authorize a repository migration.
+Create optional components only when needed; this tree does not authorize migration.
 
 ```text
 agent/
-├── breakdown.yaml                  # Single workflow definition
+├── breakdown.yaml                 # Single workflow definition
 └── skills/
     ├── shared/
-    │   ├── tools/                  # Cross-role operations
-    │   ├── templates/              # Canonical processing instructions
+    │   ├── tools/                 # Cross-role operations
+    │   ├── templates/             # Reusable processing instructions
     │   └── references/
     └── <role>/
-        ├── __init__.py             # Where required by adopted packaging
-        ├── <entrypoint>.py
-        ├── <runtime>.py
+        ├── __init__.py            # Where packaging requires it
+        ├── <entrypoint>.py        # Reusable role callable
+        ├── __main__.py            # Optional thin CLI adapter
+        ├── <runtime>.py           # Optional distinct execution logic
         ├── SKILL.md
-        ├── tools/                  # Role-owned operations
-        ├── outputs/                  # Generated outputs and artifacts
+        ├── tools/                 # Role-owned operations
+        ├── outputs/               # Optional request/attempt-scoped exports
         ├── templates/
         └── references/
 
 system/
-├── host/                           # API transport
-├── runtime/                        # Lifecycle and execution coordination
-└── storage/                        # Persistence and integrity
+├── bootstrap/                     # Session-start instructions/setup
+├── settings/
+│   └── config.yaml
+├── runtime/                       # Execution coordination
+└── storage/                       # Persistence and integrity
 ```
 
+Example:
+
+```text
+agent/skills/auditor/
+├── __init__.py
+├── audit.py                       # Defines the reusable run(...) function
+└── __main__.py                    # Parses CLI input and calls run(...)
+```
+
+Python/API callers import the function:
+
+```python
+from agent.skills.auditor.audit import run
+```
+
+CLI callers invoke the package:
+
+```bash
+uv run --no-sync python -m agent.skills.auditor
+```
+
+Both use the same implementation. Do not add placeholder role logic merely
+to match this example. Persist authoritative artifacts through Storage;
+optional exports must not overwrite other requests or attempts.
+
+## Structure
+
 - Roles: researcher, auditor, coder, fixturer, planner, builder.
-- Preserve approved names and register actual entrypoints in `agent/breakdown.yaml`.
-- Create optional folders only when needed.
-- Keep one canonical implementation; shared consumers import it rather than copy it.
-- Do not create duplicate workflow definitions or per-role workflow contracts.
-- Supporting YAML may contain approved settings or templates, not competing orchestration.
-- Generated plans, TODOs, and results go through Storage—not into reusable templates.
-- Preserve existing typed schemas and persisted formats unless migration is approved.
-- Report differences from the approved structure; do not silently rearrange files.
-- File location alone does not enforce permissions.
+- Preserve approved names; map actual entrypoints in `agent/breakdown.yaml`.
+- Create folders only when needed. Reuse canonical code; do not copy implementations.
+- Keep one workflow definition. Supporting YAML contains settings/templates,
+  not competing orchestration or duplicate role contracts.
+- Persist generated artifacts through Storage; keep templates reusable.
+- Preserve schemas and stored formats unless migration is approved.
+- Report structural conflicts before moving files. Location does not grant permission.
 
-## Responsibility boundaries
+## Responsibilities
 
-- Roles perform assigned work; they cannot grant permissions or approve themselves.
-- Planner creates `phase_steps` and `task_todo`, invokes required registered tools,
-  binds hashes, and performs preflight.
-- Builder creates the authorized sandbox, executes the supplied assignment
-  asynchronously, and synchronizes actual results.
-- Runtime coordinates lifecycle, dispatch, authorization gates, checkpoints,
-  recovery, and result synchronization.
-- Storage persists artifacts, checkpoints, receipts, and events; it does not
-  choose transitions or confer authority.
-- Follow the approved responsibility of Coder and Fixturer; do not infer new
-  responsibilities from their names.
-- Do not add a separate validation/verifier stage without an approved workflow change.
+- Roles follow assigned scope; they cannot approve themselves or grant authority.
+- Planner produces `phase_steps`/`task_todo`, runs required tools, binds hashes
+  and performs preflight.
+- Builder creates the authorized sandbox, executes asynchronously and syncs results.
+- Runtime coordinates lifecycle, dispatch, authorization, checkpoints and recovery.
+- Storage persists records; it does not authorize work or decide transitions.
+- Follow defined Coder/Fixturer duties. Add no verifier stage without approval..
 
 ## Identity, help, and recovery
 
@@ -135,90 +158,115 @@ system/
 - `DONE` means assigned execution finished and results synchronized—not that
   unperformed checks passed.
 
-## Small batches and verification
+## Setup commands
 
-- Inspect → research → propose → obtain required approval → implement → check.
-- A direct implementation request may authorize its stated scope; do not invent
-  extra approval ceremonies. Proposal-only requests stop before source changes.
-- Complete the approved batch before starting another.
-- Map every change to an approved requirement or plan action.
-- Do not change architecture, restore removed components, weaken tests, or relabel
-  fixtures merely to obtain passing results.
-- Preserve unrelated worktree changes.
-- Run focused checks first, then applicable repository checks.
-- Ensure structural scans inspect a nonempty declared scope.
-- Distinguish mocks, synthetic fixtures, actual integration, and deployed behavior.
-- Report changed paths, executed commands, literal results, and remaining uncertainties.
-- Passing tests or static scans do not prove unexercised behavior.
-- Do not push, merge, delete branches, deploy, or promote without authorization.
+Run from the directory containing `pyproject.toml`.
 
-## Languages and package managers
-
-Use existing manifests, lockfiles, and pinned versions from the owning project directory.
-Different subprojects may use different managers; do not mix managers within one project.
-
-### Python — uv
-
-- Dependencies: `pyproject.toml`; resolution: `uv.lock`.
-- Install: `uv sync --locked` with only required approved extras.
-- Run: `uv run --no-sync <command>`.
-- Check lock: `uv lock --check`.
-- Add/remove dependencies through `uv add` / `uv remove` within approved scope.
-- Do not hand-edit lockfiles, use global pip installs, or change registry credentials.
-
-### JavaScript / TypeScript
-
-Use `package.json` → `packageManager`, the existing lockfile, and project instructions.
-If they disagree or competing lockfiles exist, resolve the conflict before installation.
-
-| Selected manager | Reproducible install |
-|---|---|
-| pnpm | `pnpm install --frozen-lockfile` |
-| npm | `npm ci` |
-
-- Use pinned Node.js and package-manager versions.
-- Run declared scripts: `<manager> run <script>`.
-- Add/remove dependencies using the selected manager within approved scope.
-- Preserve other established managers rather than silently switching to npm or pnpm.
-- Inspect unfamiliar install scripts and diagnostic commands before execution.
-
-## Testing instructions
-
-- Read `.github/workflows/` and `pyproject.toml` for the actual checks.
-- Run commands from the project directory owning the manifest.
-- Sync dependencies: `uv sync --locked` with the extras required by those checks.
+- Install dependencies: `uv sync --locked` with required extras.
+- Check lockfile: `uv lock --check`.
 - Run tests: `uv run --no-sync pytest -q`.
-- Focus a file: `uv run --no-sync pytest -q tests/<path>/test_<name>.py`.
-- Focus a test: `uv run --no-sync pytest -q -k "<test_name>"`.
+- Run one test file: `uv run --no-sync pytest -q tests/<path>/test_<name>.py`.
 - Lint: `uv run --no-sync ruff check .`.
 - Format check: `uv run --no-sync ruff format --check .`.
-- Check dependencies: `uv run --no-sync deptry .`.
-- Check lock consistency: `uv lock --check`.
-- Run the type-check command declared by current CI; verify its package paths.
-- After moving files or changing imports, check affected callers, entrypoints,
-  configuration references and package resources—not just syntax.
+- Type check: use the package paths configured in `pyproject.toml` and CI.
+- Start application: use the verified project entrypoint; do not guess.
+
+For frontend work, follow `package.json`, its pinned package manager and lockfile.
+Run its declared development, test and lint scripts.
+
+## Code style
+
+- Follow existing Python style and configured Ruff/mypy rules.
+- Preserve public interfaces and stored-data compatibility.
+- Reuse existing functions and SDKs before adding abstractions.
+- Keep changes focused; avoid unrelated formatting or refactoring.
+
+## Verification
+
+- Plan, then TODO; implement only the authorized batch.
+- Run focused checks first, then applicable repository checks.
+- Preserve meaningful tests and unrelated worktree changes.
+- Report exact commands, results and checks not performed.
+- Review the full diff before committing.
+- Push, merge, delete branches or deploy only when authorized.
+## Package managers
+
+Run commands from the directory owning the relevant manifest.
+
+### Python — repository root
+
+Use `pyproject.toml` and `uv.lock`.
+
+- Install: `uv sync --locked` with required extras.
+- Run: `uv run --no-sync <command>`.
+- Check lock: `uv lock --check`.
+- Change dependencies: `uv add` / `uv remove` within scope.
+
+Do not hand-edit lockfiles, install dependencies globally or change registry credentials.
+
+### Frontend — `web/`
+
+Read `web/package.json`, its `packageManager` field and lockfile.
+Use the selected manager; do not switch or generate competing lockfiles.
+
+| Manager | Install | Run declared scripts |
+|---|---|---|
+| pnpm | `pnpm install --frozen-lockfile` | `pnpm run <script>` |
+| npm | `npm ci` | `npm run <script>` |
+
+Use pinned Node.js/package-manager versions. Resolve conflicting manifests
+before installation and inspect unfamiliar lifecycle scripts.
+
+## Testing
+
+Read `.github/workflows/`, `pyproject.toml` and `web/package.json`
+for the checks actually configured.
+
+### Python — from repository root
+
+- Tests: `uv run --no-sync pytest -q`.
+- One file: `uv run --no-sync pytest -q tests/<path>/test_<name>.py`.
+- Named tests: `uv run --no-sync pytest -q -k "<test_name>"`.
+- Lint: `uv run --no-sync ruff check .`.
+- Format check: `uv run --no-sync ruff format --check .`.
+- Dependencies: `uv run --no-sync deptry .`.
+- Lock consistency: `uv lock --check`.
+- Types: run the current CI command with verified package paths.
+
+Use these commands only where the corresponding tools are configured.
+
+### Frontend — from `web/`
+
+Run the existing test, lint, type-check and build scripts with its selected
+package manager. Do not assume Turbo, Vitest or scripts that are not declared.
+
+### Verification rules
+
+- Run focused checks first, then applicable repository checks.
 - Add or update meaningful tests for changed behavior.
-- Fix introduced failures without weakening assertions or hiding missing functionality.
-- Compare against the unchanged baseline before claiming failures are pre-existing.
-- Report commands, results and checks not performed. Do not claim readiness
-  while required checks remain unresolved.
-- For frontend changes, use `web/package.json`, its selected package manager
-  and existing lockfile. Run its declared scripts; do not assume pnpm/Turbo/Vitest.
+- After moves/import changes, check callers, entrypoints, configuration
+  and package resources—not just syntax.
+- Fix introduced failures without weakening assertions or hiding missing behavior.
+- Compare with an unchanged baseline before calling failures pre-existing.
+- Report exact commands, results and checks not performed.
+- Do not claim readiness while required checks remain unresolved.
 
-## Commit and PR instructions
+## Commits and pull requests
 
-- Review the complete diff and stage only task-related changes.
-- Before committing, run applicable tests, lint, formatting and type checks.
+- Review the complete diff; stage only task-related changes.
+- Run applicable tests, lint, formatting and type checks before committing.
 - PR title: `[<component>] <concise change description>`.
-- Describe the requested outcome, actual changes, verification and remaining issues.
-- Commit, push, open a PR or merge only within the user's authorization.
+- Describe the outcome, changes, verification and remaining issues.
+- Commit, push, create a PR or merge only within task authorization.
 
-## Python library guidance
+## Python library references
 
-Prefer existing implementations and suitable standard-library modules.
-Use documentation for the actual Python version:
-https://docs.python.org/3/library/
-https://github.com/python/***
+Prefer existing project implementations and suitable standard-library facilities.
+
+Documentation: https://docs.python.org/3/library/
+Implementation reference: https://github.com/python/cpython
+Select documentation/source matching the actual interpreter version.
+
 | Work | Library |
 |---|---|
 | Paths/files | `pathlib` |
@@ -238,85 +286,45 @@ https://github.com/python/***
 | Packaged resources | `importlib.resources` |
 | Test doubles | `unittest.mock` |
 
-- Reuse existing storage, hashing, executor, and provider interfaces.
-- Filesystem/subprocess operations require approved scope; prefer argument lists
-  without a shell.
-- Do not run blocking I/O directly on an async event loop.
-- `asyncio` does not provide durable recovery or duplicate-effect prevention.
-- `unittest.mock.patch()` replaces test objects; it is not a source-patching tool.
-- Inspect installed SDK versions and official APIs before adding dependencies.
-- Keep secrets out of source, prompts, diagnostics, and logs.
+Reuse existing storage, hashing, execution and provider interfaces.
+Prefer subprocess argument lists without a shell. Keep blocking I/O off async
+event loops. Async execution alone does not provide durable recovery.
+
+`unittest.mock.patch()` replaces test objects; it does not apply source patches.
+Inspect installed SDK versions and official APIs before adding dependencies.
+Keep secrets out of source, prompts, diagnostics and logs.
 
 ## Reuse before inventing
 
-Check, in order:
-1. Existing project implementations and relevant approved Multi_Skills.
-2. Suitable standard-library capabilities.
-3. Existing SDKs and declared dependencies.
+Prefer existing project code, relevant Multi_Skills, standard-library facilities
+and installed SDKs. Explain the demonstrated gap before proposing the smallest
+necessary addition.
 
-Reuse does not prohibit necessary application logic or small integration code.
-Only introduce a new abstraction, subsystem, or dependency when relevant existing
-options cannot satisfy the requirement.
+## Records
 
-Explain what was checked, why it is insufficient, and the smallest necessary addition.
-Label the addition 🟨 **PROPOSAL** and obtain approval where the task requires it.
-## Change and build records
+- `BUILT.LOG`: delivered intent, implementation paths, evidence and unfinished work.
+- `LEARNED.LOG`: reusable lessons and tested-skill references.
+- `MEM.LOG`: durable facts, preferences and decisions with provenance.
+- `PLAN_TO_BUILD.LOG`: future build intentions—not TODO or authorization.
 
-### CHANGE.LOG
-Record file-level changes:
-- Task/batch reference.
-- Changed paths and what changed.
-- Reason for each change.
-- Corrections or approved deviations.
+Use Git history for source changes. Keep records concise, secret-free and
+nonduplicative. Append corrections; do not present attempts as delivered capability.
 
-### BUILT.LOG
-Record delivered intent:
-- Requirement ID and original user intent.
-- Capability actually implemented.
-- Implementation paths and artifact references.
-- What remains unfinished or differs from the intent.
-- Evidence supporting the claimed outcome.
+## Correct recurring behavior
 
-Rules:
-- Append corrections; preserve history.
-- Do not record proposals or attempted work as delivered capability.
-- Do not claim completion from passing tests alone.
-- Keep secrets out of both logs.
-### LEARNING.LOG — lessons for future work
+Improve the canonical skill or template within authorization; create a new one
+only when no existing owner fits.
 
-Record reusable lessons discovered during the work:
-- Task or situation where the lesson arose.
-- What was misunderstood, ineffective, or unexpectedly useful.
-- Evidence supporting the lesson.
-- What to do differently next time.
-- Where the lesson applies and its limitations.
+Define its activation conditions and expected behavior. Test through an actual
+agent run on a relevant case and a contrasting case, with expectations set first.
+Correct failures, rerun and preserve previously valid behavior.
 
-Rules:
-- Record practical observations—not private chain-of-thought or invented experience.
-- Distinguish verified lessons from hypotheses needing further checks.
-- Do not turn one case into a universal rule without evidence.
-- Keep secrets and unnecessary personal information out.
-- Append corrections when later evidence changes a lesson.
-- Lessons may inform proposals; they cannot override user instructions,
-  approved scope, or authorization.
-- This log is reusable knowledge, not a claim that the model retrained itself.
-## Learn from corrections
+Record the updated path, test evidence and limitations in `LEARNED.LOG`.
+Text checks or mocks alone do not prove behavioral improvement; label unexecuted
+changes untested.
 
-Before relevant work, read `LEARNING.LOG` and the applicable skill guidance.
-Do not ask the user to repeat an already recorded, applicable correction.
-
-### LEARNING.LOG
-
-Maintain this table:
-
-| Task/process | Correction | Frequency | Required behavior | Guidance path | Evidence |
-|---|---|---:|---|---|---|
-
-- Record each explicit user correction and increment its frequency when repeated.
-- Frequency counts observed corrections—not guesses or reconstructed history.
-- Record the instruction and practical lesson, not private reasoning.
-- Preserve its scope: a correction for one task is not automatically universal.
-- If a new correction contradicts an older one, record what supersedes what.
+Do not duplicate rules across skills or use “learning” to bypass authorization
+for workflow, schema, architecture or permission changes.
 
 ### Persist the correction
 

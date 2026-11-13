@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from agent.host.contracts.system.host import HostDispatchEnvelope
+from agent.host.skill_dispatch import AuditArguments, SkillContext
 from agent.skills.auditor.review.core import AuditResult, scan
-from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agent.skills.shared.host.skill_dispatch import AuditArguments, SkillContext
 
 
 def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: AuditArguments) -> AuditResult:

@@ -7,12 +7,12 @@ from uuid import uuid4
 import pytest
 from pydantic import BaseModel
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.contracts.system.host import HostDispatchEnvelope, HostDispatchResult
+from agent.host.storage.canonical_serialization import SERIALIZER_PROFILE
+from agent.host.sys_controller import HostController, Stage, TransitionError
 from agent.skills.planner.contracts.work_todo import WorkStatus
 from agent.skills.researcher.contracts.research import Requirement, ResearchRecord
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
-from agent.skills.shared.host.sys_controller import HostController, Stage, TransitionError
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
 from tests.e2e.test_real_workflow import _advance_with_receipt
 
 

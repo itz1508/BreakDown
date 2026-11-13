@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from agent.host.contracts.common import DiagnosticStatus
 from agent.skills.planner.review.gap_analysis import (
     CapabilityConsumer,
     CapabilityProducer,
@@ -10,7 +11,6 @@ from agent.skills.planner.review.gap_analysis import (
     RepositorySnapshot,
     audit_repository,
 )
-from agent.skills.shared.contracts.workflow.common import DiagnosticStatus
 
 
 def test_missing_capability_reports_producer_symbol_and_consumer_gaps() -> None:

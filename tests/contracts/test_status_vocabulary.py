@@ -2,7 +2,7 @@
 
 import pytest
 
-from agent.skills.shared.contracts.workflow.common import (
+from agent.host.contracts.common import (
     CoverageStatus,
     CriteriaStatus,
     DiagnosticStatus,

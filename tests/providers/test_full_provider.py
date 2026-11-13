@@ -2,8 +2,8 @@
 
 from types import SimpleNamespace
 
-from agent.skills.shared.contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
-from agent.skills.shared.providers.providers.openai_compatible import OpenAICompatibleAdapter
+from agent.host.contracts.system.provider import ProviderConfig, ProviderProtocol
+from agent.host.providers.backends.openai_compatible import OpenAICompatibleAdapter
 from api_fundamentals.models import StructuredProbeResult
 from api_fundamentals.probes.all import PROBES
 

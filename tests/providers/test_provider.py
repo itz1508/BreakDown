@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from agent.skills.shared.contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
-from agent.skills.shared.providers.provider_config import (
+from agent.host.contracts.system.provider import ProviderConfig, ProviderProtocol
+from agent.host.providers.provider_config import (
     ProviderConfigurationError,
     load_provider_config,
     resolve_api_key,

@@ -13,6 +13,7 @@ import math
 from collections.abc import Sequence
 from dataclasses import dataclass
 
+from agent.host.contracts.common import DiagnosticStatus
 from agent.skills.planner.contracts.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -20,7 +21,6 @@ from agent.skills.planner.contracts.scanner import (
     ScannerOutcome,
     ScannerResult,
 )
-from agent.skills.shared.contracts.workflow.common import DiagnosticStatus
 
 Scalar = bool | int | float | str
 

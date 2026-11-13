@@ -1,10 +1,10 @@
 """Planning owns the eight issue categories across distinct check owners."""
 
+from agent.host.sys_controller import HostController
 from agent.skills.planner.contracts.coverage import ISSUE_CATEGORIES, planning_coverage
 from agent.skills.planner.contracts.scanner import ScannerResult
+from agent.skills.planner.contracts.validation.structural import CONCERNS
 from agent.skills.planner.scanner_evidence import persist_scan_result
-from agent.skills.shared.contracts.workflow.validation.structural import CONCERNS
-from agent.skills.shared.host.sys_controller import HostController
 from tests.fixtures.scanner import passing_scan
 from tests.fixtures.structural_gap import passing_gap
 

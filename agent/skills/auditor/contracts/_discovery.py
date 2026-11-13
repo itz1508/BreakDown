@@ -7,7 +7,7 @@ from typing import Annotated, Literal
 
 from pydantic import Field
 
-from agent.skills.shared.contracts.workflow.common import (
+from agent.host.contracts.common import (
     ArtifactRef,
     AssessmentId,
     ContractModel,

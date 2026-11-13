@@ -3,8 +3,8 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.skills.shared.contracts.workflow.common import DiagnosticStatus
-from agent.skills.shared.contracts.workflow.verifier.build_validation import (
+from agent.host.contracts.common import DiagnosticStatus
+from agent.host.contracts.verifier.build_validation import (
     CriterionResult,
     E2EResult,
     ObservedCriterionResult,

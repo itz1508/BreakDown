@@ -16,10 +16,10 @@ from tempfile import TemporaryDirectory
 import pytest
 from pydantic import BaseModel
 
+from agent.host.contracts.common import ArtifactRef
+from agent.host.storage.artifact_store import ArtifactStore
 from agent.skills.planner.contracts.scanner import ScannerOutcome
 from agent.skills.planner.scanner_gateway import ScannerGateway
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.storage.artifact_store import ArtifactStore
 
 _sklearn = pytest.importorskip("sklearn", reason="offline gap evaluation requires scikit-learn")
 sklearn_version = _sklearn.__version__

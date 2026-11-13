@@ -14,7 +14,7 @@ from enum import StrEnum
 
 from pydantic import Field, model_validator
 
-from agent.skills.shared.contracts.workflow.common import (
+from agent.host.contracts.common import (
     ContractModel,
     CriterionId,
     EvidenceRef,

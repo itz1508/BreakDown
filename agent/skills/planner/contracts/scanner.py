@@ -7,9 +7,9 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, Sha256
-from agent.skills.shared.contracts.workflow.system.coverage import PlanningCoverage
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agent.host.contracts.common import ArtifactRef, ContractModel, Sha256
+from agent.host.contracts.system.coverage import PlanningCoverage
+from agent.host.contracts.system.host import ReceiptRef
 
 
 class ScannerOutcome(StrEnum):

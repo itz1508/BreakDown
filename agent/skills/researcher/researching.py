@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agent.skills.shared.host.skill_dispatch import ResearchArguments, SkillContext
+from agent.host.contracts.system.host import HostDispatchEnvelope
+from agent.host.skill_dispatch import ResearchArguments, SkillContext
 
 
 def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: ResearchArguments) -> dict[str, object]:

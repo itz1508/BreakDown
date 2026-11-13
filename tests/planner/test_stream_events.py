@@ -8,10 +8,10 @@ from threading import Event
 
 import pytest
 
-import agent.skills.shared.contracts.workflow.validation.planning as planning
+import agent.skills.planner.contracts.validation.planning as planning
+from agent.host.sys_controller import HostController
+from agent.host.sys_policy_enforcer import Capability
 from agent.skills.planner.contracts.scanner import ScannerOutcome
-from agent.skills.shared.host.sys_controller import HostController
-from agent.skills.shared.host.sys_policy_enforcer import Capability
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record, revised_record
 
 
