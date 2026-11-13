@@ -1,0 +1,110 @@
+name: CI
+on:
+  push:
+    branches: [main, breakdown-staging, 'consolidation/**']
+  pull_request:
+    branches: [main, breakdown-staging, 'consolidation/**']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf # v3
+      - name: Set up Python
+        run: uv python install ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: uv sync --locked --extra meta --extra mvp
+      - name: Dependency check
+        if: always()
+        run: uv run --no-sync deptry .
+      - name: Lint
+        if: always()
+        run: uv run --no-sync ruff check .
+      - name: Format check
+        if: always()
+        run: uv run --no-sync ruff format --check .
+      - name: Type check
+        if: always()
+        run: uv run --no-sync mypy agent contracts system
+      - name: Deny restoration of retired packages and draft-only roots
+        if: always()
+        run: uv run --no-sync python scripts/check_retired_paths.py
+      - name: Build wheel and verify packaged Catalog resource
+        if: always()
+        run: |
+          uv build --wheel
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheel=next(Path("dist").glob("*.whl")); archive=ZipFile(wheel); assert "agent/catalog/research_samples.yaml" in archive.namelist(), "synthetic Catalog missing from wheel"'
+      - name: Focused scanner regression
+        if: always()
+        run: uv run --no-sync pytest -q tests/planner/test_decision_trace.py tests/planner/test_stream_events.py tests/e2e/test_mvp_scanner.py
+      - name: Scanner cache and legacy-oracle benchmark
+        if: always()
+        run: uv run --no-sync python tests/planner/benchmark_decision_trace.py
+      - name: Independent labeled Scanner gap evaluation (scikit-learn; no runtime dependency)
+        if: always()
+        run: uv run --no-sync --with scikit-learn==1.8.0 python tests/planner/evaluate_gap_sklearn.py
+      - name: Tests
+        if: always()
+        run: uv run --no-sync pytest -q
+
+  package-integrity:
+    name: package-integrity (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf # v3
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync --locked --extra meta
+      - name: Enforce retired-path and draft exclusion rules
+        run: uv run --no-sync python scripts/check_retired_paths.py
+      - name: Validate installed provider selection
+        run: uv run --no-sync pytest -q tests/test_config.py
+      - name: Check source imports, Catalog, checkpoint, Host dispatch and Researcher boundaries
+        run: |
+          uv run --no-sync pytest -q \
+            tests/boundaries/test_imports.py \
+            tests/test_research_catalog.py \
+            tests/builder/test_skill_runner.py \
+            tests/runtime/test_skill_dispatch.py \
+            tests/researcher/test_skill_runner.py
+      - name: Build and inspect installable package
+        run: |
+          uv build --wheel
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/shared/host/file_operations.py", "agent/skills/researcher/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
+      - name: Bundle exact source and dependency lock (candidate only)
+        if: matrix.python-version == '3.11'
+        run: git archive --format=zip --output=dist/breakdown-source-candidate.zip HEAD
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always() && matrix.python-version == '3.11'
+        with:
+          name: breakdown-consolidation-candidate
+          path: |
+            dist/*.whl
+            dist/breakdown-source-candidate.zip
+          if-no-files-found: error
+
+  static-quality:
+    name: static-quality (Python 3.11)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf # v3
+      - run: uv python install 3.11
+      - run: uv sync --locked --extra meta
+      - name: Lint source and tests
+        run: uv run --no-sync ruff check .
+      - name: Format check
+        if: always()
+        run: uv run --no-sync ruff format --check .
+      - name: Type checks
+        if: always()
+        run: uv run --no-sync mypy agent contracts system

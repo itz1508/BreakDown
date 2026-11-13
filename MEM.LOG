@@ -1,0 +1,23 @@
+# MEM.LOG — latest corrections and reminders (working memory)
+
+Read first each session; newest entries at the top. Stable lessons migrate to
+`LEARNING.LOG`; volatile specifics stay in their referenced documents.
+
+- 2026-11-11 — Providers untouched: never touched any provider code/config yet.
+  Do not reference provider folders, adapters, or API-key reading in AGENTS.md.
+- 2026-11-11 — AGENTS.md volatility rule: no hard-coded protocol/endpoint/model
+  specifics in AGENTS.md (e.g., the old META_API section was wrong to hard-code
+  Responses-primary, parameter lists, grounding rules). Placeholders + pointers
+  to the research doc instead; assume setups can change tomorrow or in 7 days.
+- 2026-11-11 — AGENTS.md scope: durable guidance only. No remaining-phase
+  order, build progress, or phase-number references — those live in
+  `D:\breakdown-v1\DECOMPOSITION_PLAN.md` and `BUILT.LOG`.
+- 2026-11-11 — Plan-first: every role creates plan + task-to-do before work.
+- 2026-11-11 — Capabilities: folders, not files; names as approved; PENDING
+  APPROVAL — do not implement or rename until approved.
+- 2026-11-11 — Dispatch: no separate dispatch module; absorbed by the runtime
+  controller; argument types in role `contracts.py`.
+- 2026-11-11 — SDK-first: probe installed SDKs before inventing protocol code
+  (openai 3.48.0 already has responses.parse and chat.completions.parse).
+- 2026-11-11 — system/ retained as slim infra: conf.toml, storage/, memory/,
+  dbm/, tools/sqlite3/, tools/query/ — only system/host empties and retires.

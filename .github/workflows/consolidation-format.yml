@@ -1,0 +1,29 @@
+name: One-shot consolidation format migration
+on:
+  push:
+    branches: ['consolidation/baseline-to-continuing-20261110']
+    paths: ['.github/workflows/consolidation-format.yml']
+permissions:
+  contents: write
+jobs:
+  apply_safe_formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf
+      - run: uv python install 3.11
+      - run: uv sync --locked --extra meta --extra mvp
+      - name: Apply Ruff safe fixes (no unsafe fixes)
+        run: uv run --no-sync ruff check --fix --exit-zero .
+      - name: Format complete source tree
+        run: uv run --no-sync ruff format .
+      - name: Re-run full tests before writing
+        run: uv run --no-sync pytest -q
+      - name: Commit verified formatting only
+        run: |
+          if test -z "$(git status --porcelain)"; then exit 0; fi
+          git config user.name "OneShot consolidation CI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          git commit -m "style(consolidation): normalize renamed imports and formatting"
+          git push origin HEAD:consolidation/baseline-to-continuing-20261110

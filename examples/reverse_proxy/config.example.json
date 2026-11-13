@@ -1,0 +1,28 @@
+{
+  "tenants": [
+    {
+      "name": "alpha",
+      "hosts": ["alpha.localhost"],
+      "groups": [
+        {"name": "primary", "backends": [
+          {"name": "a1", "origin": "http://127.0.0.1:9101"},
+          {"name": "a2", "origin": "http://127.0.0.1:9102"}
+        ]},
+        {"name": "secondary", "backends": [
+          {"name": "a3", "origin": "http://127.0.0.1:9103"}
+        ]}
+      ]
+    },
+    {
+      "name": "beta",
+      "hosts": ["beta.localhost"],
+      "groups": [
+        {"name": "primary", "backends": [
+          {"name": "b1", "origin": "http://127.0.0.1:9201"}
+        ]}
+      ]
+    }
+  ],
+  "connect_timeout_seconds": 3.0,
+  "request_timeout_seconds": 10.0
+}

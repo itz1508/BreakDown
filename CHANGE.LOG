@@ -1,0 +1,303 @@
+# CHANGE.LOG
+
+Append-only record of file-level changes. Preserve history; append corrections.
+
+## 2026-11-12 — Role-fit restructure: dissolved top-level contracts/ and system/
+
+User directive: the clean repo must no longer carry top-level `contracts/` and
+`system/` (host); each skill role owns its contract and runtime material and
+gets an `output/` folder.
+
+Moves (git mv, 96 files, blob-identical):
+- `contracts/workflow/{auditor,builder,planner,researcher}/*` →
+  `agent/skills/<role>/contracts/`
+- `contracts/workflow/{verifier,validation,system}/`, `contracts/context/`,
+  `contracts/workflow/common.py` → `agent/skills/shared/contracts/workflow/…`,
+  `…/context/`
+- `system/host/research_{catalog,lifecycle}.py` → `agent/skills/researcher/`
+- `system/host/{build_admission,build_todos,package_lock}.py` → `agent/skills/builder/`
+- `system/host/{scanner_gateway,scanner_check_registry,scanner_evidence,scanner_telemetry,host_gap_analyzer,plan_templates,specification_freezer,context_projection}.py`
+  → `agent/skills/planner/`
+- `system/host/provider_{config,factory,interface}.py`, `system/host/providers/*`
+  → `agent/skills/shared/providers/…`
+- remaining `system/host/*` → `agent/skills/shared/host/`;
+  `system/storage/*` → `agent/skills/shared/storage/`;
+  `system/__init__.py` → `agent/skills/shared/__init__.py`
+
+Rewrites: 130 files, 384 import lines (import statements only, string literals
+preserved); quoted file-path strings updated; capability path strings in
+`gap_analysis.py` updated; `tests/boundaries/*` canonical/obsolete lists updated;
+`scripts/check_retired_paths.py` now retires `contracts/` and `system/`;
+`pyproject.toml` hatch/mypy packages reduced to `agent`/`api_fundamentals`;
+GitHub workflow path references updated; `README.md`,
+`agent/skills/coder/SKILL.md` module references updated.
+Added `agent/skills/{auditor,builder,coder,planner,researcher}/output/` (.gitkeep).
+
+Verification: `python -m compileall` exit 0; import smoke test OK; full pytest
+(all dots, no failures; run with `--basetemp` to bypass a pre-existing
+`%TEMP%\\pytest-of-itz15` PermissionError in this environment); `ruff check .`
+exit 0. `ruff format --check` still fails on 104 files — pre-existing at HEAD
+(vendored `.agents/`, `examples/`), not introduced here.
+
+## 2026-11-11 — Databricks CLI install + MCP client example (connectivity only)
+
+Task: user supplied a Databricks AI Gateway MCP notebook snippet
+(`system.ai.github` MCP service) and asked to log in with the Databricks CLI and
+run it locally.
+
+- Installed Databricks CLI v1.26.0 to `d:\breakdown\.tools\databricks-cli\databricks.exe`
+  from the official GitHub release artifact (same URL winget uses; SHA-256
+  verified against the published digest `7c7f2bdf…14a2`). Added to the user PATH.
+  Reason: `databricks` was not installed; winget install attempts kept being
+  interrupted by the terminal-capture issue, so the release zip was fetched via a
+  detached background download instead. Untracked build artifacts (`.tools/`)
+  are outside repo source.
+- Added `examples/databricks_mcp_list_tools.py`: local adaptation of the snippet,
+  verified against the project `.venv` dependency set (mcp==2.3.0,
+  httpx2==2.16.0). mcp 2.3.0's `streamable_http_client` yields a 2-tuple and
+  requires an `httpx2.AsyncClient`, so the snippet's API usage was correct for
+  this repo (no v1.x-style `get_session_id` third element). Robust CLI lookup
+  (PATH or `.tools` fallback), `--host` on `auth token` (required in
+  non-interactive environments), and an actionable error when OAuth is not yet
+  configured.
+  Reason: user-requested connectivity example; no secrets hardcoded.
+
+Verification: `ruff check` passes; script executes and fails only at the expected
+pre-auth step with the CLI's own message ("databricks OAuth is not configured for
+this host … run `databricks auth login`"). End-to-end tool listing is pending the
+interactive `databricks auth login` (browser), which only the user can complete.
+
+Not done / deviations: no dependency or workflow-file changes; the snippet's
+`%pip install` notebook line is not applicable locally (mcp/httpx2 already
+present in `.venv`).
+
+## 2026-11-11 — Add low-cost GLM Modal client path (same OpenAI-compatible API)
+
+Task: user supplied a streaming structured-output client snippet for the
+`ep-glm-5-3-flash-nvfp4-server` Modal deployment and asked to add it; clarified
+intent: it is the lower-cost model behind the same API shape as the Qwen
+deployment that serves this harness.
+
+- Added `examples/modal_glm_client.py`: runnable streaming client (strict JSON
+  schema + tools + reasoning) with environment-only credentials
+  (`MODAL_PROXY_TOKEN_ID`/`MODAL_PROXY_TOKEN_SECRET` or `MODAL_API_KEY`).
+  Reason: make the cheap endpoint usable from the repo without hardcoded secrets.
+- Added `config/providers/glm.yaml`: probe-framework provider profile for the
+  same endpoint so `api_fundamentals/run_probe.py` can capability-test it.
+  Reason: repo convention registers each provider as a YAML profile (meta.yaml).
+- Created `LEARNING.LOG` earlier in the same session (identity/capability
+  evidence corrections from that conversation).
+
+Verification: live call to the GLM endpoint returned strict JSON
+`{"age": 36, "city": "London", "name": "Ada"}` with usage 179 prompt /
+52 completion (33 reasoning) tokens; endpoint `/v1/models` lists only
+`nvidia/GLM-5.3-Flash-NVFP4`. Secrets never echoed into logs or responses.
+
+Not done / deviations: no `pyproject.toml` packaging change (wheel force-include
+still lists `config/providers/meta.yaml` only) — flagged as follow-up, not
+requested. Repointing the Cline harness baseUrl to the GLM endpoint left as an
+open proposal pending explicit approval.
+
+## 2026-11-11 (addendum) — Fix "model list shows none": align Cline modal settings
+
+Diagnosis: the Cline model dropdown is built from `baseUrl + GET /models`; the
+selected model id was absent from that list because settings disagreed with
+each other and with the endpoint. Two state files carry the selection and the
+running Cline UI rewrites them on interaction (observed apiKey prefix and model
+id change between consecutive reads), so alignment required editing both.
+
+- Changed (outside repo, user-invited fix): `~/.cline/data/settings/providers.json`
+  → `providers.modal.settings.baseUrl` repointed from the Qwen endpoint to
+  `https://cs1508-4ever-oneshot--ep-glm-5-3-flash-nvfp4-server.us-west.modal.direct/v1`
+  and `.model` set to `nvidia/GLM-5.3-Flash-NVFP4`.
+- Changed (outside repo): `~/.cline/data/globalState.json` → `planModeApiModelId`
+  and `actModeApiModelId` set to `nvidia/GLM-5.3-Flash-NVFP4`; providers remain `modal`.
+- Reason: make label, dropdown list, and serving weights agree on the cheaper
+  GLM deployment (user goal: lower cost, same API).
+- Verification: `/models` under stored key returns exactly the selected id
+  (membership True for providers.json and both globalState mode ids); live
+  chat completion through the corrected config returned 'ok' then 'ready'.
+- Auth note: both credential schemes verified equivalent for this endpoint —
+  User-scope env `MODAL_PROXY_TOKEN_ID`+`MODAL_PROXY_TOKEN_SECRET` composed as
+  `id.secret`, and the stored `wk-` web key; each lists the same single model.
+- Caveat: the running Cline UI may rewrite these files on its next settings
+  interaction; if the list empties again, re-align or reselect after reload.
+
+## 2026-11-11 � AGENTS.md rewrite (guidance reconciliation)
+
+Task: user requested a full rewrite of AGENTS.md after the decomposition decision
+(dissolve system/ + contracts/ into agent/; roles own runtime + contract;
+breakdown.yaml last; capabilities pending approval).
+
+- Rewrote `AGENTS.md` in place (tracked file; working-tree change only, not staged).
+  Reason: previous guidance mandated `agent/breakdown.yaml` (does not exist yet),
+  showed a stale tree (`system/{host,runtime,storage}`, `skills/shared/{tools,
+  templates,references}`), and listed a `fixturer` role that was never implemented.
+- Changes: workflow section now defers to DECOMPOSITION_PLAN.md phases (A0?D) until
+  Phase C creates breakdown.yaml; new External API host section (Meta Model API:
+  Responses primary, grounding/structured-output/parameter constraints, local-only
+  effects); target tree updated to `skills/shared/` runtime core + per-role
+  `yaml + <role>ing.py + contracts.py + __main__.py + __init__.py`; roles list
+  corrected to five (fixturer explicitly noted as not implemented); DO_NOT_RESTORE
+  list (mvp/, modal_app.py, .agents/, executor sandboxes) embedded in the
+  no-architecture-change rule; capabilities marked PENDING APPROVAL.
+- Verification: 0 leftover chunk markers; 325 lines; content reviewed section by
+  section during writing. No source code touched.
+
+## 2026-11-11 � Structure update: retained system/ layer + role plan-first rule
+
+Task: user refined the decomposition: system/ is retained as a slim
+infrastructure layer instead of full dissolution, and every role must create
+plan + task-to-do before starting work.
+
+- `AGENTS.md`: added the plan-first rule to the workflow section and the
+  responsibility boundaries; replaced the full-dissolution note with the new
+  system/ structure (conf.toml, storage/, memory/, dbm/, tools/sqlite3/,
+  tools/query/); kept contracts/ dissolution (B1) and system/host dissolution
+  (B2); providers stay under skills/shared/providers/.
+- `D:\breakdown-v1\DECOMPOSITION_PLAN.md`: system/ marked RETAINED and
+  restructured; storage mapped to system/storage/ (in place); memory_promotion
+  and build_memory knowledge mapped to system/memory/; config/config.yaml mapped
+  to system/conf.toml; new dbm/ and tools/sqlite3|query surfaces added; Phase B2
+  renamed to host dissolution & system restructure.
+- No source code touched; documentation-only reconciliation.
+
+## 2026-11-11 � SDK + stdlib review folded into plans
+
+Task: user directed an SDK-first search before inventing, a dispatch-dissolved-
+into-runtime redesign, and a CPython Lib review.
+
+- SDK probe (read-only): openai 3.48.0 exposes chat.completions.parse and
+  responses.parse; client.messages does not exist. Decision recorded: no
+  Messages-API client will be invented; responses.parse is the primary
+  structured path, chat.completions.parse (already implemented) the fallback.
+- `DECOMPOSITION_PLAN.md`: new section 2b (runtime/structured-output design);
+  skill_dispatch.py dissolved into controller.py (static role refs, async role
+  entrypoints, builtin envelope gate + events) instead of renamed; MetaProvider
+  becomes a config preset over OpenAICompatibleAdapter; stdlib folds recorded
+  (graphlib ordering, sys.addaudithook policy backstop, faulthandler+signal
+  recovery, difflib diffs, tomllib config, pickle/shelve/marshal ban, archive
+  family pending with capabilities).
+- `META_API_HOST_RESEARCH.md`: added section 4 SDK verification; constraint 6
+  (never mix output_config.format and response_format in one request).
+- `AGENTS.md`: library guidance table gains graphlib/difflib/faulthandler/signal
+  rows; blocking-I/O bullet made concrete (asyncio.to_thread,
+  asyncio.create_subprocess_exec); added audit-hook and pickle-ban rules.
+- No source code changed; plans and guidance only.
+
+## 2026-11-11 � Gap-fix batch: A0 mvp-consumer migration + scan-gap fixes
+
+Task: run gap analysis against recent built work, then fix all gaps.
+
+Scan evidence: auditor scan owned findings 71 (60 mvp-import, 9 command-execution
+review, 2 comment false positives); pytest collection 8 errors; guard clean.
+
+Fixed:
+- A0 migration (per recorded A01/A02 mvp retirement):
+  - `tests/e2e/test_host_dispatch.py` repointed to a HostController-native harness
+    (init_task + artifact_store input; contract_id task_input) � 4 tests kept.
+  - `tests/e2e/test_host_integrity.py` reduced to its four pure-host
+    receipt/transition tests; the three tests covering mvp.research_host recovery
+    semantics were removed (S5 requirement recorded in Five Contract Scenarios
+    doc; re-implementation belongs to Packages 5/9).
+  - `tests/e2e/test_scanner_entrypoints.py` created (repointed CLI scanner test;
+    event key fix event_type); `tests/e2e/test_mvp_scanner.py` removed.
+  - Removed MVP-product test files: test_mvp_api.py, test_mvp_service.py,
+    test_mvp_connectors.py, test_mvp_mcp_research.py, test_audit_integration.py,
+    tests/fixtures/mcp_research_server.py (sole consumer verified).
+- `system/host/file_operations.py`: write_atomic now passes newline="" so build
+  effects are byte-exact (CRLF translation broke task_todo E2E byte comparison).
+- `agent/skills/planner/review/gap_analysis.py`: added _resolve_revision
+  rejecting option-like git revisions (argument-injection hardening); reviewed
+  remaining command-execution sites (fixed argv lists, no shell) � accepted.
+- `tests/e2e/test_task_todo_e2e.py`: reworded two comments whose literal word
+  TODO triggered UNRESOLVED_COMMENT false positives.
+
+Verification: collection rc=0; focused tests 16/16 rc=0; guard rc=0; rescan
+owned findings 0. Full-suite run recorded in D:\breakdown-v1\full_suite.txt.
+Also: BUILT.LOG created; LEARNING.LOG corrections table extended (8 rows).
+
+Correction (same batch, after full-suite run):
+- Removed `tests/e2e/test_modal_deployment_config.py`: its three tests loaded the
+  retired `modal_app.py` via runpy (A02 DO_NOT_RESTORE) � stale consumers.
+- `tests/auditor/test_order_and_source_safety.py`: test write now uses
+  newline="" (byte-exact fixture write; same CRLF root cause as write_atomic).
+- Final gate: full suite rc=0, all tests pass; guard rc=0; auditor rescan
+  owned findings 0.
+
+Correction (gap pass v2/v3, same batch):
+- `agent/skills/coder/__main__.py`: CodeDesign is a discriminated-union alias;
+  parsing now uses pydantic TypeAdapter (mypy strict clean).
+- `tests/e2e/test_scanner_entrypoints.py` and `tests/e2e/test_host_integrity.py`:
+  ruff auto-fix removed unused/duplicate imports left by the A0 migration.
+- Scan residue: the symlink-escape boundary test leaves a broken symlink under
+  the pytest basetemp; moved verification basetemp outside the repository
+  (`.pytest-tmp` inside the repo root deleted).
+- Final gate (gap pass v4 evidence in D:\breakdown-v1\gap_v4.txt): ruff rc=0,
+  mypy rc=0 (137 files), collection rc=0, guard rc=0, full suite rc=0,
+  auditor rescan owned findings 0.
+
+## 2026-11-11 � AGENTS.md second rewrite (merged tightened guidance)
+
+Task: user supplied a tightened guidance rewrite and asked what is useful to
+update into AGENTS.md.
+
+- Rewrote `AGENTS.md` merging the new version with approved content the new
+  version dropped. Adopted: Start-here evidence checklist; plan-first rule with
+  non-recursive clarification; no-stubs/no-shims rule; second-authority wording;
+  baseline-before-regression-claims; no-findings-is-not-clean;
+  own-temp-files-only cleanup rule; exit codes in reporting; response
+  expectations section; CPython Lib and Anthropic prompt-engineering tutorial
+  references; version-specific-observations caveat.
+- Challenged and kept (dropped by the new version, restored here): the approved
+  target tree (breakdown.yaml last, capabilities pending, skills/shared
+  contents, system/ slim layer); Multi_Skills skill table; the stdlib table with
+  graphlib/difflib/faulthandler/signal rows; audit-hook and pickle/shelve/
+  marshal rules; responsibility boundaries; LEARNING.LOG correction-ledger
+  methodology and corrections-to-tested-skills section.
+- Verification: 0 leftover chunk markers; structure reviewed per section.
+
+Correction (AGENTS.md scope):
+- Removed remaining-phase/build-state references from `AGENTS.md` per user
+  correction: enumerated phase order, "authored LAST (Phase C)" markers,
+  B1/B2 dissolution schedule, and capability-existence commentary replaced
+  with pointers to `DECOMPOSITION_PLAN.md` (the plan/state store) and
+  timeless rules. Correction recorded in LEARNING.LOG.
+
+Correction (plan alignment):
+- `D:\breakdown-v1\DECOMPOSITION_PLAN.md` realigned with executed state: title
+  updated (restructure, not full system/ dissolution), status line now records
+  A0+A1 executed with B1 awaiting approval, decision record includes the
+  system/-retained and dispatch-dissolved corrections, A0/A1 marked executed
+  with verification evidence, �6 resolved items struck through (mvp approach,
+  capabilities folders) and open approvals listed (destination map, archive
+  family).
+- `AGENTS.md` tree aligned with the plan map: shared runtime core module list
+  now matches (tool_registry, guardrails, interrupts, recovery, loaders,
+  streaming, package_lock).
+
+## 2026-11-11 � MEM.LOG created; AGENTS.md de-hardcoded
+
+Task: user correction � create MEM.LOG for latest corrections/reminders; stop
+storing volatile specifics (e.g., the META_API section) in AGENTS.md; providers
+were never touched and must not be referenced in guidance; prefer placeholders
+over hard-coded values.
+
+- Created `MEM.LOG` (newest-first working memory of corrections/reminders;
+  stable lessons migrate to LEARNING.LOG).
+- `AGENTS.md`: removed the External API host section (hard-coded Responses/
+  Chat Completions/grounding/parameter constraints) and replaced it with a
+  placeholder policy pointing to `META_API_HOST_RESEARCH.md`; removed the
+  `providers/` line from the skills/shared tree (providers untouched); Start
+  here now reads MEM.LOG first and states the placeholder-over-hard-coded rule.
+- `LEARNING.LOG`: three new correction rows (volatile content, providers
+  untouched, MEM.LOG practice).
+- Verification: grep over AGENTS.md finds no provider/protocol/model-id
+  specifics remaining.
+
+## 2026-11-12 ? Untrack tool binaries (.tools/) and ignore folder
+
+GitHub warned of a 52.8 MB file (.tools/databricks-cli/databricks.exe) in the
+pushed history. Tool binaries do not belong in git; removed from tracking (files
+kept on disk), .tools/ added to .gitignore. History not rewritten ? the blob
+stays in past commits; a fresh clone still downloads it. Rewrite optional later.

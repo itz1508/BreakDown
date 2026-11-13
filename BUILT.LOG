@@ -1,0 +1,58 @@
+# BUILT.LOG
+
+Delivered intent record. Append-only; corrections preserve history.
+
+## 2026-11-12 — Role-fit restructure (user-directed layout)
+
+User intent delivered: "the clean repo no longer has contract and system host;
+find and fit contract/runtime material per skill/<role>; each role gets
+output/ for artifacts."
+
+- Implementation: 96-file `git mv` redistribution (blob multiset verified
+  identical pre/post), import-statement rewrite (130 files / 384 lines),
+  path-string and workflow/doc/config updates, boundary tests re-pinned to the
+  new layout, retired-path policy extended to `contracts/` and `system/`.
+- Evidence: compileall exit 0; import smoke test OK; full pytest run with zero
+  failures (see CHANGE.LOG 2026-11-12 for caveats); `ruff check .` clean.
+- Unfinished/known: `ruff format --check` failures pre-date this change;
+  GitHub push of branch `consolidation-v2` still pending user's interactive
+  GitHub authentication.
+
+## 2026-11-11 — Package 1 baseline + structure corrections + mvp-consumer migration (A0)
+
+Requirement IDs / intent:
+- Package 1 (baseline) deliverables; user-directed structure decisions
+  (roles own runtime+contract, dispatch dissolved into runtime, system/
+  retained as slim infra layer, capabilities pending approval).
+
+Actually implemented:
+- `agent/skills/{coder,planner,builder,researcher}/__main__.py`: thin role
+  entries (coder = read-only capability CLI; researcher/planner/builder =
+  fail-closed dispatch reporters). Verified by execution.
+- `system/host/file_operations.py`: `write_atomic` byte-exactness fix
+  (`newline=""`) — build effects no longer translate newlines on Windows.
+- `agent/skills/planner/review/gap_analysis.py`: `_resolve_revision` rejects
+  option-like git revisions (argument-injection hardening).
+- A0 mvp-consumer migration: `test_host_dispatch.py` repointed to
+  HostController-native harness; `test_host_integrity.py` reduced to its four
+  pure-host receipt/transition tests; `test_scanner_entrypoints.py` created
+  (repointed CLI scanner test); seven MVP-product test/fixture files removed
+  (test_mvp_api, test_mvp_service, test_mvp_connectors, test_mvp_mcp_research,
+  test_mvp_scanner, test_audit_integration, fixtures/mcp_research_server).
+- Guidance: `AGENTS.md` full rewrite (structure, Meta host section, plan-first
+  role rule, stdlib rules); `D:\breakdown-v1\DECOMPOSITION_PLAN.md` maintained
+  (dispatch dissolution, SDK findings, stdlib folds, system/ restructure).
+
+Evidence:
+- pytest collection rc=0 (0 errors); focused tests rc=0 (16/16 pass, with
+  --basetemp workaround for a pre-existing Windows temp-dir permission issue);
+  guard rc=0 (286 tracked paths accepted); auditor rescan owned findings 0
+  (was 71: 60 mvp-import, 9 command-execution review, 2 comment false
+  positives). Full-suite result recorded in D:\breakdown-v1\full_suite.txt.
+
+Not done / differs from intent:
+- Research-execution recovery semantics (S5) previously covered by
+  mvp.research_host are not yet re-implemented in the supported tree — they
+  are recorded in the Five Contract Scenarios doc as Package 5/9 requirements.
+- Plans (decomposition phases B1/B2/C, capabilities) remain proposals pending
+  approval; no dissolution code executed yet.
