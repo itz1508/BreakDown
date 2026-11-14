@@ -1,4 +1,4 @@
-"""Test inputs for a genuine host structural-gap invocation.
+﻿"""Test inputs for a genuine host structural-gap invocation.
 
 These are synthetic fixtures, not historical production evidence or an
 independent product E2E test. Only host-owned fixtures use these helpers.
@@ -9,7 +9,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 
 from agent.skills.planner.host_gap_analyzer import StructuralGapOutcome
-from agent.skills.planner.review.gap_analysis import (
+from agent.skills.planner.tools.gap_analysis import (
     ComparableSystemAnalysis,
     GapBacktestCorpus,
     KnownCriticalBacktest,
@@ -201,6 +201,7 @@ def build_gap_inputs(
     return request, skeleton_runner
 
 
-def passing_gap(controller: HostController) -> StructuralGapOutcome:
-    request, runner = build_gap_inputs(controller)
+def passing_gap(controller: HostController, task_id: str = "task-001", run_id: str = "run-001") -> StructuralGapOutcome:
+    request, runner = build_gap_inputs(controller, task_id, run_id)
     return controller.run_structural_gap_analysis(request, walking_skeleton_runner=runner)
+

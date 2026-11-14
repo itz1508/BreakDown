@@ -1,6 +1,6 @@
-"""Host boundary for canonical Gap Analysis.
+﻿"""Host boundary for canonical Gap Analysis.
 
-Analysis belongs to :mod:`agent.skills.planner.review.gap_analysis`. This module only verifies
+Analysis belongs to :mod:`agent.skills.planner.tools.gap_analysis`. This module only verifies
 immutable inputs, invokes the trusted walking-skeleton runner, persists the
 result, and issues a completion receipt for a valid result.
 """
@@ -10,7 +10,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from agent.skills.planner.review.gap_analysis import (
+from agent.skills.planner.tools.gap_analysis import (
     ComparableSystemAnalysis,
     GapAnalyzer,
     GapBacktestCorpus,
@@ -169,3 +169,4 @@ class HostGapAnalyzer:
         )
         receipt = ReceiptRef(receipt_id=receipt_id, receipt_digest=receipt_digest, issuer_id="host")
         return StructuralGapOutcome(result=result, result_ref=result_ref, completion_receipt_ref=receipt)
+

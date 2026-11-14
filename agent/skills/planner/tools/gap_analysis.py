@@ -1,4 +1,4 @@
-"""Canonical missing-capability and structural gap analysis owner.
+﻿"""Canonical missing-capability and structural gap analysis owner.
 
 This module decides whether a Planning candidate is structurally complete.
 It is pure: host-only artifact verification, persistence, execution, and
@@ -462,7 +462,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="gap_analysis_owner",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/planner/review/gap_analysis.py",
+                    path="agent/skills/planner/tools/gap_analysis.py",
                     symbols=("GapAnalyzer", "GapAnalyzer.analyze"),
                 ),
             ),
@@ -477,7 +477,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                 ),
             ),
             consumers=(
-                CapabilityConsumer(path="agent/skills/planner/review/gap_analysis.py", reference="reference_gaps"),
+                CapabilityConsumer(path="agent/skills/planner/tools/gap_analysis.py", reference="reference_gaps"),
             ),
         ),
         CapabilityRequirement(
@@ -488,7 +488,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                     symbols=("trace_gaps",),
                 ),
             ),
-            consumers=(CapabilityConsumer(path="agent/skills/planner/review/gap_analysis.py", reference="trace_gaps"),),
+            consumers=(CapabilityConsumer(path="agent/skills/planner/tools/gap_analysis.py", reference="trace_gaps"),),
         ),
         CapabilityRequirement(
             capability_id="concern_matrix",
@@ -499,14 +499,14 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                 ),
             ),
             consumers=(
-                CapabilityConsumer(path="agent/skills/planner/review/gap_analysis.py", reference="concern_gaps"),
+                CapabilityConsumer(path="agent/skills/planner/tools/gap_analysis.py", reference="concern_gaps"),
             ),
         ),
         CapabilityRequirement(
             capability_id="historical_backtest",
             producers=(
                 CapabilityProducer(
-                    path="agent/skills/planner/review/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)
+                    path="agent/skills/planner/tools/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)
                 ),
             ),
         ),
@@ -665,3 +665,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
