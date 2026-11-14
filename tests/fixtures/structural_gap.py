@@ -63,7 +63,7 @@ def build_gap_inputs(
     historical_evidence = _store(controller, "historical-case", FixturePayload(content="known critical gap case"))
     skeleton_evidence = _store(controller, "walking-skeleton", FixturePayload(content="observed fixture run"))
 
-    stages = ("research", "audit_discovery", "planning")
+    stages = ("discovery", "research", "repository_reconciliation", "planning")
     roots = (
         SourceDeclaration("requirements", "host", "requirements-ref"),
         SourceDeclaration("tool_registry", "host", "tool-registry-ref", "tool-resolver-ref", "effect_time"),
