@@ -7,7 +7,8 @@ MVP source: OneShot-Continuing `dbecd79e58b5b43592009d3cc914fcdc2722413b`.
 The baseline preserves the existing Host and Storage contracts, replaces obsolete role
 paths with reviewed role implementations, and restores the Continuing HTTP/MCP
 package with imports pointed at the single BreakDown Host. The source package
-contains `agent`, `contracts`, `system`, `api_fundamentals`, and `mvp`.
+contains `agent`, `contracts`, `system`, and `mvp`. Provider capability probes
+(`api_fundamentals`) were retired and will be rebuilt separately.
 
 No standalone `executor` role or `oneshot_sandbox` package is imported. The
 legacy Host effect module remains temporarily because the approved Builder
