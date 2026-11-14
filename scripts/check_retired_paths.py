@@ -16,7 +16,6 @@ RETIRED_PREFIXES = (
     "contracts/runtime/",
     "contracts/",
     "system/",
-    "agent/skills/shared/",
 )
 RETIRED_EXACT = frozenset(
     {

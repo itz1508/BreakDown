@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
-from agent.host.contracts.common import ArtifactRef
 from agent.skills.planner.contracts.scanner import (
     CriterionResult,
     CriterionValidity,
@@ -17,10 +16,11 @@ from agent.skills.planner.contracts.scanner import (
     ScannerTraceStep,
     TracedDetectorResult,
 )
-from agent.skills.planner.contracts.validation.planning import scan_action_dependencies
+from agent.skills.shared.contracts.workflow.common import ArtifactRef
+from agent.skills.shared.contracts.workflow.validation.planning import scan_action_dependencies
 
 if TYPE_CHECKING:
-    from agent.host.storage.artifact_store import ArtifactStore
+    from agent.skills.shared.storage.artifact_store import ArtifactStore
 
 
 # Type alias: a detector takes artifact bytes and returns findings (empty = pass)

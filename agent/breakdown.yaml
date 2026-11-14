@@ -1,0 +1,131 @@
+# Single workflow definition (AGENTS.md "Follow our workflow").
+#
+# This file maps implemented routes. It does not define role internals, duplicate
+# role contracts, or grant authority. What it mirrors:
+#   Stage / STAGE_ORDER   agent/skills/shared/host/sys_controller.py
+#   dispatch routes       agent/skills/shared/host/skill_dispatch.py (_ROLE_MODULES)
+#   role contracts        agent/skills/<role>/<role>.yaml
+# Drift is caught by tests/quality/test_skill_definitions.py.
+
+workflow_id: oneshot.breakdown
+definition_version: 1
+
+host:
+  controller: agent.skills.shared.host.sys_controller.HostController
+  dispatch: agent.skills.shared.host.skill_dispatch
+  cli: agent.cli
+  receipts: host_only
+  stage_transitions: host_only
+  effects: agent.skills.builder.effect_executor.EffectExecutor
+
+operator_surfaces:
+  - "python -m agent skills"
+  - "python -m agent doctor"
+  - "python -m agent status <task-id>"
+  - "python -m agent resume <task-id>"
+  - "python -m agent verify <task-id>"
+  - "python -m agent scan <task-id> <request.json>"
+
+stages:
+  - id: research
+    order: 1
+    dispatchable: true
+    owner_role: researcher
+    module: agent.skills.researcher.researching
+    entry: agent/skills/researcher/research.py
+    contract: agent/skills/researcher/research.yaml
+    skill: agent/skills/researcher/SKILL.md
+    completion: host_stage_receipt_over_completed_work
+
+  - id: audit_discovery
+    order: 2
+    dispatchable: true
+    owner_role: audit_discovery
+    module: agent.skills.auditor.auditing
+    entry: agent/skills/auditor/audit.py
+    contract: agent/skills/auditor/audit.yaml
+    skill: agent/skills/auditor/SKILL.md
+    completion: host_stage_receipt_over_completed_work
+
+  - id: planning
+    order: 3
+    dispatchable: true
+    owner_role: planner
+    module: agent.skills.planner.planning
+    entry: agent/skills/planner/plan.py
+    contract: agent/skills/planner/plan.yaml
+    skill: agent/skills/planner/SKILL.md
+    requires: structural_gap_result_and_receipt
+    completion: host_stage_receipt_over_completed_work
+
+  - id: fixture_validation
+    order: 4
+    dispatchable: false
+    owner_role: null
+    completion: not_routed
+    reason: >-
+      The Stage exists in the enum, but role_for_stage raises KeyError; no skill
+      module is registered for it.
+
+  - id: build
+    order: 5
+    dispatchable: true
+    owner_role: builder
+    module: agent.skills.builder.building
+    entry: agent/skills/builder/build.py
+    contract: agent/skills/builder/build.yaml
+    skill: agent/skills/builder/SKILL.md
+    requires: build_admission_over_package_lock
+    completion: host_stage_receipt_over_completed_work
+
+  - id: build_validation
+    order: 6
+    dispatchable: false
+    owner_role: null
+    completion: complete_final_stage
+    reason: >-
+      Final verification is completed by the host over the final work list, not
+      by a dispatched role.
+
+unrouted_capabilities:
+  - name: coder
+    kind: post_research_codedesign_capability
+    module: agent.skills.coder.coding
+    entry: agent/skills/coder/code.py
+    contract: agent/skills/coder/code.yaml
+    skill: agent/skills/coder/SKILL.md
+    routing: none
+    reason: >-
+      No Stage value and no _ROLE_MODULES entry. Its review_questions output is
+      evaluated by Planning; it does not dispatch, write source, or issue receipts.
+
+  - name: fixturer
+    kind: declared_role_without_implementation
+    routing: none
+    reason: >-
+      AGENTS.md lists the role, but agent/skills/fixturer does not exist: there is
+      no SKILL.md, contract, or module to route.
+
+  - name: spec_search
+    kind: bounded_evidence_retrieval_capability
+    module: agent.skills.spec_search.spec_searching
+    entry: agent/skills/spec_search/spec_search.py
+    contract: agent/skills/spec_search/spec_search.yaml
+    skill: agent/skills/spec_search/SKILL.md
+    routing: none
+    reason: >-
+      Query-driven retrieval for Research and Planning; no Stage value and no
+      _ROLE_MODULES entry, so it cannot dispatch, transition, or write source.
+
+authority_boundaries:
+  skills_may: [observe, analyze, propose]
+  skills_may_not:
+    - approve
+    - transition_stage
+    - mint_receipts
+    - write_source
+    - execute_effects
+  builder_effects_require:
+    - verified_build_admission
+    - authorized_action_ids
+    - host_receipt

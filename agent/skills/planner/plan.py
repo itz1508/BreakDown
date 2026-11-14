@@ -1,7 +1,7 @@
 """Planner role entry: python -m agent.skills.planner.
 
 Thin and fail-closed. Execution is dispatched only by the Host
-(agent.host.skill_dispatch); this entry never self-authorizes. It reports the
+(agent.skills.shared.host.skill_dispatch); this entry never self-authorizes. It reports the
 registered dispatch route and exits.
 """
 
@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import json
 
-from agent.host.skill_dispatch import registered_skills
+from agent.skills.shared.host.skill_dispatch import registered_skills
 
 
 def main() -> int:

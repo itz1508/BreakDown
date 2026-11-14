@@ -7,7 +7,7 @@ Migration source: [OneShot-Continuing](https://github.com/itz1508/OneShot-Contin
 ```mermaid
 flowchart TD
     A[User Input] --> B[Catalog / Context Preparation]
-    B --> C[Auditor Specification]
+    B --> C[Discovery Specification]
     C --> D[Edit Preview]
     D --> E{Accept & Check}
     E -- Accept --> F[Researcher]
@@ -76,13 +76,13 @@ Post-completion validation is optional, not a mandatory workflow stage. `verify_
 | Builder | `build.yaml` | `build.py` | `building.py` |
 | Coder | `code.yaml` | `code.py` | `coding.py` |
 
-Builder owns its execution implementation (`effect_executor.py`). There is no duplicated generic `contracts/` or `host/` ownership: the singular `agent/host/` package owns the generic runtime, storage, providers, and cross-role contracts; cross-stage validation modules live with Planner's gap resolution (`agent/skills/planner/contracts/validation/`).
+Builder owns its execution implementation (`effect_executor.py` in `builder/`). Generic runtime, storage, providers, and cross-role contracts live in the shared layer `agent/skills/shared/` — there is no separate `host/` package.
 
-`agent.host.skill_dispatch` checks the persisted Host dispatch envelope before importing a role. Existing role ID `audit_discovery` is intentionally retained even though the package is named `auditor`.
+`agent.skills.shared.host.skill_dispatch` checks the persisted Host dispatch envelope before importing a role. Existing role ID `audit_discovery` is intentionally retained even though the package is named `auditor`.
 
 ## Trust and execution
 
-The host (`agent/host/`) retains the controller, authorization, artifacts, receipts, event logs, Scanner gateway and evidence, specification freeze, package lock, build admission, effect execution and recovery. Skills do not mint trusted receipts or change stage transitions.
+The shared runtime layer (`agent/skills/shared/`) retains the controller, authorization, artifacts, receipts, event logs, Scanner gateway and evidence, specification freeze, package lock, build admission, effect execution and recovery. Skills do not mint trusted receipts or change stage transitions.
 
 **CodeDesign:** Audit Discovery owns source-grounded candidate preparation and evidence questions; Planning owns subsequent design decisions and `CodeDesignReview`. The legacy `CodeIntent` wire field and persisted artifacts remain readable for compatibility until an independently validated storage and Vector Search migration occurs.
 

@@ -6,14 +6,14 @@ import hashlib
 import os
 from pathlib import Path
 
-from agent.host.contracts.system.host import BuildAdmissionReceipt, admission_receipt_subject
-from agent.host.file_operations import move_file, remove_file, write_atomic
-from agent.host.storage.artifact_store import ArtifactStore
-from agent.host.storage.checkpoint_store import CheckpointStore
-from agent.host.storage.receipt_store import ReceiptStore
-from agent.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
 from agent.skills.builder.contracts.build import BuildActionExecution, BuildActionStatus
 from agent.skills.builder.contracts.schedule import BuildWave, VerifiedWaveResult
+from agent.skills.shared.contracts.workflow.system.host import BuildAdmissionReceipt, admission_receipt_subject
+from agent.skills.shared.host.file_operations import move_file, remove_file, write_atomic
+from agent.skills.shared.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
+from agent.skills.shared.storage.artifact_store import ArtifactStore
+from agent.skills.shared.storage.checkpoint_store import CheckpointStore
+from agent.skills.shared.storage.receipt_store import ReceiptStore
 
 
 class EffectExecutionError(Exception):
