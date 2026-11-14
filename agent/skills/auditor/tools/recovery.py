@@ -1,4 +1,4 @@
-﻿"""Detect known static recovery and multi-process admission limitations."""
+"""Detect known static recovery and multi-process admission limitations."""
 
 from __future__ import annotations
 
@@ -48,4 +48,3 @@ def scan_recovery(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
-

@@ -1,4 +1,4 @@
-﻿"""Static host ownership and receipt-binding audits, not runtime proof."""
+"""Static host ownership and receipt-binding audits, not runtime proof."""
 
 from __future__ import annotations
 
@@ -48,4 +48,3 @@ def scan_state(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
-

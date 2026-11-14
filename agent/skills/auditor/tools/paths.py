@@ -1,4 +1,4 @@
-﻿"""Filesystem integrity: broken symlinks and repo containment evidence."""
+"""Filesystem integrity: broken symlinks and repo containment evidence."""
 
 from __future__ import annotations
 
@@ -42,4 +42,3 @@ def scan_paths(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
-

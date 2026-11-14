@@ -1,4 +1,4 @@
-﻿"""Read-only, evidence-grounded audit capability runner; not a workflow controller."""
+"""Read-only, evidence-grounded audit capability runner; not a workflow controller."""
 
 from __future__ import annotations
 
@@ -183,4 +183,3 @@ def scan(root: Path, scope: str = ".", capabilities: tuple[str, ...] = (), reque
         disposition,
         request,
     )
-

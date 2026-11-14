@@ -1,4 +1,4 @@
-﻿"""Check literal internal Python import targets without importing project modules."""
+"""Check literal internal Python import targets without importing project modules."""
 
 from __future__ import annotations
 
@@ -39,4 +39,3 @@ def scan_contracts(root: Path, scope: Path) -> list[Finding]:
                         )
                     )
     return findings
-

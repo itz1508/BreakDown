@@ -1,4 +1,4 @@
-﻿"""Host boundary for canonical Gap Analysis.
+"""Host boundary for canonical Gap Analysis.
 
 Analysis belongs to :mod:`agent.skills.planner.tools.gap_analysis`. This module only verifies
 immutable inputs, invokes the trusted walking-skeleton runner, persists the
@@ -169,4 +169,3 @@ class HostGapAnalyzer:
         )
         receipt = ReceiptRef(receipt_id=receipt_id, receipt_digest=receipt_digest, issuer_id="host")
         return StructuralGapOutcome(result=result, result_ref=result_ref, completion_receipt_ref=receipt)
-

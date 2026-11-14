@@ -1,4 +1,4 @@
-﻿"""Find security-sensitive source patterns as candidates, not confirmed exploits."""
+"""Find security-sensitive source patterns as candidates, not confirmed exploits."""
 
 from __future__ import annotations
 
@@ -46,4 +46,3 @@ def scan_security(root: Path, scope: Path) -> list[Finding]:
                     )
                 )
     return findings
-

@@ -1,4 +1,4 @@
-﻿"""Standalone read-only Audit capability CLI: python -m agent.skills.auditor."""
+"""Standalone read-only Audit capability CLI: python -m agent.skills.auditor."""
 
 from __future__ import annotations
 
@@ -31,4 +31,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

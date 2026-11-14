@@ -1,4 +1,4 @@
-﻿"""Audit role runs read-only through host dispatch and refuses scope escape.
+"""Audit role runs read-only through host dispatch and refuses scope escape.
 
 Both properties are enforced against the real HostController, a persisted dispatch
 envelope and the real filesystem scanner, so a regression cannot hide behind a
@@ -65,4 +65,3 @@ def test_audit_scope_escape_is_refused(tmp_path) -> None:
     dispatched = dispatched_audit(tmp_path)
     with pytest.raises(ValueError, match="escapes repository root"):
         run(dispatched.context, dispatched.envelope, AuditArguments(scope="../"))
-

@@ -1,4 +1,4 @@
-﻿"""Inspect whether Audit is exposed inside the existing Research path."""
+"""Inspect whether Audit is exposed inside the existing Research path."""
 
 from __future__ import annotations
 
@@ -44,4 +44,3 @@ def scan_integration(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
-

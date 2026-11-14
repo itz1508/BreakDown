@@ -254,4 +254,3 @@ def test_malformed_unicode_or_control_criteria_fail_closed():
     for criterion in checks:
         with pytest.raises(ValueError, match="invalid accepted criterion"):
             verify_all(_result(), checks=[criterion])
-

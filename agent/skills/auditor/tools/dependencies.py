@@ -1,4 +1,4 @@
-﻿"""Reproducibility checks for declared package-manager dependencies."""
+"""Reproducibility checks for declared package-manager dependencies."""
 
 from __future__ import annotations
 
@@ -31,4 +31,3 @@ def scan_dependencies(root: Path, scope: Path) -> list[Finding]:
                 )
             ]
     return []
-

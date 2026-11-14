@@ -1,4 +1,4 @@
-﻿"""Canonical missing-capability and structural gap analysis owner.
+"""Canonical missing-capability and structural gap analysis owner.
 
 This module decides whether a Planning candidate is structurally complete.
 It is pure: host-only artifact verification, persistence, execution, and
@@ -665,4 +665,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

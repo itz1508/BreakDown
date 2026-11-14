@@ -1,4 +1,4 @@
-﻿"""Execute read-only source checks through the host-assigned Auditor role."""
+"""Execute read-only source checks through the host-assigned Auditor role."""
 
 from __future__ import annotations
 
@@ -15,4 +15,3 @@ def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: AuditA
         capabilities=arguments.capabilities,
         request=envelope.information_needed,
     )
-

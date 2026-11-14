@@ -1,4 +1,4 @@
-﻿"""Read-only frontend integration observations against the existing Research API."""
+"""Read-only frontend integration observations against the existing Research API."""
 
 from __future__ import annotations
 
@@ -63,4 +63,3 @@ def scan_frontend(root: Path, scope: Path) -> list[Finding]:
             )
         )
     return findings
-

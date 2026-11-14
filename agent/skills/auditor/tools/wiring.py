@@ -1,4 +1,4 @@
-﻿"""Compare simple literal frontend API fetches to decorated FastAPI routes."""
+"""Compare simple literal frontend API fetches to decorated FastAPI routes."""
 
 from __future__ import annotations
 
@@ -56,4 +56,3 @@ def scan_wiring(root: Path, scope: Path) -> list[Finding]:
                         )
                     )
     return findings
-

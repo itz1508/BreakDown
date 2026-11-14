@@ -1,4 +1,4 @@
-﻿"""Surface explicit unfinished implementation markers without inferring runtime failure."""
+"""Surface explicit unfinished implementation markers without inferring runtime failure."""
 
 from __future__ import annotations
 
@@ -56,4 +56,3 @@ def scan_completeness(root: Path, scope: Path) -> list[Finding]:
                         )
                     )
     return findings
-
