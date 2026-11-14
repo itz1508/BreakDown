@@ -1,10 +1,10 @@
-"""Detect known static recovery and multi-process admission limitations."""
+﻿"""Detect known static recovery and multi-process admission limitations."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, safe_read_text
 
 
 def scan_recovery(root: Path, scope: Path) -> list[Finding]:
@@ -48,3 +48,4 @@ def scan_recovery(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
+

@@ -1,11 +1,11 @@
-"""Check literal internal Python import targets without importing project modules."""
+﻿"""Check literal internal Python import targets without importing project modules."""
 
 from __future__ import annotations
 
 import ast
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, python_files, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, python_files, safe_read_text
 
 
 def scan_contracts(root: Path, scope: Path) -> list[Finding]:
@@ -39,3 +39,4 @@ def scan_contracts(root: Path, scope: Path) -> list[Finding]:
                         )
                     )
     return findings
+

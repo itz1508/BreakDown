@@ -1,4 +1,4 @@
-"""Surface explicit unfinished implementation markers without inferring runtime failure."""
+﻿"""Surface explicit unfinished implementation markers without inferring runtime failure."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import io
 import tokenize
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, python_files, safe_read_bytes, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, python_files, safe_read_bytes, safe_read_text
 
 
 def scan_completeness(root: Path, scope: Path) -> list[Finding]:
@@ -56,3 +56,4 @@ def scan_completeness(root: Path, scope: Path) -> list[Finding]:
                         )
                     )
     return findings
+

@@ -1,11 +1,11 @@
-"""Reproducibility checks for declared package-manager dependencies."""
+﻿"""Reproducibility checks for declared package-manager dependencies."""
 
 from __future__ import annotations
 
 import json
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, safe_read_text
 
 
 def scan_dependencies(root: Path, scope: Path) -> list[Finding]:
@@ -31,3 +31,4 @@ def scan_dependencies(root: Path, scope: Path) -> list[Finding]:
                 )
             ]
     return []
+

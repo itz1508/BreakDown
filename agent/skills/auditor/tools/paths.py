@@ -1,10 +1,10 @@
-"""Filesystem integrity: broken symlinks and repo containment evidence."""
+﻿"""Filesystem integrity: broken symlinks and repo containment evidence."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding
+from agent.skills.auditor.tools.core import Finding
 
 
 def scan_paths(root: Path, scope: Path) -> list[Finding]:
@@ -42,3 +42,4 @@ def scan_paths(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
+

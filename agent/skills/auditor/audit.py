@@ -1,4 +1,4 @@
-"""Standalone read-only Audit capability CLI: python -m agent.skills.auditor."""
+﻿"""Standalone read-only Audit capability CLI: python -m agent.skills.auditor."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from agent.skills.auditor.review.core import CAPABILITY_ORDER, scan
+from agent.skills.auditor.tools.core import CAPABILITY_ORDER, scan
 
 
 def main() -> int:
@@ -31,3 +31,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

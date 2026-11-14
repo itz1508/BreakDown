@@ -1,8 +1,8 @@
-"""Execute read-only source checks through the host-assigned Auditor role."""
+﻿"""Execute read-only source checks through the host-assigned Auditor role."""
 
 from __future__ import annotations
 
-from agent.skills.auditor.review.core import AuditResult, scan
+from agent.skills.auditor.tools.core import AuditResult, scan
 from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
 from agent.skills.shared.host.skill_dispatch import AuditArguments, SkillContext
 
@@ -15,3 +15,4 @@ def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: AuditA
         capabilities=arguments.capabilities,
         request=envelope.information_needed,
     )
+

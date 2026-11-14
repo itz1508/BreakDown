@@ -1,11 +1,11 @@
-"""Read-only frontend integration observations against the existing Research API."""
+﻿"""Read-only frontend integration observations against the existing Research API."""
 
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, safe_read_text
 
 
 def scan_frontend(root: Path, scope: Path) -> list[Finding]:
@@ -63,3 +63,4 @@ def scan_frontend(root: Path, scope: Path) -> list[Finding]:
             )
         )
     return findings
+

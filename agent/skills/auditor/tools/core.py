@@ -1,4 +1,4 @@
-"""Read-only, evidence-grounded audit capability runner; not a workflow controller."""
+﻿"""Read-only, evidence-grounded audit capability runner; not a workflow controller."""
 
 from __future__ import annotations
 
@@ -6,6 +6,8 @@ import hashlib
 from collections.abc import Callable, Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
+
+from agent.skills.shared.tools.fs_walk import iter_source_files
 
 
 @dataclass(frozen=True)
@@ -86,20 +88,8 @@ def evidence(
 
 
 def python_files(root: Path, scope: Path) -> Iterable[Path]:
-    """Walk only ordinary files; never recurse through directory symlinks."""
-    for path in sorted(scope.rglob("*.py")):
-        if any(
-            part in {".git", ".venv", "venv", "node_modules", "__pycache__", ".transfer-quarantine"}
-            or part.startswith(".pytest-")
-            for part in path.relative_to(root).parts
-        ):
-            continue
-        if path.is_symlink():
-            continue
-        if path.is_file():
-            if not path.resolve(strict=True).is_relative_to(root):
-                raise ValueError("audit Python source escapes repository root")
-            yield path
+    """Walk only ordinary Python files; never recurse through directory symlinks."""
+    return iter_source_files(root, scope, (".py",))
 
 
 # Stable per-capability order; a requested subset cannot bypass this ordering.
@@ -122,16 +112,16 @@ Scanner = Callable[[Path, Path], list[Finding]]
 
 
 def scan(root: Path, scope: str = ".", capabilities: tuple[str, ...] = (), request: str = "") -> AuditResult:
-    from agent.skills.auditor.review.completeness import scan_completeness
-    from agent.skills.auditor.review.contracts import scan_contracts
-    from agent.skills.auditor.review.dependencies import scan_dependencies
-    from agent.skills.auditor.review.frontend import scan_frontend
-    from agent.skills.auditor.review.integration import scan_integration
-    from agent.skills.auditor.review.paths import scan_paths
-    from agent.skills.auditor.review.recovery import scan_recovery
-    from agent.skills.auditor.review.security import scan_security
-    from agent.skills.auditor.review.state import scan_state
-    from agent.skills.auditor.review.wiring import scan_wiring
+    from agent.skills.auditor.tools.completeness import scan_completeness
+    from agent.skills.auditor.tools.contracts import scan_contracts
+    from agent.skills.auditor.tools.dependencies import scan_dependencies
+    from agent.skills.auditor.tools.frontend import scan_frontend
+    from agent.skills.auditor.tools.integration import scan_integration
+    from agent.skills.auditor.tools.paths import scan_paths
+    from agent.skills.auditor.tools.recovery import scan_recovery
+    from agent.skills.auditor.tools.security import scan_security
+    from agent.skills.auditor.tools.state import scan_state
+    from agent.skills.auditor.tools.wiring import scan_wiring
 
     scanners: dict[str, Scanner] = {
         "paths": scan_paths,
@@ -193,3 +183,4 @@ def scan(root: Path, scope: str = ".", capabilities: tuple[str, ...] = (), reque
         disposition,
         request,
     )
+

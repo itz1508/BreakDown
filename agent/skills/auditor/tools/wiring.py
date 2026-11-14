@@ -1,4 +1,4 @@
-"""Compare simple literal frontend API fetches to decorated FastAPI routes."""
+﻿"""Compare simple literal frontend API fetches to decorated FastAPI routes."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import ast
 import re
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, safe_read_text
 
 _API_PREFIX = re.compile(r"/api/[\w/{}-]+")
 
@@ -56,3 +56,4 @@ def scan_wiring(root: Path, scope: Path) -> list[Finding]:
                         )
                     )
     return findings
+

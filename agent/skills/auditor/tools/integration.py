@@ -1,11 +1,11 @@
-"""Inspect whether Audit is exposed inside the existing Research path."""
+﻿"""Inspect whether Audit is exposed inside the existing Research path."""
 
 from __future__ import annotations
 
 import re
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, safe_read_text
 
 
 def scan_integration(root: Path, scope: Path) -> list[Finding]:
@@ -44,3 +44,4 @@ def scan_integration(root: Path, scope: Path) -> list[Finding]:
                 )
             )
     return findings
+

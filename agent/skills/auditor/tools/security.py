@@ -1,11 +1,11 @@
-"""Find security-sensitive source patterns as candidates, not confirmed exploits."""
+﻿"""Find security-sensitive source patterns as candidates, not confirmed exploits."""
 
 from __future__ import annotations
 
 import ast
 from pathlib import Path
 
-from agent.skills.auditor.review.core import Finding, evidence, python_files, safe_read_text
+from agent.skills.auditor.tools.core import Finding, evidence, python_files, safe_read_text
 
 DANGEROUS = {("subprocess", "run"), ("subprocess", "Popen"), ("os", "system")}
 
@@ -46,3 +46,4 @@ def scan_security(root: Path, scope: Path) -> list[Finding]:
                     )
                 )
     return findings
+
