@@ -16,7 +16,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["agent", "api_fundamentals"]
+packages = ["agent"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "config/config.yaml" = "config/config.yaml"
@@ -59,10 +59,11 @@ packages = ["agent"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --import-mode=importlib"
+addopts = "-q --import-mode=importlib --basetemp=.pytest-tmp"
+markers = ["e2e: end-to-end tests that drive real host stores and CLI entrypoints"]
 
 [tool.deptry]
-known_first_party = ["agent", "api_fundamentals"]
+known_first_party = ["agent"]
 extend_exclude = ["deployment/modal", ".transfer-quarantine", ".pytest-", "video/examples"]
 
 [tool.deptry.per_rule_ignores]
