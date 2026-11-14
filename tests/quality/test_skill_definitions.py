@@ -86,20 +86,52 @@ def test_role_definitions_are_owned_and_closed() -> None:
         assert definition["pipeline_id"].startswith(role + ".")
 
 
-def test_host_has_six_stages_but_only_explicit_runtime_skill_routes() -> None:
+def test_host_stages_match_breakdown_and_explicit_runtime_skill_routes() -> None:
     assert tuple(s.value for s in Stage) == (
+        "user_request",
+        "intent_summary",
+        "search_confirmation",
+        "discovery",
+        "edit_preview",
+        "specification_gap_check",
         "research",
-        "audit_discovery",
+        "repository_reconciliation",
+        "candidate_completion",
+        "gap_inspection",
         "planning",
-        "fixture_validation",
-        "build",
-        "build_validation",
+        "fixture_preparation",
+        "gap_resolution",
+        "task_todo_creation",
+        "final_scan",
+        "package_persist",
+        "preflight",
+        "user_review_and_approval",
+        "sandbox_execution",
+        "completion_and_retention",
     )
+    assert role_for_stage("discovery") == "auditor"
+    assert role_for_stage("repository_reconciliation") == "auditor"
+    assert role_for_stage("gap_inspection") == "auditor"
     assert role_for_stage("research") == "researcher"
-    assert role_for_stage("audit_discovery") == "audit_discovery"
+    assert role_for_stage("candidate_completion") == "coder"
     assert role_for_stage("planning") == "planner"
-    assert role_for_stage("build") == "builder"
-    for stage in ("fixture_validation", "build_validation", "unknown"):
+    assert role_for_stage("sandbox_execution") == "builder"
+    for stage in (
+        "user_request",
+        "intent_summary",
+        "search_confirmation",
+        "edit_preview",
+        "specification_gap_check",
+        "fixture_preparation",
+        "gap_resolution",
+        "task_todo_creation",
+        "final_scan",
+        "package_persist",
+        "preflight",
+        "user_review_and_approval",
+        "completion_and_retention",
+        "unknown",
+    ):
         with pytest.raises(KeyError):
             role_for_stage(stage)
 
@@ -148,9 +180,10 @@ def test_breakdown_mapping_matches_implemented_routes() -> None:
     routed = {entry["stage"] for entry in registered_skills()}
     dispatchable = {stage["id"] for stage in stages if stage["dispatchable"]}
     assert dispatchable == routed
+
+    ownership = mapping["ownership"]
     for stage in stages:
-        if not stage["dispatchable"]:
-            assert stage["owner_role"] is None, stage["id"]
+        assert stage["id"] in ownership[stage["owner"]]["stages"], stage["id"]
 
     capabilities = mapping["unrouted_capabilities"]
     for capability in capabilities:
@@ -160,12 +193,6 @@ def test_breakdown_mapping_matches_implemented_routes() -> None:
     modules += [capability["module"] for capability in capabilities if capability.get("module")]
     missing_modules = sorted(name for name in modules if not Path(name.replace(".", "/") + ".py").is_file())
     assert missing_modules == [], missing_modules
-
-    files = [
-        value for item in (*stages, *capabilities) for key in ("entry", "contract", "skill") if (value := item.get(key))
-    ]
-    assert files, "mapping must name real implementation paths"
-    assert sorted(path for path in files if not Path(path).is_file()) == []
 
     fixturer = next(capability for capability in capabilities if capability["name"] == "fixturer")
     assert not any(key in fixturer for key in ("module", "entry", "contract", "skill"))

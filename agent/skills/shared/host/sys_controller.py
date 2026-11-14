@@ -46,21 +46,64 @@ if TYPE_CHECKING:
 
 
 class Stage(StrEnum):
+    USER_REQUEST = "user_request"
+    INTENT_SUMMARY = "intent_summary"
+    SEARCH_CONFIRMATION = "search_confirmation"
+    DISCOVERY = "discovery"
+    EDIT_PREVIEW = "edit_preview"
+    SPECIFICATION_GAP_CHECK = "specification_gap_check"
     RESEARCH = "research"
-    AUDIT_DISCOVERY = "audit_discovery"
+    REPOSITORY_RECONCILIATION = "repository_reconciliation"
+    CANDIDATE_COMPLETION = "candidate_completion"
+    GAP_INSPECTION = "gap_inspection"
     PLANNING = "planning"
-    FIXTURE_VALIDATION = "fixture_validation"
-    BUILD = "build"
-    BUILD_VALIDATION = "build_validation"
+    FIXTURE_PREPARATION = "fixture_preparation"
+    GAP_RESOLUTION = "gap_resolution"
+    TASK_TODO_CREATION = "task_todo_creation"
+    FINAL_SCAN = "final_scan"
+    PACKAGE_PERSIST = "package_persist"
+    PREFLIGHT = "preflight"
+    USER_REVIEW_AND_APPROVAL = "user_review_and_approval"
+    SANDBOX_EXECUTION = "sandbox_execution"
+    COMPLETION_AND_RETENTION = "completion_and_retention"
 
 
 STAGE_ORDER = (
+    Stage.USER_REQUEST,
+    Stage.INTENT_SUMMARY,
+    Stage.SEARCH_CONFIRMATION,
+    Stage.DISCOVERY,
+    Stage.EDIT_PREVIEW,
+    Stage.SPECIFICATION_GAP_CHECK,
     Stage.RESEARCH,
-    Stage.AUDIT_DISCOVERY,
+    Stage.REPOSITORY_RECONCILIATION,
+    Stage.CANDIDATE_COMPLETION,
+    Stage.GAP_INSPECTION,
     Stage.PLANNING,
-    Stage.FIXTURE_VALIDATION,
-    Stage.BUILD,
-    Stage.BUILD_VALIDATION,
+    Stage.FIXTURE_PREPARATION,
+    Stage.GAP_RESOLUTION,
+    Stage.TASK_TODO_CREATION,
+    Stage.FINAL_SCAN,
+    Stage.PACKAGE_PERSIST,
+    Stage.PREFLIGHT,
+    Stage.USER_REVIEW_AND_APPROVAL,
+    Stage.SANDBOX_EXECUTION,
+    Stage.COMPLETION_AND_RETENTION,
+)
+
+# Stages whose completion requires a host-assigned, evidence-bound work list —
+# exactly the stages with a registered executable skill. Host-owned, user-owned
+# and machinery stages transition on the stage receipt alone.
+DISPATCH_STAGES = frozenset(
+    {
+        Stage.DISCOVERY,
+        Stage.RESEARCH,
+        Stage.REPOSITORY_RECONCILIATION,
+        Stage.CANDIDATE_COMPLETION,
+        Stage.GAP_INSPECTION,
+        Stage.PLANNING,
+        Stage.SANDBOX_EXECUTION,
+    }
 )
 
 
@@ -81,7 +124,7 @@ if TYPE_CHECKING:
 class TaskState(BaseModel):
     task_id: str = Field(min_length=1)
     run_id: str = Field(min_length=1)
-    current_stage: Stage = Stage.RESEARCH
+    current_stage: Stage = Stage.USER_REQUEST
     completed_stages: tuple[Stage, ...] = ()
     active_work_artifact_id: str | None = None
 
@@ -152,6 +195,7 @@ class HostController:
         gap_result_ref: ArtifactRef | None = None,
         gap_receipt_ref: ReceiptRef | None = None,
         todo_ref: ArtifactRef | None = None,
+        approval_ref: ArtifactRef | None = None,
     ) -> TaskState:
         """Advance to the next stage if the current stage is completed.
 
@@ -171,19 +215,24 @@ class HostController:
             raise TransitionError("stage transition task/run binding mismatch")
 
         receipt_artifact = self._verify_stage_receipt(state, completion_receipt_ref)
-        if state.current_stage is Stage.PLANNING:
+        if state.current_stage is Stage.SPECIFICATION_GAP_CHECK:
             self._verify_structural_gap(task_id, run_id, gap_result_ref, gap_receipt_ref)
+        if state.current_stage is Stage.USER_REVIEW_AND_APPROVAL:
+            self._verify_user_approval(task_id, approval_ref)
 
-        # Task tracking is a mandatory observation gate, never permission to execute.
-        if todo_ref is None:
-            raise TransitionError("completed work list reference required before stage transition")
-        if state.active_work_artifact_id != todo_ref.artifact_id:
-            raise TransitionError("work list does not match the host-assigned request")
-        try:
-            self.work_todos.require_complete(todo_ref, task_id=task_id, run_id=run_id, stage=state.current_stage.value)
-        except WorkTodoError as exc:
-            raise TransitionError(f"invalid or unfinished work list: {exc}") from exc
-        self._verify_stage_evidence(receipt_artifact, todo_ref)
+        if state.current_stage in DISPATCH_STAGES:
+            # Task tracking is a mandatory observation gate, never permission to execute.
+            if todo_ref is None:
+                raise TransitionError("completed work list reference required before stage transition")
+            if state.active_work_artifact_id != todo_ref.artifact_id:
+                raise TransitionError("work list does not match the host-assigned request")
+            try:
+                self.work_todos.require_complete(
+                    todo_ref, task_id=task_id, run_id=run_id, stage=state.current_stage.value
+                )
+            except WorkTodoError as exc:
+                raise TransitionError(f"invalid or unfinished work list: {exc}") from exc
+            self._verify_stage_evidence(receipt_artifact, todo_ref)
 
         idx = STAGE_ORDER.index(state.current_stage)
         if idx + 1 >= len(STAGE_ORDER):
@@ -210,6 +259,23 @@ class HostController:
 
         self.event_store.append(task_id, "stage_transition", f"{state.current_stage} -> {new_stage}")
         return new_state
+
+    def _verify_user_approval(self, task_id: str, approval_ref: ArtifactRef | None) -> None:
+        """Approval boundary: leaving user review requires recorded user approval of the exact plan.
+
+        A content digest identifies bytes but does not grant authority; this gate only
+        proves a persisted approval artifact exists and matches its reference.
+        """
+        if approval_ref is None:
+            raise TransitionError("user approval artifact required before leaving the approval boundary")
+        if approval_ref.contract_id != "approved_plan":
+            raise TransitionError("approval artifact does not bind an approved plan")
+        if approval_ref.artifact_revision < 1 or (
+            self.artifact_store.get_digest(approval_ref.artifact_id, approval_ref.artifact_revision)
+            != approval_ref.artifact_digest
+        ):
+            raise TransitionError("approval artifact revision or digest mismatch")
+        self.event_store.append(task_id, "user_approval_recorded", approval_ref.artifact_id)
 
     def _verify_stage_receipt(self, state: TaskState, completion_receipt_ref: ReceiptRef | None) -> ArtifactRef:
         """Verify host provenance and exact stage artifact; never accept legacy subjects."""
@@ -558,7 +624,7 @@ class HostController:
         completion_receipt_ref: ReceiptRef | None,
         todo_ref: ArtifactRef | None,
     ) -> TaskState:
-        """Mark Build Verification completed only after its assigned work is verified."""
+        """Record completion and retention after the final execution stage is verified."""
         checkpoint = self.checkpoint_store.load_checkpoint(task_id)
         if checkpoint is None:
             raise TransitionError("task has no checkpoint")
@@ -566,21 +632,18 @@ class HostController:
         state = TaskState(**state_dict)
         if state.run_id != run_id or state.task_id != task_id:
             raise TransitionError("final stage task/run mismatch")
-        if state.current_stage is not Stage.BUILD_VALIDATION or Stage.BUILD_VALIDATION in state.completed_stages:
-            raise TransitionError("task is not at an unfinished final verification stage")
-        receipt_artifact = self._verify_stage_receipt(state, completion_receipt_ref)
-        if todo_ref is None:
-            raise TransitionError("completed final-stage work list required")
-        if state.active_work_artifact_id != todo_ref.artifact_id:
-            raise TransitionError("final work list does not match host assignment")
-        try:
-            self.work_todos.require_complete(todo_ref, task_id=task_id, run_id=run_id, stage=state.current_stage.value)
-        except WorkTodoError as exc:
-            raise TransitionError(f"invalid or unfinished final work list: {exc}") from exc
-        self._verify_stage_evidence(receipt_artifact, todo_ref)
+        self._verify_stage_receipt(state, completion_receipt_ref)
+        if state.current_stage is Stage.COMPLETION_AND_RETENTION and (
+            Stage.COMPLETION_AND_RETENTION not in state.completed_stages
+        ):
+            # The sandbox-execution work list and receipt were verified at the transition.
+            finished = state.completed_stages
+        else:
+            raise TransitionError("task is not at an unfinished final stage")
         completed = state.model_copy(
             update={
-                "completed_stages": (*state.completed_stages, Stage.BUILD_VALIDATION),
+                "completed_stages": (*finished, Stage.COMPLETION_AND_RETENTION),
+                "current_stage": Stage.COMPLETION_AND_RETENTION,
                 "active_work_artifact_id": None,
             }
         )
@@ -588,7 +651,7 @@ class HostController:
             self.checkpoint_store.checkpoint_cas(task_id, revision, completed.model_dump(mode="json"))
         except CompetingWriterError as exc:
             raise TransitionError(f"final stage checkpoint CAS failed: {exc}") from exc
-        self.event_store.append(task_id, "stage_completed", Stage.BUILD_VALIDATION.value)
+        self.event_store.append(task_id, "workflow_completed", Stage.COMPLETION_AND_RETENTION.value)
         return completed
 
     def _declared_dispatch_role(self, stage: Stage) -> str:
@@ -641,7 +704,7 @@ class HostController:
             )
             raise TransitionError("incorrect agent role for active workflow stage")
         if stage is Stage.RESEARCH:
-            if requester_role not in {"workflow_entry", "audit_discovery", "planning"}:
+            if requester_role not in {"workflow_entry", "specification_gap_check", "gap_inspection", "planning"}:
                 raise TransitionError("Research requester is not authorized")
             respond_to = requester_role
         else:
@@ -720,7 +783,8 @@ class HostController:
         if state.current_stage is Stage.RESEARCH:
             if envelope.respond_to != envelope.requester_role or envelope.respond_to not in {
                 "workflow_entry",
-                "audit_discovery",
+                "specification_gap_check",
+                "gap_inspection",
                 "planning",
             }:
                 raise TransitionError("invalid Research respond_to binding")
@@ -749,16 +813,13 @@ class HostController:
             from agent.skills.builder.contracts.build import BuildRecord
             from agent.skills.planner.contracts.specification import PlanningRecord
             from agent.skills.researcher.contracts.research import ResearchRecord
-            from agent.skills.shared.contracts.workflow.verifier.build_validation import BuildValidationRecord
-            from agent.skills.shared.contracts.workflow.verifier.fixture_validation import FixtureValidationRecord
 
             contracts: dict[Stage, tuple[str, type[BaseModel]]] = {
+                Stage.DISCOVERY: ("audit_discovery_package", AuditDiscoveryPackage),
                 Stage.RESEARCH: ("research_record", ResearchRecord),
-                Stage.AUDIT_DISCOVERY: ("audit_discovery_package", AuditDiscoveryPackage),
+                Stage.REPOSITORY_RECONCILIATION: ("audit_discovery_package", AuditDiscoveryPackage),
                 Stage.PLANNING: ("planning_record", PlanningRecord),
-                Stage.FIXTURE_VALIDATION: ("fixture_validation_record", FixtureValidationRecord),
-                Stage.BUILD: ("build_record", BuildRecord),
-                Stage.BUILD_VALIDATION: ("build_validation_record", BuildValidationRecord),
+                Stage.SANDBOX_EXECUTION: ("build_record", BuildRecord),
             }
             required_contract, contract_model = contracts[Stage(envelope.stage)]
             if output.contract_id != required_contract:
@@ -769,7 +830,7 @@ class HostController:
                 envelope.run_id,
             ):
                 raise ValueError("agent result task/run identity mismatch")
-            if Stage(envelope.stage) is Stage.BUILD:
+            if Stage(envelope.stage) is Stage.SANDBOX_EXECUTION:
                 from agent.skills.shared.contracts.workflow.system.host import (
                     BuildAdmissionReceipt,
                     PackageLockReceipt,

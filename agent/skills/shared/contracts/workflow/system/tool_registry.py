@@ -13,12 +13,26 @@ from agent.skills.shared.contracts.workflow.common import ContractModel, Sha256
 
 ToolId = Annotated[str, Field(pattern=r"^[a-z][a-z0-9_-]{0,63}$")]
 StageId = Literal[
+    "user_request",
+    "intent_summary",
+    "search_confirmation",
+    "discovery",
+    "edit_preview",
+    "specification_gap_check",
     "research",
-    "audit_discovery",
+    "repository_reconciliation",
+    "candidate_completion",
+    "gap_inspection",
     "planning",
-    "fixture_validation",
-    "build",
-    "build_validation",
+    "fixture_preparation",
+    "gap_resolution",
+    "task_todo_creation",
+    "final_scan",
+    "package_persist",
+    "preflight",
+    "user_review_and_approval",
+    "sandbox_execution",
+    "completion_and_retention",
 ]
 _PLACEHOLDER = re.compile(r"^\{([a-z][a-z0-9_-]*)\}$")
 _DRIVE = re.compile(r"^[A-Za-z]:")

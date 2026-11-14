@@ -81,7 +81,7 @@ def cmd_scan(task_id: str, request_file: str, state_root: str = "/tmp/oneshot-st
 
     host = HostController(state_root)
     state = host.get_state(task_id)
-    if state is None or state.run_id != request.run_id or state.current_stage is not Stage.PLANNING:
+    if state is None or state.run_id != request.run_id or state.current_stage is not Stage.SPECIFICATION_GAP_CHECK:
         print("Scanner blocked: task/run/stage mismatch", file=sys.stderr)
         return 1
 
@@ -136,7 +136,9 @@ def cmd_verify(task_id: str, state_root: str = "/tmp/oneshot-state") -> int:
     if state is None:
         print(f"Task {task_id}: not found")
         return 1
-    if state.current_stage == Stage.BUILD_VALIDATION and Stage.BUILD_VALIDATION in state.completed_stages:
+    if state.current_stage == Stage.COMPLETION_AND_RETENTION and Stage.COMPLETION_AND_RETENTION in (
+        state.completed_stages
+    ):
         print(f"Task {task_id}: COMPLETED")
         return 0
     print(f"Task {task_id}: in progress (stage: {state.current_stage})")

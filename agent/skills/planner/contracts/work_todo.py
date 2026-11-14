@@ -13,7 +13,28 @@ from pydantic import Field, model_validator
 
 from agent.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel
 
-StageId = Literal["research", "audit_discovery", "planning", "fixture_validation", "build", "build_validation"]
+StageId = Literal[
+    "user_request",
+    "intent_summary",
+    "search_confirmation",
+    "discovery",
+    "edit_preview",
+    "specification_gap_check",
+    "research",
+    "repository_reconciliation",
+    "candidate_completion",
+    "gap_inspection",
+    "planning",
+    "fixture_preparation",
+    "gap_resolution",
+    "task_todo_creation",
+    "final_scan",
+    "package_persist",
+    "preflight",
+    "user_review_and_approval",
+    "sandbox_execution",
+    "completion_and_retention",
+]
 
 
 class WorkStatus(StrEnum):

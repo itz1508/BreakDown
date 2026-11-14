@@ -28,10 +28,13 @@ class ResearchExecutionService(Protocol):
 
 
 _ROLE_MODULES = {
-    ("audit_discovery", "audit_discovery"): "agent.skills.auditor.auditing",
+    ("discovery", "auditor"): "agent.skills.auditor.auditing",
     ("research", "researcher"): "agent.skills.researcher.researching",
+    ("repository_reconciliation", "auditor"): "agent.skills.auditor.auditing",
+    ("candidate_completion", "coder"): "agent.skills.coder.coding",
+    ("gap_inspection", "auditor"): "agent.skills.auditor.auditing",
     ("planning", "planner"): "agent.skills.planner.planning",
-    ("build", "builder"): "agent.skills.builder.building",
+    ("sandbox_execution", "builder"): "agent.skills.builder.building",
 }
 
 
@@ -115,10 +118,13 @@ def execute_skill(context: SkillContext, envelope: HostDispatchEnvelope, argumen
     key = (envelope.stage, envelope.role)
     module_name = _ROLE_MODULES.get(key)
     expected_type = {
-        ("audit_discovery", "audit_discovery"): AuditArguments,
+        ("discovery", "auditor"): AuditArguments,
         ("research", "researcher"): ResearchArguments,
+        ("repository_reconciliation", "auditor"): AuditArguments,
+        ("candidate_completion", "coder"): AuditArguments,
+        ("gap_inspection", "auditor"): AuditArguments,
         ("planning", "planner"): PlanningArguments,
-        ("build", "builder"): BuildArguments,
+        ("sandbox_execution", "builder"): BuildArguments,
     }.get(key)
     if module_name is None or expected_type is None:
         raise TransitionError("no executable skill registered for this stage and role")

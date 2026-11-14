@@ -16,7 +16,7 @@ from agent.skills.auditor.auditing import run
 from agent.skills.auditor.tools.core import AuditResult
 from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
 from agent.skills.shared.host.skill_dispatch import AuditArguments, SkillContext, execute_skill
-from agent.skills.shared.host.sys_controller import HostController, Stage
+from agent.skills.shared.host.sys_controller import HostController
 from tests.e2e.harness import advance, create_task
 
 pytestmark = pytest.mark.e2e
@@ -34,17 +34,18 @@ class DispatchedAudit(NamedTuple):
 
 
 def dispatched_audit(tmp_path: Path) -> DispatchedAudit:
-    """Create a task, reach the audit stage, and allocate the host dispatch route."""
+    """Create a task, reach the discovery stage, and allocate the host dispatch route."""
     workspace = tmp_path / "workspace"
     workspace.mkdir()
     (workspace / "hello.py").write_text(SOURCE, encoding="utf-8")
     host = HostController(tmp_path / "state", workspace)
     input_ref = create_task(host, TASK_ID, RUN_ID)
-    # The host only allocates the audit route while audit_discovery is the active stage.
-    advance(host, TASK_ID, RUN_ID, Stage.RESEARCH)
-    envelope, _, _ = host.prepare_agent_dispatch(
-        TASK_ID, input_ref, "Inspect Python source", requested_role="audit_discovery"
-    )
+    # The host only allocates the audit route while discovery is the active stage.
+    from agent.skills.shared.host.sys_controller import STAGE_ORDER
+
+    for stage in STAGE_ORDER[:3]:
+        advance(host, TASK_ID, RUN_ID, stage)
+    envelope, _, _ = host.prepare_agent_dispatch(TASK_ID, input_ref, "Inspect Python source", requested_role="auditor")
     return DispatchedAudit(host, workspace, SkillContext.from_host(host, workspace), envelope)
 
 

@@ -9,14 +9,13 @@ from __future__ import annotations
 import json
 from time import perf_counter_ns
 
-from test_decision_trace import make_planning_record, revised_record
-
 from agent.skills.shared.contracts.workflow.validation.planning import (
     parse_action_dependency_facts,
     scan_action_dependencies,
     validate_action_graph,
 )
 from agent.skills.shared.storage.canonical_serialization import canonical_bytes
+from tests.fixtures.planning import make_planning_record, revised_record
 
 
 def timed_scan(source: bytes, target: str):
