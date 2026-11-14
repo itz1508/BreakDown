@@ -6,14 +6,14 @@ produced by the real ScannerGateway over a real ArtifactStore.
 
 from __future__ import annotations
 
-from agent.skills.planner.contracts.specification import (
+from agents.skills.planner.contracts.specification import (
     BuildSpecification,
     CandidateSpecification,
     CreateAction,
     PlanningRecord,
 )
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
+from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
 
 
 def artifact_ref(artifact_id: str, revision: int, digest: str, contract_id: str = "planning") -> ArtifactRef:

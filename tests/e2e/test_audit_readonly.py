@@ -12,11 +12,11 @@ from typing import NamedTuple
 
 import pytest
 
-from agent.skills.auditor.auditing import run
-from agent.skills.auditor.tools.core import AuditResult
-from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agent.skills.shared.host.skill_dispatch import AuditArguments, SkillContext, execute_skill
-from agent.skills.shared.host.sys_controller import HostController
+from agents.skills.auditor.auditing import run
+from agents.skills.auditor.tools.core import AuditResult
+from agents.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
+from agents.skills.shared.host.skill_dispatch import AuditArguments, SkillContext, execute_skill
+from agents.skills.shared.host.sys_controller import HostController
 from tests.e2e.harness import advance, create_task
 
 pytestmark = pytest.mark.e2e
@@ -41,7 +41,7 @@ def dispatched_audit(tmp_path: Path) -> DispatchedAudit:
     host = HostController(tmp_path / "state", workspace)
     input_ref = create_task(host, TASK_ID, RUN_ID)
     # The host only allocates the audit route while discovery is the active stage.
-    from agent.skills.shared.host.sys_controller import STAGE_ORDER
+    from agents.skills.shared.host.sys_controller import STAGE_ORDER
 
     for stage in STAGE_ORDER[:3]:
         advance(host, TASK_ID, RUN_ID, stage)

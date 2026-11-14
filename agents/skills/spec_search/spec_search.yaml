@@ -1,0 +1,25 @@
+# Read-only evidence retrieval; no stage, no receipts, no source writes.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: spec_search.search
+owner: spec_search
+artifact_contract_refs: []
+implementation_intent: agents/skills/spec_search/spec_searching.py
+segments:
+- id: main
+  steps:
+  - id: normalize_terms
+    operation_id: spec_search.normalize_terms
+    status: unbound
+  - id: collect_candidates
+    depends_on: [normalize_terms]
+    operation_id: spec_search.collect_candidates
+    status: unbound
+  - id: rank_and_bound
+    depends_on: [collect_candidates]
+    operation_id: spec_search.rank_and_bound
+    status: unbound
+policy:
+  issues_approval: false
+  executes_effects: false
+  writes_source: false

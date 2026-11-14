@@ -11,11 +11,11 @@ from typing import NamedTuple
 
 import pytest
 
-from agent.skills.planner.contracts.scanner import ScannerEvidence
-from agent.skills.planner.scanner_evidence import verify_scanner_evidence
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.sys_controller import HostController
+from agents.skills.planner.contracts.scanner import ScannerEvidence
+from agents.skills.planner.scanner_evidence import verify_scanner_evidence
+from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agents.skills.shared.host.sys_controller import HostController
 from tests.e2e.harness import create_task
 from tests.fixtures.scanner import passing_scan
 from tests.fixtures.structural_gap import passing_gap

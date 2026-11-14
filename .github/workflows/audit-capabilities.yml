@@ -4,18 +4,18 @@ on:
   push:
     branches: [main]
     paths:
-      - "agent/skills/auditor/**"
-      - "agent/skills/auditor/references/audit_guidance.md"
+      - "agents/skills/auditor/**"
+      - "agents/skills/auditor/references/audit_guidance.md"
       - "tests/e2e/test_audit_readonly.py"
-      - "agent/skills/auditor/**"
+      - "agents/skills/auditor/**"
       - "web/**"
       - ".github/workflows/audit-capabilities.yml"
   pull_request:
     paths:
-      - "agent/skills/auditor/**"
-      - "agent/skills/auditor/references/audit_guidance.md"
+      - "agents/skills/auditor/**"
+      - "agents/skills/auditor/references/audit_guidance.md"
       - "tests/e2e/test_audit_readonly.py"
-      - "agent/skills/auditor/**"
+      - "agents/skills/auditor/**"
       - "web/**"
       - ".github/workflows/audit-capabilities.yml"
   workflow_dispatch:

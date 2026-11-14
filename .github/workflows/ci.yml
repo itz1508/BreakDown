@@ -39,16 +39,19 @@ jobs:
         if: always()
         run: |
           uv build --wheel
-          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheel=next(Path("dist").glob("*.whl")); archive=ZipFile(wheel); assert "agent/catalog/research_samples.yaml" in archive.namelist(), "synthetic Catalog missing from wheel"'
-      - name: Focused scanner regression
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheel=next(Path("dist").glob("*.whl")); archive=ZipFile(wheel); assert "agents/catalog/research_samples.yaml" in archive.namelist(), "synthetic Catalog missing from wheel"'
+      - name: Quality gates (skill definitions, layering, retired paths)
         if: always()
-        run: uv run --no-sync pytest -q tests/planner/test_decision_trace.py tests/planner/test_stream_events.py tests/e2e/test_mvp_scanner.py
+        run: uv run --no-sync pytest -q tests/quality
       - name: Scanner cache and legacy-oracle benchmark
         if: always()
-        run: uv run --no-sync python tests/planner/benchmark_decision_trace.py
+        run: uv run --no-sync python tests/quality/benchmark_decision_trace.py
+      - name: Spec Search retrieval benchmark
+        if: always()
+        run: uv run --no-sync python tests/quality/benchmark_spec_search.py
       - name: Independent labeled Scanner gap evaluation (scikit-learn; no runtime dependency)
         if: always()
-        run: uv run --no-sync --with scikit-learn==1.8.0 python tests/planner/evaluate_gap_sklearn.py
+        run: uv run --no-sync --with scikit-learn==1.8.0 python tests/quality/evaluate_gap_sklearn.py
       - name: Tests
         if: always()
         run: uv run --no-sync pytest -q
@@ -66,20 +69,14 @@ jobs:
       - run: uv sync --locked --extra meta
       - name: Enforce retired-path and draft exclusion rules
         run: uv run --no-sync python scripts/check_retired_paths.py
-      - name: Validate installed provider selection
-        run: uv run --no-sync pytest -q tests/test_config.py
-      - name: Check source imports, Catalog, checkpoint, Host dispatch and Researcher boundaries
-        run: |
-          uv run --no-sync pytest -q \
-            tests/boundaries/test_imports.py \
-            tests/test_research_catalog.py \
-            tests/builder/test_skill_runner.py \
-            tests/runtime/test_skill_dispatch.py \
-            tests/researcher/test_skill_runner.py
+      - name: Validate skill definitions and import boundaries
+        run: uv run --no-sync pytest -q tests/quality
+      - name: Check connected workflow, build and trust boundaries
+        run: uv run --no-sync pytest -q tests/e2e -m e2e
       - name: Build and inspect installable package
         run: |
           uv build --wheel
-          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agent/catalog/research_samples.yaml", "agent/skills/shared/host/file_operations.py", "agent/skills/researcher/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
+          uv run --no-sync python -c 'from pathlib import Path; from zipfile import ZipFile; wheels=list(Path("dist").glob("*.whl")); assert len(wheels) == 1; archive=ZipFile(wheels[0]); expected=("agents/catalog/research_samples.yaml", "agents/skills/shared/host/file_operations.py", "agents/skills/researcher/research_catalog.py", "config/config.yaml", "config/providers/meta.yaml"); missing=[x for x in expected if x not in archive.namelist()]; assert not missing, missing'
       - name: Bundle exact source and dependency lock (candidate only)
         if: matrix.python-version == '3.11'
         run: git archive --format=zip --output=dist/breakdown-source-candidate.zip HEAD

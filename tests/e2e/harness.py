@@ -9,11 +9,11 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from agent.skills.planner.contracts.work_todo import WorkBinding, WorkStatus
-from agent.skills.researcher.contracts.research import Requirement, ResearchRecord
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.host.sys_controller import DISPATCH_STAGES, HostController, Stage
-from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
+from agents.skills.planner.contracts.work_todo import WorkBinding, WorkStatus
+from agents.skills.researcher.contracts.research import Requirement, ResearchRecord
+from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.skills.shared.host.sys_controller import DISPATCH_STAGES, HostController, Stage
+from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
 from tests.fixtures.planning import artifact_ref, make_planning_record
 from tests.fixtures.structural_gap import passing_gap
 

@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import pytest
 
-from agent.cli import cmd_verify
-from agent.skills.planner.contracts.work_todo import WorkStatus
-from agent.skills.shared.contracts.workflow.system.host import HostDispatchResult
-from agent.skills.shared.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+from agents.cli import cmd_verify
+from agents.skills.planner.contracts.work_todo import WorkStatus
+from agents.skills.shared.contracts.workflow.system.host import HostDispatchResult
+from agents.skills.shared.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
 from tests.e2e.harness import (
     advance,
     bind_work,

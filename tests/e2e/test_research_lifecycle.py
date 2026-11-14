@@ -9,7 +9,7 @@ unverified claims, and invalid inputs).
 import pytest
 from pydantic import BaseModel
 
-from agent.skills.researcher.contracts.research import (
+from agents.skills.researcher.contracts.research import (
     AdmissionDisposition,
     CatalogMatchStatus,
     ExecutionStatus,
@@ -19,10 +19,10 @@ from agent.skills.researcher.contracts.research import (
     ResearchIntent,
     ReviewDisposition,
 )
-from agent.skills.researcher.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
-from agent.skills.shared.storage.artifact_store import ArtifactStore
-from agent.skills.shared.storage.event_store import EventStore
-from agent.skills.shared.storage.receipt_store import ReceiptStore
+from agents.skills.researcher.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
+from agents.skills.shared.storage.artifact_store import ArtifactStore
+from agents.skills.shared.storage.event_store import EventStore
+from agents.skills.shared.storage.receipt_store import ReceiptStore
 
 pytestmark = pytest.mark.e2e
 
@@ -287,7 +287,7 @@ class TestAdversarialSecurity:
         """LC12: Output to unadmitted input rejected (unverified claim)."""
         lifecycle.create_request("RR-001", "USER-001")
         # Manually store an unadmitted input by writing to artifact store
-        from agent.skills.researcher.contracts.research import InputRequest, ResearchAdmission
+        from agents.skills.researcher.contracts.research import InputRequest, ResearchAdmission
 
         unadmitted = InputRequest(
             input_id="RR-IN-BAD",
@@ -401,7 +401,7 @@ class TestAdversarialSecurity:
             report_ref="report-001",
         )
         # Manually create an output with a forged review receipt
-        from agent.skills.researcher.contracts.research import OutputResult
+        from agents.skills.researcher.contracts.research import OutputResult
 
         forged = OutputResult(
             output_id="RR-OUT-001",

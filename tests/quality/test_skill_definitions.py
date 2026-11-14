@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-from agent.skills.shared.host.skill_dispatch import role_for_stage
-from agent.skills.shared.host.sys_controller import Stage
+from agents.skills.shared.host.skill_dispatch import role_for_stage
+from agents.skills.shared.host.sys_controller import Stage
 
 SKILLS = {
     "auditor": ("audit.yaml", "auditing.py"),
@@ -65,7 +65,7 @@ def load_definition(text: str, *, role: str) -> dict:
             ref = step.get("subpipeline_ref")
             if ref:
                 prefix, sep, name = ref.partition("#")
-                if sep != "#" or prefix != f"agent/skills/{role}/{SKILLS[role][0]}" or name not in segment_ids:
+                if sep != "#" or prefix != f"agents/skills/{role}/{SKILLS[role][0]}" or name not in segment_ids:
                     raise ValueError("invalid subpipeline reference")
     if data.get("policy", {}).get("can_approve_or_execute") is True:
         raise ValueError("skill cannot self-authorize")
@@ -76,10 +76,10 @@ def load_definition(text: str, *, role: str) -> dict:
 
 def test_role_definitions_are_owned_and_closed() -> None:
     assert not Path("contracts/workflow/pipeline.yaml").exists()
-    assert not Path("agent/skills/pipeline_contract.py").exists()
+    assert not Path("agents/skills/pipeline_contract.py").exists()
     assert not Path(".agents/contracts/workflow.yaml").exists()
     for role, (yaml_name, implementation) in SKILLS.items():
-        root = Path("agent/skills") / role
+        root = Path("agents/skills") / role
         assert (root / "SKILL.md").is_file()
         assert (root / implementation).is_file()
         definition = load_definition((root / yaml_name).read_text(encoding="utf-8"), role=role)
@@ -142,7 +142,7 @@ def test_host_stages_match_breakdown_and_explicit_runtime_skill_routes() -> None
 def test_invalid_role_definitions_block(mutation: str) -> None:
     from copy import deepcopy
 
-    source = (Path("agent/skills/researcher") / "research.yaml").read_text(encoding="utf-8")
+    source = (Path("agents/skills/researcher") / "research.yaml").read_text(encoding="utf-8")
     if mutation == "duplicate_key":
         source += "\nowner: researcher\n"
     else:
@@ -153,7 +153,7 @@ def test_invalid_role_definitions_block(mutation: str) -> None:
         elif mutation == "forward_dependency":
             definition["segments"][0]["steps"][0]["depends_on"] = ["prepare_retrieval_request"]
         elif mutation == "unknown_segment":
-            definition["segments"][2]["steps"][0]["subpipeline_ref"] = "agent/skills/researcher/research.yaml#missing"
+            definition["segments"][2]["steps"][0]["subpipeline_ref"] = "agents/skills/researcher/research.yaml#missing"
         else:
             definition["segments"][0]["steps"][0]["status"] = "active"
         source = yaml.safe_dump(definition)
@@ -162,7 +162,7 @@ def test_invalid_role_definitions_block(mutation: str) -> None:
 
 
 def test_builder_cannot_issue_approvals_from_yaml() -> None:
-    text = (Path("agent/skills/builder") / "build.yaml").read_text(encoding="utf-8")
+    text = (Path("agents/skills/builder") / "build.yaml").read_text(encoding="utf-8")
     data = load_definition(text, role="builder")
     assert data["policy"]["executes_effects"] is False
     assert data["policy"]["issues_approval"] is False
@@ -170,9 +170,9 @@ def test_builder_cannot_issue_approvals_from_yaml() -> None:
 
 def test_breakdown_mapping_matches_implemented_routes() -> None:
     """The workflow mapping cannot drift from Stage, dispatch, or the file layout."""
-    from agent.skills.shared.host.skill_dispatch import registered_skills
+    from agents.skills.shared.host.skill_dispatch import registered_skills
 
-    mapping = yaml.safe_load(Path("agent/breakdown.yaml").read_text(encoding="utf-8"))
+    mapping = yaml.safe_load(Path("agents/breakdown.yaml").read_text(encoding="utf-8"))
     stages = mapping["stages"]
     assert [stage["order"] for stage in stages] == list(range(1, len(stages) + 1))
     assert tuple(stage["id"] for stage in stages) == tuple(stage.value for stage in Stage)

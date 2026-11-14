@@ -27,7 +27,7 @@ jobs:
       - name: Install package, Meta, and MVP dependencies
         run: uv sync --locked --extra meta --extra mvp
       - name: Compile Python modules
-        run: uv run --no-sync python -m compileall -q agent contracts system mvp api_fundamentals
+        run: uv run --no-sync python -m compileall -q agent
       - name: Test imports, persistence, API and E2E
         run: uv run --no-sync pytest -q
       - name: Static types
@@ -48,14 +48,14 @@ jobs:
           with ZipFile(wheels[0]) as archive:
               names = set(archive.namelist())
           required = {
-              'agent/skills/builder/building.py',
-              'agent/skills/researcher/research.yaml',
-              'agent/skills/auditor/audit.yaml',
-              'agent/catalog/research_samples.yaml',
-              'agent/skills/shared/contracts/workflow/common.py',
-              'agent/skills/shared/host/sys_controller.py',
-              'agent/skills/shared/host/sys_path.py',
-              'agent/skills/shared/host/sys_policy_enforcer.py',
+              'agents/skills/builder/building.py',
+              'agents/skills/researcher/research.yaml',
+              'agents/skills/auditor/audit.yaml',
+              'agents/catalog/research_samples.yaml',
+              'agents/skills/shared/contracts/workflow/common.py',
+              'agents/skills/shared/host/sys_controller.py',
+              'agents/skills/shared/host/sys_path.py',
+              'agents/skills/shared/host/sys_policy_enforcer.py',
           }
           missing = sorted(required - names)
           assert not missing, f'wheel missing files: {missing}'

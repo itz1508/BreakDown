@@ -16,18 +16,18 @@ from pathlib import Path
 import pytest
 from pydantic import BaseModel
 
-from agent.skills.builder.build_admission import BuildAdmission
-from agent.skills.builder.build_todos import compile_build
-from agent.skills.builder.effect_executor import EffectExecutionError, EffectExecutor
-from agent.skills.builder.package_lock import PackageLock
-from agent.skills.planner.contracts.specification import BuildSpecification
-from agent.skills.planner.contracts.task_todo import Build
-from agent.skills.planner.contracts.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
-from agent.skills.shared.contracts.workflow.common import ArtifactRef
-from agent.skills.shared.host.sys_controller import HostController
-from agent.skills.shared.host.work_todo import WorkTodoError
-from agent.skills.shared.storage.artifact_store import DuplicateArtifactError
-from agent.skills.shared.storage.canonical_serialization import digest_raw
+from agents.skills.builder.build_admission import BuildAdmission
+from agents.skills.builder.build_todos import compile_build
+from agents.skills.builder.effect_executor import EffectExecutionError, EffectExecutor
+from agents.skills.builder.package_lock import PackageLock
+from agents.skills.planner.contracts.specification import BuildSpecification
+from agents.skills.planner.contracts.task_todo import Build
+from agents.skills.planner.contracts.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
+from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.skills.shared.host.sys_controller import HostController
+from agents.skills.shared.host.work_todo import WorkTodoError
+from agents.skills.shared.storage.artifact_store import DuplicateArtifactError
+from agents.skills.shared.storage.canonical_serialization import digest_raw
 from tests.e2e.harness import store_model
 
 pytestmark = pytest.mark.e2e

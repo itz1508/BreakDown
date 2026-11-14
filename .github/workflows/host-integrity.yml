@@ -3,12 +3,9 @@ name: Host integrity connected tests
 on:
   pull_request:
     paths:
-      - 'agent/skills/shared/host/workflow_control.py'
-      - 'system/storage/receipt_store.py'
-      - 'mvp/**'
-      - 'tests/e2e/test_host_integrity.py'
-      - 'tests/e2e/test_host_dispatch.py'
-      - 'tests/e2e/test_mvp_*.py'
+      - 'agents/skills/shared/host/**'
+      - 'agents/skills/shared/storage/**'
+      - 'tests/e2e/**'
       - '.github/workflows/host-integrity.yml'
   workflow_dispatch:
 
@@ -27,13 +24,11 @@ jobs:
       - run: uv python install ${{ matrix.python-version }}
       - run: uv sync --locked --extra meta --extra mvp
       - name: Validate host types
-        run: uv run --no-sync mypy agent/
-      - name: Verify host and HTTP regression tests
+        run: uv run --no-sync mypy agents/
+      - name: Verify host, dispatch and trust-boundary tests
         run: |
           uv run --no-sync pytest -q \
-            tests/e2e/test_host_integrity.py \
-            tests/e2e/test_host_dispatch.py \
-            tests/e2e/test_mvp_mcp_research.py \
-            tests/e2e/test_mvp_api.py \
-            tests/e2e/test_mvp_service.py \
-            tests/e2e/test_work_todo.py
+            tests/e2e/test_workflow_lifecycle.py \
+            tests/e2e/test_trust_boundaries.py \
+            tests/e2e/test_scanner_checks.py \
+            tests/e2e/test_cli_contract.py

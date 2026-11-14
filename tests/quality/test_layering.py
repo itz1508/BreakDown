@@ -19,24 +19,23 @@ class TestImportBoundaries:
         return imports
 
     RUNTIME_MODULES = {
-        "agent.skills.shared.storage.artifact_store",
-        "agent.skills.shared.storage.receipt_store",
-        "agent.skills.shared.storage.checkpoint_store",
-        "agent.skills.shared.host.sys_policy_enforcer",
-        "agent.skills.shared.host.sys_controller",
-        "agent.skills.builder.effect_executor",
-        "agent.skills.planner.specification_freezer",
-        "agent.skills.builder.package_lock",
-        "agent.skills.builder.build_admission",
-        "agent.skills.planner.scanner_gateway",
-        "agent.skills.shared.host.recovery",
-        "agent.skills.shared.storage.event_store",
-        "agent.skills.shared.host.loaders",
+        "agents.skills.shared.storage.artifact_store",
+        "agents.skills.shared.storage.receipt_store",
+        "agents.skills.shared.storage.checkpoint_store",
+        "agents.skills.shared.host.sys_policy_enforcer",
+        "agents.skills.shared.host.sys_controller",
+        "agents.skills.builder.effect_executor",
+        "agents.skills.builder.package_lock",
+        "agents.skills.builder.build_admission",
+        "agents.skills.planner.scanner_gateway",
+        "agents.skills.shared.host.recovery",
+        "agents.skills.shared.storage.event_store",
+        "agents.skills.shared.host.loaders",
     }
 
     def test_contracts_no_runtime_imports(self):
         """B01: Contract modules do not import runtime modules."""
-        contracts_dir = pathlib.Path("agent/skills/shared/contracts")
+        contracts_dir = pathlib.Path("agents/skills/shared/contracts")
         assert contracts_dir.is_dir(), "contract source root missing"
         files = sorted(path for path in contracts_dir.rglob("*.py") if path.name != "__init__.py")
         assert files, "boundary test cannot pass without scanning contract modules"
@@ -51,7 +50,7 @@ class TestImportBoundaries:
 
     def test_validation_no_io_imports(self):
         """B01b: Validation modules do not import IO modules."""
-        validation_dir = pathlib.Path("agent/skills/shared/contracts/workflow/validation")
+        validation_dir = pathlib.Path("agents/skills/shared/contracts/workflow/validation")
         assert validation_dir.is_dir(), "validation source root missing"
         assert any(validation_dir.rglob("*.py")), "validation boundary must scan source files"
         io_modules = {"sqlite3", "os", "pathlib", "shutil", "subprocess", "socket"}
@@ -76,9 +75,13 @@ def test_non_restoration_policy_blocks_removed_and_competing_sources() -> None:
         "agent/runtime/controller.py",
         "conftest.py",
         "MVP/api.py",
+        "agent/skills/planner/scanner_gateway.py",
+        "agent/skills/builder/file_operations.py",
     )
     assert forbidden_paths(paths) == tuple(sorted(paths))
-    assert forbidden_paths(("agent/skills/planner/scanner_gateway.py", "agent/skills/builder/file_operations.py")) == ()
+    assert (
+        forbidden_paths(("agents/skills/planner/scanner_gateway.py", "agents/skills/builder/file_operations.py")) == ()
+    )
 
 
 def test_every_e2e_module_is_marked_and_uses_no_mock() -> None:

@@ -15,10 +15,10 @@ from uuid import uuid4
 
 import pytest
 
-from agent.cli import cmd_resume, cmd_status, cmd_verify, main
-from agent.skills.planner.contracts.scanner import ScannerRunInput
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.sys_controller import HostController
+from agents.cli import cmd_resume, cmd_status, cmd_verify, main
+from agents.skills.planner.contracts.scanner import ScannerRunInput
+from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agents.skills.shared.host.sys_controller import HostController
 from tests.e2e.harness import create_task, prepare_planning_candidate
 from tests.fixtures.planning import artifact_ref
 
@@ -29,7 +29,7 @@ pytestmark = pytest.mark.e2e
 
 def test_skills_command_lists_registered_roles() -> None:
     completed = subprocess.run(
-        [sys.executable, "-m", "agent", "skills"],
+        [sys.executable, "-m", "agents", "skills"],
         cwd=REPO_ROOT,
         capture_output=True,
         text=True,
@@ -48,11 +48,11 @@ def test_skills_command_lists_registered_roles() -> None:
         "sandbox_execution",
     ]
     assert {item["module"] for item in skills} == {
-        "agent.skills.auditor.auditing",
-        "agent.skills.builder.building",
-        "agent.skills.coder.coding",
-        "agent.skills.planner.planning",
-        "agent.skills.researcher.researching",
+        "agents.skills.auditor.auditing",
+        "agents.skills.builder.building",
+        "agents.skills.coder.coding",
+        "agents.skills.planner.planning",
+        "agents.skills.researcher.researching",
     }
 
 
@@ -92,7 +92,7 @@ def test_cli_scan_executes_the_host_scanner(tmp_path, monkeypatch, capsys) -> No
     request_file.write_text(request.model_dump_json())
     monkeypatch.setattr(
         "sys.argv",
-        ["agent", "scan", task_id, str(request_file), "--state-root", str(tmp_path)],
+        ["agents", "scan", task_id, str(request_file), "--state-root", str(tmp_path)],
     )
 
     assert main() == 2

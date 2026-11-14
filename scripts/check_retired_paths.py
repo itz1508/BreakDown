@@ -11,7 +11,7 @@ RETIRED_PREFIXES = (
     "mvp/",
     ".agents/",
     "deployment/modal/sandbox_v3/",
-    "agent/skills/executor/sandbox/",
+    "agent/",
     "tests/fixtures/repo_compat/",
     "contracts/runtime/",
     "contracts/",

@@ -1,0 +1,509 @@
+# OneShot Breakdown — Workflow Definition (v3)
+#
+# Encodes the confirmed end-to-end sequence: user input, intent summary,
+# search confirmation, audit discovery and specification, edit preview,
+# specification gap check, research, repository reconciliation, coder
+# candidate completion, gap inspection, planning, fixture preparation,
+# gap resolution, task todo creation, final scan, package persistence,
+# preflight, final plan approval, sandbox execution, optional validation,
+# completion and retention.
+#
+# Role-specific instructions and implementation remain with each skill.
+# This file does not define imports, API clients or execution infrastructure.
+
+workflow_id: oneshot.breakdown
+definition_version: 3
+
+stages:
+  - id: user_request
+    order: 1
+    owner: user
+    dispatchable: false
+    purpose: >
+      Supply the requested outcome, objectives and known constraints.
+    produces:
+      - user_request
+
+  - id: intent_summary
+    order: 2
+    owner: workflow
+    dispatchable: false
+    purpose: >
+      Preserve the original request and prepare its objectives, scope,
+      constraints and open questions. Distinguish explicit requirements
+      from inferred suggestions.
+    requires:
+      - user_request
+    produces:
+      - intent_summary
+
+  - id: search_confirmation
+    order: 3
+    owner: user
+    dispatchable: false
+    purpose: >
+      User reviews the proposed search scope before any repository work.
+    requires:
+      - intent_summary
+    gate:
+      decisions:
+        - accepted
+        - changes_requested
+        - declined
+      on_accepted: discovery
+      on_changes_requested: intent_summary
+      on_declined: stop_before_execution
+    produces:
+      - confirmed_scope
+
+  - id: discovery
+    order: 4
+    owner: auditor
+    dispatchable: true
+    module: agents.skills.auditor.auditing
+    purpose: >
+      Catalog the repository and run repo_scan and sys_scan as needed.
+      Produce discovery findings and the detailed specification.
+    requires:
+      - confirmed_scope
+      - intent_summary
+    inspection:
+      - files_and_directories
+      - package_boundaries
+      - entrypoints_and_behavior_modules
+      - configuration_and_resources
+      - dependencies
+      - available_tests
+      - existing_artifact_handoffs
+    produces:
+      - discovery_findings
+      - scaffolding_inventory
+      - candidate_repository_scope
+      - research_items
+      - source_checkpoint
+      - detailed_specification
+
+  - id: edit_preview
+    order: 5
+    owner: user
+    dispatchable: false
+    purpose: >
+      Review the specification preview. Agent edits regenerate the preview,
+      manual edits update it; the stage closes on accept and check.
+    requires:
+      - detailed_specification
+    gate:
+      decisions:
+        - accepted
+        - agent_edit
+        - manual_edit
+      on_accepted: specification_gap_check
+      on_agent_edit: edit_preview
+      on_manual_edit: edit_preview
+    produces:
+      - confirmed_specification
+
+  - id: specification_gap_check
+    order: 6
+    owner: planner
+    dispatchable: false
+    purpose: >
+      Run the structural specification gap check on the confirmed
+      specification. Material issues return to the edit preview;
+      a ready result admits research.
+    requires:
+      - confirmed_specification
+    outcomes:
+      ready:
+        next: research
+      material_issue:
+        action: clarification
+        next: edit_preview
+    produces:
+      - specification_gap_result
+
+  - id: research
+    order: 7
+    owner: researcher
+    dispatchable: true
+    module: agents.skills.researcher.researching
+    purpose: >
+      Investigate the requested technical questions. Produce audit.json,
+      code.json and fixture.json evidence plus matched GOOD/BAD cases.
+    requires:
+      - specification_gap_result
+      - confirmed_specification
+      - intent_summary
+    produces:
+      - research_findings
+      - technical_references
+      - fixture_requirements
+      - matched_case_samples
+      - resolved_questions
+      - unresolved_questions
+
+  - id: repository_reconciliation
+    order: 8
+    owner: auditor
+    dispatchable: true
+    module: agents.skills.auditor.auditing
+    purpose: >
+      Reconcile research findings with actual repository behavior and
+      propose the scaffolding mapping without moving or rewriting files.
+    requires:
+      - research_findings
+      - source_checkpoint
+      - scaffolding_inventory
+    produces:
+      - repository_findings
+      - scaffolding_map
+      - structural_gaps
+      - assessed_source_checkpoint
+      - audit_limitations
+
+  - id: candidate_completion
+    order: 9
+    owner: coder
+    dispatchable: true
+    module: agents.skills.coder.coding
+    purpose: >
+      Complete the candidate files for the affected scope from the
+      reconciled repository evidence.
+    requires:
+      - repository_findings
+      - scaffolding_map
+      - research_findings
+    produces:
+      - candidate_files
+
+  - id: gap_inspection
+    order: 10
+    owner: auditor
+    dispatchable: true
+    module: agents.skills.auditor.auditing
+    purpose: >
+      Inspect the completed candidates for gaps and refactor where needed.
+    requires:
+      - candidate_files
+    produces:
+      - gap_inspection_findings
+
+  - id: planning
+    order: 11
+    owner: planner
+    dispatchable: true
+    module: agents.skills.planner.planning
+    purpose: >
+      Produce the implementation plan: phases, file-level operations and
+      dependencies, acceptance criteria and fixture definitions.
+    requires:
+      - gap_inspection_findings
+      - repository_findings
+      - assessed_source_checkpoint
+    task_operations:
+      - create
+      - modify
+      - move
+      - delete
+      - inspect
+      - retain
+    rules:
+      - Each implementation task owns one file-level operation.
+      - A move identifies its source and destination.
+      - Dependencies reflect actual prerequisites.
+      - Independent tasks may run concurrently where safe.
+      - Proposed deletions require responsibility and consumer analysis.
+      - No change is a valid recommendation when evidence supports it.
+    produces:
+      - plan_revision
+      - implementation_plan
+      - affected_files
+      - dependency_order
+      - task_todo
+      - acceptance_criteria
+      - plan_package_digest
+
+  - id: fixture_preparation
+    order: 12
+    owner: planner
+    dispatchable: false
+    purpose: >
+      Prepare fixtures when the plan requires them.
+    requires:
+      - implementation_plan
+      - fixture_requirements
+    produces:
+      - fixture_definitions
+
+  - id: gap_resolution
+    order: 13
+    owner: planner
+    dispatchable: false
+    purpose: >
+      Resolve remaining gaps. A correction routes to the responsible step
+      with the affected rechecks; ready admits task todo creation.
+    requires:
+      - implementation_plan
+      - structural_gaps
+    outcomes:
+      ready:
+        next: task_todo_creation
+      correction:
+        action: recheck_responsible_step
+        next: planning
+    produces:
+      - gap_resolution_result
+
+  - id: task_todo_creation
+    order: 14
+    owner: planner
+    dispatchable: false
+    purpose: >
+      Create the exact TaskTodo list bound to the plan revision.
+    requires:
+      - gap_resolution_result
+      - implementation_plan
+    produces:
+      - bound_task_todo
+
+  - id: final_scan
+    order: 15
+    owner: auditor
+    dispatchable: false
+    purpose: >
+      Run verify_all and the final scan over the prepared package.
+    requires:
+      - bound_task_todo
+    produces:
+      - final_scan_result
+
+  - id: package_persist
+    order: 16
+    owner: workflow
+    dispatchable: false
+    purpose: >
+      Persist the exact execution package with its hashes.
+    requires:
+      - final_scan_result
+    produces:
+      - plan_package_digest
+      - package_checkpoint
+
+  - id: preflight
+    order: 17
+    owner: builder
+    dispatchable: false
+    purpose: >
+      Verify that the persisted package, source state, required inputs,
+      dependencies and execution capabilities match the build assignment.
+    requires:
+      - plan_package_digest
+      - package_checkpoint
+    produces:
+      - preflight_evidence
+      - preflight_result
+    outcomes:
+      ready:
+        next: user_review_and_approval
+      information_needed:
+        action: request_information
+        resume_at: preflight
+      source_changed:
+        next: repository_reconciliation
+      plan_change_needed:
+        next: planning
+
+  - id: user_review_and_approval
+    order: 18
+    owner: user
+    dispatchable: false
+    purpose: >
+      Final plan preview. The user reviews the exact proposed execution
+      package and explicitly approves, requests changes or declines.
+    requires:
+      - preflight_result
+      - plan_revision
+      - plan_package_digest
+      - package_checkpoint
+    approval:
+      required: true
+      binds_to:
+        - plan_revision
+        - plan_package_digest
+        - package_checkpoint
+      decisions:
+        - approved
+        - changes_requested
+        - declined
+      on_approved: sandbox_execution
+      on_changes_requested: planning
+      on_declined: stop_before_execution
+    produces_on_approval:
+      - user_approval
+      - approved_plan
+      - approved_plan_package_digest
+
+  - id: sandbox_execution
+    order: 19
+    owner: builder
+    dispatchable: true
+    module: agents.skills.builder.building
+    purpose: >
+      Verify the confirmed hashes, create the authorized sandbox, execute
+      the TaskTodo asynchronously in dependency order, collect task
+      results, changes and evidence, and synchronize results.
+    requires:
+      - user_approval
+      - approved_plan
+      - approved_plan_package_digest
+      - preflight_result
+      - bound_task_todo
+    execution_condition:
+      preflight_result: ready
+    sequence:
+      - verify_confirmed_hashes
+      - create_authorized_sandbox
+      - execute_task_todo
+      - run_assigned_checks
+      - collect_execution_evidence
+      - synchronize_results
+    produces:
+      - implementation_changes
+      - execution_evidence
+      - build_artifacts
+      - task_execution_results
+      - resulting_source_checkpoint
+      - synchronization_result
+    on_issue:
+      action: preserve_results_and_request_resolution
+      rules:
+        - Do not apply dependent effects whose prerequisites failed.
+        - Reconcile uncertain effects before retrying.
+        - Plan changes return to planning and require renewed approval.
+
+  - id: completion_and_retention
+    order: 20
+    owner: workflow
+    dispatchable: false
+    purpose: >
+      Record the delivered outcome and retain the exact plan,
+      implementation, execution and, when selected, independent
+      validation references.
+    requires:
+      - approved_plan
+      - implementation_changes
+      - build_artifacts
+      - execution_evidence
+      - resulting_source_checkpoint
+      - synchronization_result
+    completion_condition:
+      synchronization_result: completed
+    produces:
+      - completion_record
+      - retained_evidence
+unrouted_capabilities:
+  - name: fixturer
+    routing: none
+
+ownership:
+  user:
+    stages:
+      - user_request
+      - search_confirmation
+      - edit_preview
+      - user_review_and_approval
+
+  auditor:
+    stages:
+      - discovery
+      - repository_reconciliation
+      - gap_inspection
+      - final_scan
+    owns:
+      - repository_observations
+      - scaffolding_inspection
+      - evidence_backed_findings
+      - proposed_scaffolding_mapping
+    application_source_changes: false
+
+  researcher:
+    stages:
+      - research
+    owns:
+      - technical_investigation
+      - source_references
+      - supported_options
+      - fixture_research
+      - matched_case_samples
+
+  coder:
+    stages:
+      - candidate_completion
+    owns:
+      - candidate_file_completion
+
+  planner:
+    stages:
+      - specification_gap_check
+      - planning
+      - fixture_preparation
+      - gap_resolution
+      - task_todo_creation
+    owns:
+      - implementation_design
+      - file_level_plan
+      - task_todo
+      - dependency_order
+      - acceptance_criteria
+      - fixture_definitions
+
+  builder:
+    stages:
+      - preflight
+      - sandbox_execution
+    owns:
+      - build_assignment
+      - sandbox_creation
+      - approved_source_modifications
+      - asynchronous_execution
+      - build_artifacts
+      - result_synchronization
+  verifier:
+    stages: []
+    independence_required: true
+    note: >
+      Independent validation is not a workflow stage; when requested it runs
+      out-of-band against retained artifacts.
+
+  workflow:
+    kind: application_processing
+    stages:
+      - intent_summary
+      - package_persist
+      - completion_and_retention
+
+approval_boundary:
+  implementation_requires:
+    - recorded_explicit_user_approval
+    - exact_approved_plan_revision
+    - matching_approved_package_digest
+    - matching_source_preconditions
+    - ready_preflight_result
+
+  changes_to_approved_package:
+    return_to: planning
+    require_user_approval_again: true
+
+  rules:
+    - A model statement is not user approval.
+    - A content digest identifies bytes but does not grant authority.
+    - No application-source effects occur before approval and ready preflight.
+    - Failed or uncertain effects are not successful completion.
+
+handoff_rules:
+  - Preserve original intent and exact preceding artifact references.
+  - Keep evidence and unresolved questions available to downstream stages.
+  - Preserve full source and candidate files rather than replacing them with summaries.
+  - Distinguish facts, inferences and PROPOSALS.
+  - Record unperformed checks and inspection limits.
+  - Request missing information without inventing inputs or results.

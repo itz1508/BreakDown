@@ -8,12 +8,12 @@ from __future__ import annotations
 
 import pytest
 
-from agent.skills.planner.contracts.work_todo import WorkStatus
-from agent.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agent.skills.shared.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
-from agent.skills.shared.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
-from agent.skills.shared.host.work_todo import WorkTodoError
-from agent.skills.shared.storage.artifact_store import DuplicateArtifactError
+from agents.skills.planner.contracts.work_todo import WorkStatus
+from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agents.skills.shared.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+from agents.skills.shared.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
+from agents.skills.shared.host.work_todo import WorkTodoError
+from agents.skills.shared.storage.artifact_store import DuplicateArtifactError
 from tests.e2e.harness import advance, bind_work, completed_work, store_artifact
 
 pytestmark = pytest.mark.e2e

@@ -1,22 +1,22 @@
 """Synthetic pinned Scanner checks for host gate tests only."""
 
-from agent.skills.planner.contracts.scanner import ScannerEvidence
-from agent.skills.planner.host_gap_analyzer import StructuralGapOutcome
-from agent.skills.planner.scanner_check_registry import (
+from agents.skills.planner.contracts.scanner import ScannerEvidence
+from agents.skills.planner.host_gap_analyzer import StructuralGapOutcome
+from agents.skills.planner.scanner_check_registry import (
     ScannerCheck,
     ScannerCheckRegistrySnapshot,
     pin_scanner_check_registry,
 )
-from agent.skills.planner.scanner_evidence import persist_scan_result
-from agent.skills.shared.contracts.workflow.system.tool_registry import (
+from agents.skills.planner.scanner_evidence import persist_scan_result
+from agents.skills.shared.contracts.workflow.system.tool_registry import (
     SandboxProfile,
     ToolEffect,
     ToolInvocation,
     ToolRegistrySnapshot,
     ToolSpec,
 )
-from agent.skills.shared.host.sys_controller import HostController
-from agent.skills.shared.host.tool_registry import pin_tool_registry
+from agents.skills.shared.host.sys_controller import HostController
+from agents.skills.shared.host.tool_registry import pin_tool_registry
 
 
 def passing_scan(controller: HostController, gap: StructuralGapOutcome) -> ScannerEvidence:

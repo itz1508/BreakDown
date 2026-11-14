@@ -12,23 +12,23 @@ from pathlib import Path
 
 import pytest
 
-from agent.skills.researcher.contracts.research import (
+from agents.skills.researcher.contracts.research import (
     FixtureSpecification,
     InformationClass,
     ResearchRecord,
 )
-from agent.skills.researcher.researching import (
+from agents.skills.researcher.researching import (
     MAX_STEPS,
     MAX_TOOL_CALLS,
     ResearchSearchResult,
     run,
     search,
 )
-from agent.skills.shared.host.skill_dispatch import ResearchArguments, SkillContext
-from agent.skills.shared.host.sys_controller import STAGE_ORDER, HostController
-from agent.skills.shared.providers.base import ProviderError, ProviderRequest, ProviderResult
-from agent.skills.spec_search.spec_searching import SpecQuery
-from agent.skills.spec_search.spec_searching import search as spec_search
+from agents.skills.shared.host.skill_dispatch import ResearchArguments, SkillContext
+from agents.skills.shared.host.sys_controller import STAGE_ORDER, HostController
+from agents.skills.shared.providers.base import ProviderError, ProviderRequest, ProviderResult
+from agents.skills.spec_search.spec_searching import SpecQuery
+from agents.skills.spec_search.spec_searching import search as spec_search
 from tests.e2e.harness import advance, create_task
 
 pytestmark = pytest.mark.e2e

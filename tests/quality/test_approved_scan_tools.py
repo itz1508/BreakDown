@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from agent.skills.planner.contracts.scanner import (
+from agents.skills.planner.contracts.scanner import (
     CriterionResult,
     CriterionValidity,
     ObservationState,
@@ -14,9 +14,9 @@ from agent.skills.planner.contracts.scanner import (
     ScannerResult,
     ScannerTraceStep,
 )
-from agent.skills.shared.contracts.workflow.common import ArtifactRef, DiagnosticStatus
-from agent.skills.shared.tools.sys_scan import sys_scan
-from agent.skills.shared.tools.verify_all import AcceptedCheck, verify_all
+from agents.skills.shared.contracts.workflow.common import ArtifactRef, DiagnosticStatus
+from agents.skills.shared.tools.sys_scan import sys_scan
+from agents.skills.shared.tools.verify_all import AcceptedCheck, verify_all
 
 
 def _ref(label: str) -> ArtifactRef:

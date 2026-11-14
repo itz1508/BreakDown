@@ -11,7 +11,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from agent.skills.spec_search.spec_searching import SpecQuery, search
+from agents.skills.spec_search.spec_searching import SpecQuery, search
 
 FILES = {
     "src/bucket.py": "class TokenBucket:\n    pass\n",
