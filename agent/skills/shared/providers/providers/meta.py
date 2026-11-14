@@ -49,23 +49,45 @@ class MetaProvider:
         self._client = OpenAI(api_key=key, base_url=self._base_url)
         return self._client
 
+    @staticmethod
+    def _tool_call_dict(call: Any) -> dict[str, Any]:
+        """Normalize one SDK tool call into the provider-neutral result shape."""
+        function = getattr(call, "function", None)
+        return {
+            "id": getattr(call, "id", ""),
+            "type": getattr(call, "type", "function"),
+            "function": {
+                "name": getattr(function, "name", ""),
+                "arguments": getattr(function, "arguments", ""),
+            },
+        }
+
     def generate(self, request: ProviderRequest) -> ProviderResult:
-        """Generate using Meta Muse Spark."""
+        """Generate using Meta Muse Spark, optionally with tool definitions."""
         client = self._get_client()
-        response = client.chat.completions.create(
-            model=self._model,
-            messages=[
-                {"role": "system", "content": request.system_prompt},
-                {"role": "user", "content": request.prompt},
-            ]
-            if request.system_prompt
-            else [{"role": "user", "content": request.prompt}],
-            max_tokens=request.max_tokens,
-            temperature=request.temperature,
-        )
+        if request.messages:
+            messages: list[dict[str, Any]] = [dict(message) for message in request.messages]
+        else:
+            messages = []
+            if request.system_prompt:
+                messages.append({"role": "system", "content": request.system_prompt})
+            messages.append({"role": "user", "content": request.prompt})
+        payload: dict[str, Any] = {
+            "model": self._model,
+            "messages": messages,
+            "max_tokens": request.max_tokens,
+            "temperature": request.temperature,
+        }
+        if request.tools:
+            payload["tools"] = [dict(tool) for tool in request.tools]
+            if request.tool_choice is not None:
+                payload["tool_choice"] = request.tool_choice
+        response = client.chat.completions.create(**payload)
         choice = response.choices[0]
+        message = choice.message
         return ProviderResult(
-            content=choice.message.content or "",
+            content=message.content or "",
+            tool_calls=tuple(self._tool_call_dict(call) for call in (message.tool_calls or ())),
             finish_reason=choice.finish_reason or "stop",
             usage=(
                 {
