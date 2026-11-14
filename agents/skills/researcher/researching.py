@@ -32,6 +32,8 @@ from agents.skills.shared.storage.artifact_store import ArtifactStore
 from agents.skills.shared.storage.canonical_serialization import digest_raw
 from agents.skills.spec_search.spec_searching import SpecQuery
 from agents.skills.spec_search.spec_searching import search as spec_search
+from agents.tools.file_tools import ReadSourceTool
+from agents.tools.search import RepositorySearchTool
 
 MAX_STEPS = 4
 MAX_TOOL_CALLS = 6
@@ -124,43 +126,10 @@ _STOPWORDS = frozenset(
 
 
 def _tool_schemas() -> list[dict[str, Any]]:
-    """Schemas for the two read-only tools that actually exist in this repository."""
-    return [
-        {
-            "type": "function",
-            "function": {
-                "name": "search_repository",
-                "description": "Search repository text for literal terms; returns path, line and snippet digest.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "terms": {"type": "array", "items": {"type": "string"}, "minItems": 1, "maxItems": 4},
-                        "scope": {"type": "string"},
-                        "max_results": {"type": "integer", "minimum": 1, "maximum": 10},
-                    },
-                    "required": ["terms"],
-                    "additionalProperties": False,
-                },
-            },
-        },
-        {
-            "type": "function",
-            "function": {
-                "name": "read_source",
-                "description": "Read a bounded line window from one file inside the workspace.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "path": {"type": "string"},
-                        "start_line": {"type": "integer", "minimum": 1},
-                        "max_lines": {"type": "integer", "minimum": 1, "maximum": MAX_READ_LINES},
-                    },
-                    "required": ["path"],
-                    "additionalProperties": False,
-                },
-            },
-        },
-    ]
+    """Declare the read-only research tools through the shared agents/tools package."""
+    search = RepositorySearchTool(root=".")
+    read = ReadSourceTool(max_read_lines=MAX_READ_LINES)
+    return [search.to_openai_dict(), read.to_openai_dict()]
 
 
 def _require_terms(arguments: dict[str, Any]) -> tuple[str, ...]:

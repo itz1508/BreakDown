@@ -21,3 +21,12 @@ Read first each session; newest entries at the top. Stable lessons migrate to
   (openai 3.48.0 already has responses.parse and chat.completions.parse).
 - 2026-11-11 — system/ retained as slim infra: conf.toml, storage/, memory/,
   dbm/, tools/sqlite3/, tools/query/ — only system/host empties and retires.
+
+- 2026-11-14 — Package renamed agent/ -> agents/ (user restructure, completed
+  in commit 45633ac): imports, pyproject, CI manifests, guard, AGENTS.md.
+  `agent/` root is on the retired-path list; never reintroduce it. Layering:
+  agents/tools = model-facing tool declarations; agents/skills/shared/tools =
+  cross-role implementations; roles keep their evidence binding.
+- 2026-11-14 — Validation is not a workflow stage (user ruling). Independent
+  validation runs out-of-band against retained artifacts; do not re-add a
+  validation stage or verifier routing.
