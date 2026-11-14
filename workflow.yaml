@@ -1,0 +1,537 @@
+# OneShot Breakdown — Workflow Definition
+#
+# This file defines task order, ownership, handoffs, and user approval.
+# Each skill keeps its own contract, entry point, and implementation.
+# This file does not define Python imports, provider APIs, or skill internals.
+
+workflow_id: oneshot.breakdown
+definition_version: 3
+
+stages:
+  - id: user_request
+    order: 1
+    owner: user
+    purpose: >
+      Provide the requested outcome, objectives, constraints, and known context.
+    produces:
+      - user_request
+
+  - id: intent_summary
+    order: 2
+    owner: workflow
+    purpose: >
+      Turn the original request into a clear summary. Keep the user's exact
+      requirements separate from suggestions and identify the proposed search
+      scope. Do not search, inspect the repository, or look up Catalog entries.
+    requires:
+      - user_request
+    produces:
+      - intent_summary
+      - search_scope
+
+  - id: search_confirmation
+    order: 3
+    owner: user
+    purpose: >
+      Show the intent summary and proposed search scope. Stop and wait for the
+      user's decision before Catalog Discovery, repository discovery, Research,
+      or external search.
+    requires:
+      - intent_summary
+      - search_scope
+    approval:
+      required: true
+      binds_to:
+        - intent_summary
+        - search_scope
+      decisions:
+        - approved
+        - changes_requested
+        - declined
+      on_approved: catalog_discovery
+      on_changes_requested: intent_summary
+      on_declined: stop_before_search
+    produces_on_approval:
+      - search_approval
+      - approved_search_scope
+
+  - id: catalog_discovery
+    order: 4
+    owner: workflow
+    purpose: >
+      Search the local Catalog using the approved scope. Find useful templates,
+      examples, and references that may help the later work.
+    requires:
+      - intent_summary
+      - search_approval
+      - approved_search_scope
+    rules:
+      - Catalog entries are references, not proof.
+      - Catalog entries do not create requirements.
+      - Catalog results do not approve research or build work.
+    produces:
+      - catalog_matches
+      - candidate_research_items
+      - candidate_repository_scope
+
+  - id: discovery
+    order: 5
+    owner: auditor
+    purpose: >
+      Inspect the relevant repository and its scaffolding without changing
+      application source. Find the files, packages, tests, configuration,
+      dependencies, and existing work related to the request.
+    requires:
+      - intent_summary
+      - approved_search_scope
+      - catalog_matches
+      - candidate_repository_scope
+    inspection:
+      - files_and_directories
+      - package_boundaries
+      - skill_scaffolding
+      - entry_points_and_implementation_files
+      - configuration_and_resources
+      - imports_and_dependencies
+      - available_tests
+      - existing_artifact_handoffs
+    produces:
+      - discovery_findings
+      - scaffolding_inventory
+      - research_items
+      - source_checkpoint
+      - candidate_repository_scope
+
+  - id: research
+    order: 6
+    owner: researcher
+    purpose: >
+      Investigate the technical questions using the approved scope, repository
+      findings, supplied sources, and relevant capabilities. Return evidence,
+      supported options, prerequisites, contradictions, and open questions.
+    requires:
+      - intent_summary
+      - approved_search_scope
+      - catalog_matches
+      - discovery_findings
+      - research_items
+    produces:
+      - research_findings
+      - technical_references
+      - fixture_requirements
+      - matched_case_samples
+      - resolved_questions
+      - unresolved_questions
+
+  - id: repository_audit
+    order: 7
+    owner: auditor
+    purpose: >
+      Compare the requested outcome and research with the actual repository.
+      Trace the relevant implementations, callers, imports, dependencies,
+      configuration, tests, and handoffs. Record evidence-backed gaps and
+      propose scaffolding corrections without moving or rewriting files.
+    requires:
+      - intent_summary
+      - discovery_findings
+      - scaffolding_inventory
+      - source_checkpoint
+      - research_findings
+      - technical_references
+      - unresolved_questions
+    inspection:
+      - implementations_and_public_interfaces
+      - imports_exports_and_callers
+      - producer_consumer_connections
+      - dependency_direction
+      - configuration_and_resource_paths
+      - duplicate_or_conflicting_responsibilities
+      - tests_and_inspection_coverage
+      - source_changes_since_discovery
+    scaffolding_mapping:
+      records:
+        - current_full_path_and_symbol
+        - observed_responsibility
+        - actual_consumers
+        - evidence_reference
+        - proposed_destination_if_needed
+        - required_consumer_updates
+        - existing_data_and_results_to_preserve
+        - unresolved_questions
+      dispositions:
+        - retain
+        - update
+        - move
+        - reconcile
+        - propose_retirement
+        - pending
+    produces:
+      - repository_findings
+      - scaffolding_map
+      - structural_gaps
+      - implementation_evidence
+      - integration_points
+      - assessed_source_checkpoint
+      - audit_limitations
+    on_missing_information: request_information
+    on_material_source_change: discovery
+
+  - id: planning
+    order: 8
+    owner: planner
+    purpose: >
+      Turn the request, research, and repository evidence into a practical
+      implementation plan. Make design decisions, list file changes, order
+      dependencies, and define acceptance criteria and fixtures.
+    requires:
+      - intent_summary
+      - research_findings
+      - fixture_requirements
+      - matched_case_samples
+      - repository_findings
+      - scaffolding_map
+      - structural_gaps
+      - assessed_source_checkpoint
+      - audit_limitations
+    task_operations:
+      - create
+      - modify
+      - move
+      - delete
+      - inspect
+      - retain
+    rules:
+      - Each task describes one file-level operation.
+      - A move names both the current path and destination.
+      - Dependencies must match actual prerequisites.
+      - Independent tasks may run together when safe.
+      - Proposed deletions require responsibility and consumer analysis.
+      - No change is a valid recommendation when the evidence supports it.
+      - Unresolved material decisions stay visible.
+    produces:
+      - plan_revision
+      - implementation_plan
+      - affected_files
+      - dependency_order
+      - task_todo
+      - acceptance_criteria
+      - fixture_definitions
+      - plan_package_digest
+    on_missing_information: request_information
+
+  - id: build_approval
+    order: 9
+    owner: user
+    purpose: >
+      Show the exact implementation plan and stop. Wait for the user to approve,
+      request changes, or decline before Builder starts.
+    requires:
+      - plan_revision
+      - implementation_plan
+      - affected_files
+      - dependency_order
+      - task_todo
+      - acceptance_criteria
+      - fixture_definitions
+      - assessed_source_checkpoint
+      - plan_package_digest
+    approval:
+      required: true
+      binds_to:
+        - plan_revision
+        - plan_package_digest
+        - assessed_source_checkpoint
+      decisions:
+        - approved
+        - changes_requested
+        - declined
+      on_approved: builder
+      on_changes_requested: planning
+      on_declined: stop_before_build
+    produces_on_approval:
+      - user_approval
+      - approved_plan
+      - approved_plan_package_digest
+      - approved_source_checkpoint
+
+  - id: builder
+    order: 10
+    owner: builder
+    purpose: >
+      Accept the exact approved plan and prepare the build assignment. Do not
+      change source or create the sandbox before Preflight is ready.
+    requires:
+      - user_approval
+      - approved_plan
+      - approved_plan_package_digest
+      - approved_source_checkpoint
+    produces:
+      - build_assignment
+
+  - id: preflight
+    order: 11
+    owner: builder
+    purpose: >
+      Check the approved plan, source state, required inputs, dependencies,
+      and available execution tools before creating the sandbox.
+    requires:
+      - build_assignment
+      - user_approval
+      - approved_plan
+      - approved_plan_package_digest
+      - approved_source_checkpoint
+    produces:
+      - preflight_evidence
+      - preflight_result
+    outcomes:
+      ready:
+        next: sandbox_execution
+      information_needed:
+        action: request_information
+        resume_at: preflight
+      source_changed:
+        next: repository_audit
+        invalidates_approval: true
+      plan_change_needed:
+        next: planning
+        invalidates_approval: true
+
+  - id: sandbox_execution
+    order: 12
+    owner: builder
+    purpose: >
+      Recheck the approved plan and source state, create the sandbox, carry out
+      the approved tasks in dependency order, run the assigned checks, and
+      collect the actual results.
+    requires:
+      - user_approval
+      - approved_plan
+      - approved_plan_package_digest
+      - approved_source_checkpoint
+      - build_assignment
+      - preflight_evidence
+      - preflight_result
+    execution_condition:
+      preflight_result: ready
+    sequence:
+      - check_approved_inputs_and_source
+      - create_sandbox
+      - execute_task_todo
+      - run_assigned_checks
+      - collect_execution_evidence
+      - synchronize_results
+    produces:
+      - implementation_changes
+      - execution_evidence
+      - build_artifacts
+      - task_execution_results
+      - resulting_source_checkpoint
+      - synchronization_result
+    on_issue:
+      action: preserve_results_and_request_resolution
+      rules:
+        - Do not run dependent tasks when their prerequisites are not ready.
+        - Check uncertain effects before trying them again.
+        - Any plan change returns to Planning and requires new user approval.
+
+  - id: independent_validation
+    order: 13
+    owner: verifier
+    purpose: >
+      Check the actual changes independently against the approved plan,
+      acceptance criteria, fixtures, and execution evidence. Do not rely only
+      on Builder's description of its work.
+    requires:
+      - approved_plan
+      - implementation_changes
+      - execution_evidence
+      - task_execution_results
+      - acceptance_criteria
+      - fixture_definitions
+      - resulting_source_checkpoint
+      - synchronization_result
+    produces:
+      - validation_evidence
+      - validation_result
+      - validation_findings
+    outcomes:
+      valid:
+        next: completion_and_retention
+      not_valid:
+        action: return_findings_for_correction
+        next: planning
+      unknown:
+        action: request_information
+        resume_at: independent_validation
+
+  - id: completion_and_retention
+    order: 14
+    owner: workflow
+    purpose: >
+      Record the delivered result and retain the exact plan, source changes,
+      build artifacts, execution evidence, and independent validation evidence.
+    requires:
+      - approved_plan
+      - implementation_changes
+      - build_artifacts
+      - execution_evidence
+      - resulting_source_checkpoint
+      - synchronization_result
+      - validation_evidence
+      - validation_result
+    completion_condition:
+      validation_result: valid
+      synchronization_result: completed
+    produces:
+      - completion_record
+      - retained_evidence
+
+skill_scaffolding:
+  auditor:
+    directory: agent/skills/auditor/
+    contract_file: audit.yaml
+    entry_file: audit.py
+    implementation_file: auditing.py
+
+  researcher:
+    directory: agent/skills/researcher/
+    contract_file: research.yaml
+    entry_file: research.py
+    implementation_file: researching.py
+
+  planner:
+    directory: agent/skills/planner/
+    contract_file: plan.yaml
+    entry_file: plan.py
+    implementation_file: planning.py
+
+  builder:
+    directory: agent/skills/builder/
+    contract_file: build.yaml
+    entry_file: build.py
+    implementation_file: building.py
+
+  verifier:
+    directory: agent/skills/verifier/
+    contract_file: verify.yaml
+    entry_file: verify.py
+    implementation_file: verifying.py
+
+ownership:
+  user:
+    stages:
+      - user_request
+      - search_confirmation
+      - build_approval
+
+  workflow:
+    stages:
+      - intent_summary
+      - catalog_discovery
+      - completion_and_retention
+
+  auditor:
+    stages:
+      - discovery
+      - repository_audit
+    owns:
+      - audit_contract
+      - audit_entry_point
+      - audit_implementation
+      - read_only_repository_inspection
+      - scaffolding_analysis
+      - evidence_backed_findings
+    application_source_changes: false
+
+  researcher:
+    stages:
+      - research
+    owns:
+      - research_contract
+      - research_entry_point
+      - research_implementation
+      - technical_investigation
+      - sourced_evidence
+
+  planner:
+    stages:
+      - planning
+    owns:
+      - planning_contract
+      - planning_entry_point
+      - planning_implementation
+      - design_decisions
+      - file_level_plan
+      - task_todo
+      - dependency_order
+      - acceptance_criteria
+      - fixture_definitions
+
+  builder:
+    stages:
+      - builder
+      - preflight
+      - sandbox_execution
+    owns:
+      - build_contract
+      - build_entry_point
+      - build_implementation
+      - sandbox_creation
+      - approved_source_changes
+      - build_execution
+      - build_artifacts
+
+  verifier:
+    stages:
+      - independent_validation
+    independence_required: true
+
+approval_boundary:
+  search:
+    required_before:
+      - catalog_discovery
+      - discovery
+      - research
+    binds_to:
+      - intent_summary
+      - search_scope
+    changes_requested_return_to: intent_summary
+    declined_action: stop_before_search
+
+  build:
+    required_before:
+      - builder
+      - preflight
+      - sandbox_execution
+    binds_to:
+      - plan_revision
+      - plan_package_digest
+      - assessed_source_checkpoint
+    changes_requested_return_to: planning
+    declined_action: stop_before_build
+
+  changes_to_approved_plan:
+    return_to: planning
+    require_user_approval_again: true
+
+  changes_to_approved_source:
+    return_to: repository_audit
+    require_user_approval_again: true
+
+  rules:
+    - Only an explicit user decision counts as approval.
+    - A model-generated statement is not user approval.
+    - Search cannot start before search approval.
+    - Builder cannot start before build approval.
+    - Source changes cannot happen before ready Preflight.
+    - A changed plan or source checkpoint needs renewed user approval.
+    - Unknown evidence must remain unknown.
+
+handoff_rules:
+  - Preserve the original user request.
+  - Pass the exact output references from one stage to the next.
+  - Keep evidence and open questions available to later stages.
+  - Keep original source files and candidate artifacts available; do not replace them with summaries.
+  - Mark facts, inferences, and proposals separately.
+  - Record checks that were not performed and the reason.
+  - Ask for missing information instead of inventing inputs or results.
