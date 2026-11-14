@@ -2,6 +2,51 @@
 
 Append-only record of file-level changes. Preserve history; append corrections.
 
+## 2026-11-13 — Removed .review-export/ review bundle (untracked, generated)
+
+User directive: remove the generated export artifacts.
+
+- Deleted `.review-export/` — 60 files, 838,195 bytes. It was untracked, so the
+  removal leaves no git trace; recorded here for provenance.
+- It was a review export made 2026-11-13 17:06-17:07 on branch
+  `current-need-correction`, recording commit `d3b54904` while HEAD was already
+  `e192d8c4`; its `staged.patch`/`unstaged.patch` no longer described the tree.
+- Removed as duplicates: `untracked/` and `tests/` copies were byte-identical
+  (spot-checked SHA-256 on `agent/skills/spec_search/spec_search.py`,
+  `tests/e2e/harness.py`, `tests/fixtures/planning.py`) to files still in the tree.
+- Removed as generated: `artifacts/{audit,code,fixture,refs,result,model-requests}.json`
+  from one scripted-provider run, plus the `README.md` describing it and its digests.
+- Verification after deletion: `git status --porcelain -uall` went 94 -> 29 entries
+  with no source entry lost; the three spot-checked files still present. Retained
+  deliberately: `.oneshot-state/` (persisted artifacts, checkpoints, events,
+  receipts, research-admission databases).
+- Not performed for the export removal itself: no test, lint or type check, because
+  no tracked source changed. (The cache pass below did run checks.)
+
+### 2026-11-13 follow-up — build/test caches removed
+
+User directive: clean all artifacts.
+
+- Removed 52 generated cache directories — 49 `__pycache__` outside environments,
+  plus `.mypy_cache`, `.ruff_cache`, `.pytest_cache` — 410 files, 55.07 MB. Guards
+  excluded `.venv`, `.venv-qwen`, `.git`, `.tools`, `.agents`, `node_modules`.
+- Removed `.pytest-tmp/` (9 files, 136.8 KB) created by the validation run below.
+  `pyproject.toml` sets `--basetemp=.pytest-tmp` and `tests/README.md` documents the
+  directory as git-ignored test sandbox state.
+- Retained as not artifacts: `.venv/` (132.6 MB, complete — pytest, ruff, mypy,
+  pydantic, yaml), `.venv-qwen/` (24.1 MB, secondary environment holding 1 of 5 key
+  modules, still activated in the shell), `.tools/` (70.1 MB, installed Databricks
+  CLI), `web/node_modules/` (104.3 MB, restorable with `npm ci`), `.oneshot-state/`
+  (5 persisted databases) and `.agents/` (1.3 MB vendored references).
+- Verification: `.venv` reports Python 3.11.15; `pytest tests/e2e/test_cli_contract.py`
+  gives `3 passed in 1.49s`, exit 0, run with `PYTHONDONTWRITEBYTECODE=1`,
+  `-p no:cacheprovider` and a basetemp outside the repo, so no cache was recreated.
+- Pre-existing failure, unrelated to this cleanup: full `--collect-only` errors on
+  `tests/e2e/test_researcher_search.py` and `tests/quality/test_configuration.py`
+  with `ModuleNotFoundError: No module named 'agent.skills.shared.providers'`. That
+  package is absent from the tree with no tracked files; untracked tests still
+  import it. Not repaired here — changing tests or source is outside this task.
+
 ## 2026-11-12 — Role-fit restructure: dissolved top-level contracts/ and system/
 
 User directive: the clean repo must no longer carry top-level `contracts/` and
