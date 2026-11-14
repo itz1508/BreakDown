@@ -8,7 +8,7 @@ from contextlib import suppress
 from enum import StrEnum
 from hashlib import sha256
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Protocol
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
@@ -68,6 +68,16 @@ class TransitionError(Exception):
     pass
 
 
+if TYPE_CHECKING:
+
+    class ProviderRegistryProtocol(Protocol):
+        """Registry surface the researcher skill needs; implementations are injected."""
+
+        default_provider: str
+
+        def generate(self, key: str, request: Any) -> Any: ...
+
+
 class TaskState(BaseModel):
     task_id: str = Field(min_length=1)
     run_id: str = Field(min_length=1)
@@ -91,6 +101,7 @@ class HostController:
         self,
         state_root: str | Path,
         workspace_root: str | Path | None = None,
+        providers: ProviderRegistryProtocol | None = None,
     ) -> None:
         self.state_root = Path(state_root)
         self.state_root.mkdir(parents=True, exist_ok=True)
@@ -103,6 +114,7 @@ class HostController:
         self.scanner_checks: ScannerCheckRegistry | None = None
         self.gap_analyzer = HostGapAnalyzer(self.artifact_store, self.receipt_store)
         self.recovery = BoundedRecovery()
+        self.providers = providers
         self.authorization = AuthorizationEngine(
             allowed_roots=(str(self.state_root),)
             if workspace_root is None

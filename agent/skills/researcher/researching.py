@@ -1,4 +1,4 @@
-﻿"""Researcher: bounded evidence search over locally available tools.
+"""Researcher: bounded evidence search over locally available tools.
 
 The model chooses between the two read-only tools this repository actually
 provides â€” repository evidence search and safe source reads â€” and the host
@@ -460,6 +460,8 @@ def search(context: SkillContext, envelope: HostDispatchEnvelope, arguments: Res
     plan = _build_plan(envelope, input_text)
     messages = _initial_messages(envelope, input_text)
     registry = context.host.providers
+    if registry is None:
+        raise ProviderError("no provider registry configured on the host")
     calls: list[ToolCallRecord] = []
     limitations: list[str] = []
     outcome: Outcome | None = None
@@ -553,4 +555,3 @@ def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: Resear
             raise ValueError("Research service and dispatch host use different state roots")
         return context.research_service.execute_research(envelope.task_id)
     return search(context, envelope, arguments).to_dict()
-

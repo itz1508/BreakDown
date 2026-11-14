@@ -45,7 +45,11 @@ def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:
     # Check scanner capabilities
     controller = HostController(state_root)
     print(f"Scanner capabilities: {controller.scanner.supported_capabilities or 'none registered'}")
-    print(f"Providers: {controller.providers.registered_providers}")
+    providers = controller.providers
+    if providers is None:
+        print("Providers: none injected")
+    else:
+        print(f"Providers: {getattr(providers, 'registered_providers', 'unknown')}")
 
     print("\nDoctor: OK")
     return 0
