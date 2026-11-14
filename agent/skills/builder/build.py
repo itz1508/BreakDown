@@ -16,7 +16,6 @@ def main() -> int:
     routes = [r for r in registered_skills() if r["contract_role"] == "builder"]
     print(json.dumps({"role": "builder", "dispatch_routes": routes}, sort_keys=True, indent=2))
     print(
-        "builder.run() requires a Host-verified dispatch envelope; "
-        "no standalone execution here.",
+        "builder.run() requires a Host-verified dispatch envelope; no standalone execution here.",
     )
     return 2
