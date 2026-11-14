@@ -6,19 +6,17 @@ on:
     paths:
       - "agent/skills/auditor/**"
       - "agent/skills/auditor/references/audit_guidance.md"
-      - "tests/auditoror/**"
-      - "mvp/**"
+      - "tests/e2e/test_audit_readonly.py"
+      - "agent/skills/auditor/**"
       - "web/**"
-      - "agent/skills/shared/host/workflow_control.py"
       - ".github/workflows/audit-capabilities.yml"
   pull_request:
     paths:
       - "agent/skills/auditor/**"
       - "agent/skills/auditor/references/audit_guidance.md"
-      - "tests/auditoror/**"
-      - "mvp/**"
+      - "tests/e2e/test_audit_readonly.py"
+      - "agent/skills/auditor/**"
       - "web/**"
-      - "agent/skills/shared/host/workflow_control.py"
       - ".github/workflows/audit-capabilities.yml"
   workflow_dispatch:
 
@@ -34,7 +32,7 @@ jobs:
       - run: uv python install 3.11
       - run: uv sync --locked --extra meta --extra mvp
       - name: Verify Audit capability fixtures
-        run: uv run --no-sync pytest tests/auditor -q -rs
+        run: uv run --no-sync pytest tests/e2e/test_audit_readonly.py -q -rs
       - name: Audit checked-out repository
         run: |
           set +e

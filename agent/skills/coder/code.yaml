@@ -4,8 +4,8 @@ definition_version: 1
 pipeline_id: coder.code
 owner: coder
 artifact_contract_refs:
-- contracts/workflow/auditor/code_design.py
-- contracts/workflow/auditor/_discovery.py
+- agent/skills/auditor/contracts/code_design.py
+- agent/skills/auditor/contracts/_discovery.py
 implementation_intent: agent/skills/coder/coding.py
 segments:
 - id: main

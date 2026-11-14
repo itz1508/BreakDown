@@ -3,7 +3,7 @@ kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: researcher.research
 owner: researcher
-artifact_contract_refs: [contracts/workflow/researcher/research.py]
+artifact_contract_refs: [agent/skills/researcher/contracts/research.py]
 segments:
 - id: review
   steps:

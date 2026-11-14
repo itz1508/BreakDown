@@ -303,7 +303,7 @@ necessary addition.
 ## Records
 
 - `BUILT.LOG`: delivered intent, implementation paths, evidence and unfinished work.
-- `LEARNED.LOG`: reusable lessons and tested-skill references.
+- `LEARNING.LOG`: reusable lessons and tested-skill references.
 - `MEM.LOG`: durable facts, preferences and decisions with provenance.
 - `PLAN_TO_BUILD.LOG`: future build intentions—not TODO or authorization.
 
@@ -319,7 +319,7 @@ Define its activation conditions and expected behavior. Test through an actual
 agent run on a relevant case and a contrasting case, with expectations set first.
 Correct failures, rerun and preserve previously valid behavior.
 
-Record the updated path, test evidence and limitations in `LEARNED.LOG`.
+Record the updated path, test evidence and limitations in `LEARNING.LOG`.
 Text checks or mocks alone do not prove behavioral improvement; label unexecuted
 changes untested.
 

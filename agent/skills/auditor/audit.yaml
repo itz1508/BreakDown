@@ -3,7 +3,7 @@ kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: auditor.audit
 owner: auditor
-artifact_contract_refs: [contracts/workflow/auditor/_discovery.py]
+artifact_contract_refs: [agent/skills/auditor/contracts/_discovery.py]
 segments:
 - id: pre
   steps:
