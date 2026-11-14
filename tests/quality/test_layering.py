@@ -79,3 +79,13 @@ def test_non_restoration_policy_blocks_removed_and_competing_sources() -> None:
     )
     assert forbidden_paths(paths) == tuple(sorted(paths))
     assert forbidden_paths(("agent/skills/planner/scanner_gateway.py", "agent/skills/builder/file_operations.py")) == ()
+
+
+def test_every_e2e_module_is_marked_and_uses_no_mock() -> None:
+    """A module without the marker would silently escape CI's `-m e2e` step."""
+    modules = sorted(pathlib.Path("tests/e2e").glob("test_*.py"))
+    assert modules, "e2e marker guard cannot pass without scanning modules"
+    for module in modules:
+        source = module.read_text(encoding="utf-8")
+        assert "pytestmark = pytest.mark.e2e" in source, f"{module} is not selected by -m e2e"
+        assert "unittest.mock" not in source, f"{module} stubs a collaborator instead of driving the host"

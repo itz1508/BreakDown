@@ -16,6 +16,7 @@ SKILLS = {
     "coder": ("code.yaml", "coding.py"),
     "planner": ("plan.yaml", "planning.py"),
     "builder": ("build.yaml", "building.py"),
+    "spec_search": ("spec_search.yaml", "spec_searching.py"),
 }
 
 
@@ -133,3 +134,38 @@ def test_builder_cannot_issue_approvals_from_yaml() -> None:
     data = load_definition(text, role="builder")
     assert data["policy"]["executes_effects"] is False
     assert data["policy"]["issues_approval"] is False
+
+
+def test_breakdown_mapping_matches_implemented_routes() -> None:
+    """The workflow mapping cannot drift from Stage, dispatch, or the file layout."""
+    from agent.skills.shared.host.skill_dispatch import registered_skills
+
+    mapping = yaml.safe_load(Path("agent/breakdown.yaml").read_text(encoding="utf-8"))
+    stages = mapping["stages"]
+    assert [stage["order"] for stage in stages] == list(range(1, len(stages) + 1))
+    assert tuple(stage["id"] for stage in stages) == tuple(stage.value for stage in Stage)
+
+    routed = {entry["stage"] for entry in registered_skills()}
+    dispatchable = {stage["id"] for stage in stages if stage["dispatchable"]}
+    assert dispatchable == routed
+    for stage in stages:
+        if not stage["dispatchable"]:
+            assert stage["owner_role"] is None, stage["id"]
+
+    capabilities = mapping["unrouted_capabilities"]
+    for capability in capabilities:
+        assert capability["routing"] == "none", capability["name"]
+
+    modules = [stage["module"] for stage in stages if stage.get("module")]
+    modules += [capability["module"] for capability in capabilities if capability.get("module")]
+    missing_modules = sorted(name for name in modules if not Path(name.replace(".", "/") + ".py").is_file())
+    assert missing_modules == [], missing_modules
+
+    files = [
+        value for item in (*stages, *capabilities) for key in ("entry", "contract", "skill") if (value := item.get(key))
+    ]
+    assert files, "mapping must name real implementation paths"
+    assert sorted(path for path in files if not Path(path).is_file()) == []
+
+    fixturer = next(capability for capability in capabilities if capability["name"] == "fixturer")
+    assert not any(key in fixturer for key in ("module", "entry", "contract", "skill"))
