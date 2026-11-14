@@ -1,4 +1,4 @@
-﻿"""Approved bounded capability probe and trace comparison; no fixtures or network."""
+"""Approved bounded capability probe and trace comparison; no fixtures or network."""
 
 from __future__ import annotations
 
