@@ -79,6 +79,7 @@ from urllib.parse import urlparse
 from urllib.request import urlretrieve
 import venv
 
+
 class ExtendedEnvBuilder(venv.EnvBuilder):
     """
     This builder installs setuptools and pip so that you can pip or
@@ -104,10 +105,10 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
     """
 
     def __init__(self, *args, **kwargs):
-        self.nodist = kwargs.pop('nodist', False)
-        self.nopip = kwargs.pop('nopip', False)
-        self.progress = kwargs.pop('progress', None)
-        self.verbose = kwargs.pop('verbose', False)
+        self.nodist = kwargs.pop("nodist", False)
+        self.nopip = kwargs.pop("nopip", False)
+        self.progress = kwargs.pop("progress", None)
+        self.verbose = kwargs.pop("verbose", False)
         super().__init__(*args, **kwargs)
 
     def post_setup(self, context):
@@ -118,7 +119,7 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         :param context: The information for the virtual environment
                         creation request being processed.
         """
-        os.environ['VIRTUAL_ENV'] = context.env_dir
+        os.environ["VIRTUAL_ENV"] = context.env_dir
         if not self.nodist:
             self.install_setuptools(context)
         # Can't install pip without setuptools
@@ -139,9 +140,9 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
                 progress(s, context)
             else:
                 if not self.verbose:
-                    sys.stderr.write('.')
+                    sys.stderr.write(".")
                 else:
-                    sys.stderr.write(s.decode('utf-8'))
+                    sys.stderr.write(s.decode("utf-8"))
                 sys.stderr.flush()
         stream.close()
 
@@ -154,28 +155,28 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         urlretrieve(url, distpath)
         progress = self.progress
         if self.verbose:
-            term = '\n'
+            term = "\n"
         else:
-            term = ''
+            term = ""
         if progress is not None:
-            progress('Installing %s ...%s' % (name, term), 'main')
+            progress("Installing %s ...%s" % (name, term), "main")
         else:
-            sys.stderr.write('Installing %s ...%s' % (name, term))
+            sys.stderr.write("Installing %s ...%s" % (name, term))
             sys.stderr.flush()
         # Install in the virtual environment
         args = [context.env_exe, fn]
         p = Popen(args, stdout=PIPE, stderr=PIPE, cwd=binpath)
-        t1 = Thread(target=self.reader, args=(p.stdout, 'stdout'))
+        t1 = Thread(target=self.reader, args=(p.stdout, "stdout"))
         t1.start()
-        t2 = Thread(target=self.reader, args=(p.stderr, 'stderr'))
+        t2 = Thread(target=self.reader, args=(p.stderr, "stderr"))
         t2.start()
         p.wait()
         t1.join()
         t2.join()
         if progress is not None:
-            progress('done.', 'main')
+            progress("done.", "main")
         else:
-            sys.stderr.write('done.\n')
+            sys.stderr.write("done.\n")
         # Clean up - no longer needed
         os.unlink(distpath)
 
@@ -187,9 +188,9 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
                         creation request being processed.
         """
         url = "https://bootstrap.pypa.io/ez_setup.py"
-        self.install_script(context, 'setuptools', url)
+        self.install_script(context, "setuptools", url)
         # clear up the setuptools archive which gets downloaded
-        pred = lambda o: o.startswith('setuptools-') and o.endswith('.tar.gz')
+        pred = lambda o: o.startswith("setuptools-") and o.endswith(".tar.gz")
         files = filter(pred, os.listdir(context.bin_path))
         for f in files:
             f = os.path.join(context.bin_path, f)
@@ -202,8 +203,8 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
         :param context: The information for the virtual environment
                         creation request being processed.
         """
-        url = 'https://bootstrap.pypa.io/get-pip.py'
-        self.install_script(context, 'pip', url)
+        url = "https://bootstrap.pypa.io/get-pip.py"
+        self.install_script(context, "pip", url)
 ```
 
 ### CLI entrypoint (same file, below the class)
@@ -212,72 +213,97 @@ class ExtendedEnvBuilder(venv.EnvBuilder):
 def main(args=None):
     import argparse
 
-    parser = argparse.ArgumentParser(prog=__name__,
-                                     description='Creates virtual Python '
-                                                 'environments in one or '
-                                                 'more target '
-                                                 'directories.')
-    parser.add_argument('dirs', metavar='ENV_DIR', nargs='+',
-                        help='A directory in which to create the '
-                             'virtual environment.')
-    parser.add_argument('--no-setuptools', default=False,
-                        action='store_true', dest='nodist',
-                        help="Don't install setuptools or pip in the "
-                             "virtual environment.")
-    parser.add_argument('--no-pip', default=False,
-                        action='store_true', dest='nopip',
-                        help="Don't install pip in the virtual "
-                             "environment.")
-    parser.add_argument('--system-site-packages', default=False,
-                        action='store_true', dest='system_site',
-                        help='Give the virtual environment access to the '
-                             'system site-packages dir.')
-    if os.name == 'nt':
+    parser = argparse.ArgumentParser(
+        prog=__name__, description="Creates virtual Python environments in one or more target directories."
+    )
+    parser.add_argument(
+        "dirs", metavar="ENV_DIR", nargs="+", help="A directory in which to create the virtual environment."
+    )
+    parser.add_argument(
+        "--no-setuptools",
+        default=False,
+        action="store_true",
+        dest="nodist",
+        help="Don't install setuptools or pip in the virtual environment.",
+    )
+    parser.add_argument(
+        "--no-pip",
+        default=False,
+        action="store_true",
+        dest="nopip",
+        help="Don't install pip in the virtual environment.",
+    )
+    parser.add_argument(
+        "--system-site-packages",
+        default=False,
+        action="store_true",
+        dest="system_site",
+        help="Give the virtual environment access to the system site-packages dir.",
+    )
+    if os.name == "nt":
         use_symlinks = False
     else:
         use_symlinks = True
-    parser.add_argument('--symlinks', default=use_symlinks,
-                        action='store_true', dest='symlinks',
-                        help='Try to use symlinks rather than copies, '
-                             'when symlinks are not the default for '
-                             'the platform.')
-    parser.add_argument('--clear', default=False, action='store_true',
-                        dest='clear', help='Delete the contents of the '
-                                           'virtual environment '
-                                           'directory if it already '
-                                           'exists, before virtual '
-                                           'environment creation.')
-    parser.add_argument('--upgrade', default=False, action='store_true',
-                        dest='upgrade', help='Upgrade the virtual '
-                                             'environment directory to '
-                                             'use this version of '
-                                             'Python, assuming Python '
-                                             'has been upgraded '
-                                             'in-place.')
-    parser.add_argument('--verbose', default=False, action='store_true',
-                        dest='verbose', help='Display the output '
-                                             'from the scripts which '
-                                             'install setuptools and pip.')
+    parser.add_argument(
+        "--symlinks",
+        default=use_symlinks,
+        action="store_true",
+        dest="symlinks",
+        help="Try to use symlinks rather than copies, when symlinks are not the default for the platform.",
+    )
+    parser.add_argument(
+        "--clear",
+        default=False,
+        action="store_true",
+        dest="clear",
+        help="Delete the contents of the "
+        "virtual environment "
+        "directory if it already "
+        "exists, before virtual "
+        "environment creation.",
+    )
+    parser.add_argument(
+        "--upgrade",
+        default=False,
+        action="store_true",
+        dest="upgrade",
+        help="Upgrade the virtual "
+        "environment directory to "
+        "use this version of "
+        "Python, assuming Python "
+        "has been upgraded "
+        "in-place.",
+    )
+    parser.add_argument(
+        "--verbose",
+        default=False,
+        action="store_true",
+        dest="verbose",
+        help="Display the output from the scripts which install setuptools and pip.",
+    )
     options = parser.parse_args(args)
     if options.upgrade and options.clear:
-        raise ValueError('you cannot supply --upgrade and --clear together.')
-    builder = ExtendedEnvBuilder(system_site_packages=options.system_site,
-                                   clear=options.clear,
-                                   symlinks=options.symlinks,
-                                   upgrade=options.upgrade,
-                                   nodist=options.nodist,
-                                   nopip=options.nopip,
-                                   verbose=options.verbose)
+        raise ValueError("you cannot supply --upgrade and --clear together.")
+    builder = ExtendedEnvBuilder(
+        system_site_packages=options.system_site,
+        clear=options.clear,
+        symlinks=options.symlinks,
+        upgrade=options.upgrade,
+        nodist=options.nodist,
+        nopip=options.nopip,
+        verbose=options.verbose,
+    )
     for d in options.dirs:
         builder.create(d)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     rc = 1
     try:
         main()
         rc = 0
     except Exception as e:
-        print('Error: %s' % e, file=sys.stderr)
+        print("Error: %s" % e, file=sys.stderr)
     sys.exit(rc)
 ```
 
