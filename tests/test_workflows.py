@@ -73,8 +73,8 @@ def test_search_approval_happens_before_catalog_repository_or_external_search() 
     assert gate["approval"]["on_changes_requested"] == "intent_summary"
     assert gate["approval"]["on_declined"] == "stop_before_search"
     assert {"search_approval", "approved_search_scope"} <= set(catalog["requires"])
-    assert "search_approval" in discovery["requires"]
-    assert "search_approval" in research["requires"]
+    assert "approved_search_scope" in discovery["requires"]
+    assert "approved_search_scope" in research["requires"]
     assert gate["order"] < min(catalog["order"], discovery["order"], research["order"])
 
 
