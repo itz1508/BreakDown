@@ -411,12 +411,6 @@ skill_scaffolding:
     entry_file: build.py
     implementation_file: building.py
 
-  verifier:
-    directory: agent/skills/verifier/
-    contract_file: verify.yaml
-    entry_file: verify.py
-    implementation_file: verifying.py
-
 ownership:
   user:
     stages:

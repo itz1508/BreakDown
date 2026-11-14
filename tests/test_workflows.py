@@ -139,7 +139,6 @@ def test_each_skill_keeps_its_three_files_inside_its_own_folder() -> None:
         "researcher": ("research.yaml", "research.py", "researching.py"),
         "planner": ("plan.yaml", "plan.py", "planning.py"),
         "builder": ("build.yaml", "build.py", "building.py"),
-        "verifier": ("verify.yaml", "verify.py", "verifying.py"),
     }
 
     assert set(workflow["skill_scaffolding"]) == set(expected)

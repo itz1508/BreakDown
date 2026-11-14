@@ -59,7 +59,9 @@ Responsibilities:
 
 Do not introduce centralized `contracts/`, `host/`, or shared `runtime/` folders as alternative owners for these domain responsibilities. A YAML contract is not a reason to create a contract package; an implementation file is not a reason to create a generic runtime package.
 
-The current `main` tree still contains older `agent/contracts/` and `agent/runtime/` areas and role folders with existing implementations. Treat those files as existing migration evidence, not as permission to extend those folders with new domain ownership or duplicate the three-file model. Do not mass-move, delete, or rewrite existing code merely to make the tree match this## 4. Workflow and handoffs
+The current `main` tree still contains older `agent/contracts/` and `agent/runtime/` areas and role folders with existing implementations. Treat those files as existing migration evidence, not as permission to extend those folders with new domain ownership or duplicate the three-file model. Do not mass-move, delete, or rewrite existing code merely to make the tree match this guidance; perform any migration as an explicitly scoped, source-mapped task. Preserve existing role documentation where useful, but it supplements and does not replace the owning YAML/Python trio.
+
+## 4. Workflow and handoffs
 
 The root workflow.yaml is the single definition of task progression, ownership, handoffs, and user approval. Do not create another workflow file, approval contract, Host workflow, or role-internal workflow.
 
@@ -101,8 +103,6 @@ That description is only an example of a possible situation. It is not code, an 
 When that situation actually occurs, inspect the installed provider SDK, the real tool schema, and the current integration before making a provider request. Implement only the connection that the real interface requires. If that situation does not occur, do not add a tool connection.
 
 This does not change skill ownership. Builder owns its contract, entry point, implementation, sandbox creation, and build execution. A provider connection must not take those responsibilities away.
-
-on is needed, or when the current operation is ordinary research, audit, or planning. Never invent tool availability or tool arguments. Builder remains the owner of build execution and its results.
 
 ## 6. Inspect before changing
 
