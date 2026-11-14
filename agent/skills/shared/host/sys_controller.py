@@ -35,7 +35,6 @@ from agent.skills.shared.contracts.workflow.validation.structural import CONCERN
 from agent.skills.shared.host.recovery import BoundedRecovery
 from agent.skills.shared.host.sys_policy_enforcer import AuthorizationEngine, Capability
 from agent.skills.shared.host.work_todo import WorkTodoError, WorkTodoManager
-from agent.skills.shared.providers.providers.registry import ProviderRegistry
 from agent.skills.shared.storage.artifact_store import ArtifactStore
 from agent.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
 from agent.skills.shared.storage.checkpoint_store import CheckpointStore, CompetingWriterError
@@ -104,7 +103,6 @@ class HostController:
         self.scanner_checks: ScannerCheckRegistry | None = None
         self.gap_analyzer = HostGapAnalyzer(self.artifact_store, self.receipt_store)
         self.recovery = BoundedRecovery()
-        self.providers = ProviderRegistry()
         self.authorization = AuthorizationEngine(
             allowed_roots=(str(self.state_root),)
             if workspace_root is None
