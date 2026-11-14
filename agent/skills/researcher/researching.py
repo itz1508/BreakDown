@@ -27,7 +27,7 @@ from agent.skills.researcher.contracts.research import (
 )
 from agent.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
 from agent.skills.shared.host.skill_dispatch import ResearchArguments, SkillContext
-from agent.skills.shared.providers.providers.base import ProviderError, ProviderRequest
+from agent.skills.shared.providers.base import ProviderError, ProviderRequest
 from agent.skills.shared.storage.artifact_store import ArtifactStore
 from agent.skills.shared.storage.canonical_serialization import digest_raw
 from agent.skills.spec_search.spec_searching import SpecQuery
