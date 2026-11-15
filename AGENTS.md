@@ -6,6 +6,7 @@ These instructions govern engineering work in this repository. They are operatin
 
 - Inspect the current checkout, branch, worktree, relevant history, source, tests, and configuration before changing anything.
 - Follow the active user request and the repository's current, approved workflow definition. Do not invent stages, transitions, role responsibilities, or directories when an authoritative definition is absent.
+- The root workflow.yaml is the single workflow definition. It describes stage order, ownership, handoffs, and the two user approval stops; it does not define skill internals or provider interfaces.
 - `pyproject.toml`, `.python-version`, and `uv.lock` define the Python/tooling baseline. The current `.python-version` is `3.11`; `pyproject.toml` requires Python `>=3.11`.
 - Read the actual provider/configuration schema and implementation before changing settings. Do not invent configuration keys or defaults.
 - Repository source and current contracts take precedence over stale notes, examples, memory, and external assumptions.
@@ -60,52 +61,48 @@ Do not introduce centralized `contracts/`, `host/`, or shared `runtime/` folders
 
 The current `main` tree still contains older `agent/contracts/` and `agent/runtime/` areas and role folders with existing implementations. Treat those files as existing migration evidence, not as permission to extend those folders with new domain ownership or duplicate the three-file model. Do not mass-move, delete, or rewrite existing code merely to make the tree match this guidance; perform any migration as an explicitly scoped, source-mapped task. Preserve existing role documentation where useful, but it supplements and does not replace the owning YAML/Python trio.
 
-## 4. Work phases and handoffs
+## 4. Workflow and handoffs
 
-Use workflow terms for work phases and artifact handoffs only. Do not represent `auditing.py`, `researching.py`, `planning.py`, or `building.py` as workflow stages. Those filenames identify area-owned implementation files, not additional phases.
+The root workflow.yaml is the single definition of task progression, ownership, handoffs, and user approval. Do not create another workflow file, approval contract, Host workflow, or role-internal workflow.
 
-Follow the actual approved sequence and its required user review/approval points. Never skip confirmation required before research or before build execution. Do not invent a separate approval ceremony when the active workflow does not require one.
+Follow this order:
 
-- Research gathers requirements and sourced evidence. It does not silently decide implementation design.
-- Audit inspects the repository within its assigned scope and records evidence, gaps, unknowns, and source references. It does not make application changes or authorize build scope.
-- Planning owns gap analysis, design decisions, task decomposition, dependencies, and the proposed execution materials. It does not execute the build.
-- User review/approval binds to the exact plan and source state required by the applicable contract.
-- Builder verifies the approved inputs and performs only the authorized build work.
-- Independent validation evaluates the resulting work against accepted criteria. Builder self-review is not independent validation.
-- Completion and retention record only results supported by actual evidence.
+User Request → Intent Summary → Search Confirmation → Catalog Discovery → Discovery → Research → Repository Audit → Planning → Build Approval → Builder → Preflight → Sandbox Execution → Independent Validation → Completion and Retention.
 
-The same requested outcome may be built from scratch or rebuilt using existing work as reference. A rebuild is not a separate workflow: inspect the current state, preserve valid work, identify the delta against the approved outcome, and follow the same required review, execution, and independent validation boundaries. Do not treat old outputs as authorization to skip confirmation.
+There are exactly two user-controlled stops:
 
-Do not move responsibility between areas for convenience. Each handoff must use the receiving area's declared contract and the actual output of the preceding work. Missing or invalid handoff data must be surfaced rather than silently reconstructed.
+1. Search Confirmation happens after the Intent Summary and before Catalog Discovery, repository discovery, Research, or external search. Show the user the proposed intent and search scope. Do not search or inspect the repository until the user explicitly approves that scope. Changes requested return to Intent Summary. Declined means stop before search.
+2. Build Approval happens after Planning and before Builder starts. Show the exact plan, file operations, dependencies, acceptance criteria, fixtures, plan revision, package digest, and assessed source checkpoint. Builder must not start, run Preflight, create a sandbox, or modify source before explicit user approval.
 
-## 5. Conditional Host tool bridge
+Save the task state and approval decision when a stop is reached. Return control to the user instead of leaving a process running while waiting. Resume only from the saved task and the exact approved inputs. A model-generated statement is not user approval.
 
-Host is not a workflow stage, a general-purpose owner of area execution, or a folder containing duplicate contracts and implementations.
+Build approval applies only to the plan revision, package digest, and source checkpoint the user reviewed. A plan change or source checkpoint change invalidates that approval. Return to the relevant Audit and Planning work, then ask for approval again.
 
-Use a Host tool bridge only when the active model/system instructions explicitly describe the restricted tool environment below: the model is told that it has access to supplied functions, that a sandboxed computing environment is available, and that it cannot inspect files or interact with external resources except by invoking those functions.
+Ownership and handoffs:
 
-In that case, Host may prepare the Builder invocation. It must not take over Builder's contract, sandbox lifecycle, execution, or area-specific implementation.
+- Intent Summary preserves the original request and separates explicit requirements from suggestions.
+- Catalog Discovery finds relevant reusable templates and references. Catalog entries are pointers, not evidence, requirements, or approval.
+- Auditor owns both Discovery and Repository Audit. Both are read-only. Auditor inspects the repository, records evidence and limitations, and maps the existing scaffolding. Auditor does not modify application source or make Planning decisions.
+- Researcher investigates technical questions and supplies sourced evidence, alternatives, prerequisites, and unresolved questions.
+- Planner owns gap analysis, design decisions, file-level tasks, dependency order, acceptance criteria, and fixture definitions. Planning does not execute the build.
+- User owns both approval decisions.
+- Builder owns build.yaml, build.py, and building.py, including the build contract, entry point, implementation, sandbox creation, execution, source modifications, and build artifacts. Do not split these responsibilities across another owner.
+- Verifier independently checks the actual result against the approved plan and acceptance criteria. Builder claims are not independent validation.
+- Completion and Retention record only results supported by the validation evidence.
 
-- `sandbox` represents the execution sandbox.
-- `input[]` is the approved `output_plan[]` supplied for Builder execution.
-- Every message is an object with `role` and `content`.
-- Supply either one `user` message, or alternating `user` and `assistant` messages. The first message must have the `user` role.
-- Use the actual `builder_create` tool schema available in the environment. The conceptual invocation is:
+A rebuild uses the same workflow. Inspect existing work, preserve valid parts, identify the delta against the approved outcome, and follow both confirmation points. Old outputs do not authorize skipping confirmation.
 
-```python
-sandbox = execution
-input = output_plan
+Do not represent implementation filenames, internal functions, provider calls, or execution details as workflow stages. Do not add stages named Runtime or Behavior. Missing or invalid handoff data must be reported rather than silently reconstructed.
 
-response = builder_create(
-    sandbox=sandbox,
-    model=MODEL_NAME,
-    tool_use=[],
-    temperature=0.0,
-    messages=input,
-)
-```
+## 5. Conditional model tool connection
 
-Do not call or simulate this bridge when the required tool interface is not supplied, when no sandbox execution is needed, or when the current operation is ordinary research, audit, or planning. Never invent tool availability or tool arguments. Builder remains the owner of build execution and its results.
+A model tool connection is relevant only when the actual model instructions say that the model can use supplied functions and a sandboxed computing environment, and that file or external access must happen through those supplied functions.
+
+That description is only an example of a possible situation. It is not code, an API specification, a required interface, or a repository design. Do not copy example variable names, function names, arguments, message layouts, or assignments into the project. Do not invent a Host API or create a Host folder from the example.
+
+When that situation actually occurs, inspect the installed provider SDK, the real tool schema, and the current integration before making a provider request. Implement only the connection that the real interface requires. If that situation does not occur, do not add a tool connection.
+
+This does not change skill ownership. Builder owns its contract, entry point, implementation, sandbox creation, and build execution. A provider connection must not take those responsibilities away.
 
 ## 6. Inspect before changing
 
