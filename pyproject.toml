@@ -22,6 +22,10 @@ packages = ["agents"]
 "config/config.yaml" = "config/config.yaml"
 "config/providers/meta.yaml" = "config/providers/meta.yaml"
 
+[tool.hatch.build.targets.wheel.force-include]
+"config/config.yaml" = "config/config.yaml"
+"config/providers/meta.yaml" = "config/providers/meta.yaml"
+
 [project.optional-dependencies]
 meta = ["openai>=1.0"]
 codex = ["openai-codex"]

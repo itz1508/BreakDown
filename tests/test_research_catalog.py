@@ -151,3 +151,12 @@ class TestModalCatalogExample:
         assert result.match_status == CatalogMatchStatus.EXACT
         assert result.catalog_id == "SAMPLE-MODAL-GITHUB-001"
         assert result.is_synthetic is True
+
+
+def test_catalog_resource_is_packaged_under_agent() -> None:
+    from importlib.resources import files
+
+    resource = files("agent.catalog").joinpath("research_samples.yaml")
+    assert resource.is_file()
+    assert "SAMPLE-MCP-BUILD-001" in resource.read_text(encoding="utf-8")
+    assert len(ResearchCatalog().sample_ids) == 11

@@ -17,6 +17,7 @@ from system.host.scanner_check_registry import (
 from system.host.scanner_evidence import persist_scan_result
 from system.host.sys_controller import HostController
 from system.host.tool_registry import pin_tool_registry
+from system.host.workflow_control import HostController
 
 
 def passing_scan(controller: HostController, gap: StructuralGapOutcome) -> ScannerEvidence:
