@@ -25,7 +25,6 @@ packages = ["agents"]
 [project.optional-dependencies]
 meta = ["openai>=1.0"]
 codex = ["openai-codex"]
-mvp = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "mcp>=2,<3"]
 
 [dependency-groups]
 dev = [
@@ -35,6 +34,8 @@ dev = [
     "deptry>=0.20",
     "httpx>=0.27,<1",
     "types-PyYAML",
+    "fastapi>=0.115,<1",
+    "uvicorn>=0.30,<1",
 ]
 
 [tool.ruff]
@@ -67,4 +68,4 @@ extend_exclude = ["deployment/modal", ".transfer-quarantine", ".pytest-", "video
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["modal"]
-DEP002 = ["openai-codex", "uvicorn", "fastapi", "modal", "openai", "mcp", "logfire", "opentelemetry-api"]
+DEP002 = ["openai-codex", "modal", "openai", "logfire", "opentelemetry-api"]
