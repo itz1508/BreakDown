@@ -1,36 +1,34 @@
-"""Model-facing tools shared by every agent skill.
+"""Model-facing tools shared by every role.
 
-The reference structure follows anthropics/claude-quickstarts ``agents/tools``:
-a plain Tool dataclass, per-tool modules, and server-tool declarations that the
-provider executes. Adaptations for this repository: filesystem and search tools
-are root-scoped and refuse escapes, and execution effects stay behind the
-host's tool-registry authorization instead of a bare subprocess.
+Owns the tool surface a model sees: root-scoped filesystem and search tools,
+the reasoning scratchpad, and provider-executed server-tool declarations.
+Role-owned workflow operations live in ``agents/skills/<role>/tools``; this
+package never hardcodes a provider wire format.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-from agents.tools.base import Tool
-from agents.tools.code_execution import CodeExecutionServerTool
+from agents.tools.base import Tool, resolve_scoped
 from agents.tools.file_tools import FileReadTool, FileWriteTool, ReadSourceTool
 from agents.tools.search import RepositorySearchTool
+from agents.tools.server import ServerTool
 from agents.tools.think import ThinkTool
-from agents.tools.web_search import WebSearchServerTool
 
 __all__ = [
-    "CodeExecutionServerTool",
     "FileReadTool",
     "FileWriteTool",
     "ReadSourceTool",
     "RepositorySearchTool",
+    "ServerTool",
     "ThinkTool",
     "Tool",
-    "WebSearchServerTool",
     "manifest",
+    "resolve_scoped",
 ]
 
-# Tools available per v3 workflow stage (agent/breakdown.yaml). Stages absent
+# Tools available per v3 workflow stage (agents/breakdown.yaml). Stages absent
 # here dispatch no model tools.
 _STAGE_TOOLS: dict[str, tuple[type[Tool], ...]] = {
     "discovery": (RepositorySearchTool, ReadSourceTool, ThinkTool),
@@ -43,8 +41,8 @@ _STAGE_TOOLS: dict[str, tuple[type[Tool], ...]] = {
 
 
 def manifest(root: str | Any) -> dict[str, list[dict[str, Any]]]:
-    """Return per-stage tool declarations in provider format for the given root."""
-    manifest: dict[str, list[dict[str, Any]]] = {}
+    """Return per-stage tool declarations in neutral format for the given root."""
+    manifest_map: dict[str, list[dict[str, Any]]] = {}
     for stage, tool_types in _STAGE_TOOLS.items():
-        manifest[stage] = [tool_type(root=root).to_openai_dict() for tool_type in tool_types]  # type: ignore[call-arg]
-    return manifest
+        manifest_map[stage] = [tool_type(root=root).declaration() for tool_type in tool_types]  # type: ignore[call-arg]
+    return manifest_map

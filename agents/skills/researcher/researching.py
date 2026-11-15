@@ -155,7 +155,7 @@ def _tool_schemas() -> list[dict[str, Any]]:
     """Declare the read-only research tools through the shared agents/tools package."""
     search = RepositorySearchTool(root=".")
     read = ReadSourceTool(max_read_lines=MAX_READ_LINES)
-    return [search.to_openai_dict(), read.to_openai_dict()]
+    return [search.declaration(), read.declaration()]
 
 
 def _require_terms(arguments: dict[str, Any]) -> tuple[str, ...]:

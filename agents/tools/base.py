@@ -1,11 +1,14 @@
-"""Model-facing tool definitions shared by every agent skill.
+"""Model-facing tool contracts shared by every role.
 
-Layering: this package defines the tools a model can call (name, description,
+Layering: this package defines what a model can call (name, description,
 input schema, execute). Role-owned workflow operations live in
 ``agents/skills/<role>/tools`` and cross-role implementations in
-``agents/skills/shared/tools``; this package wraps and exposes them to model
-requests. Tools are authorization-aware: filesystem tools refuse to operate
-outside their configured root.
+``agents/skills/shared/tools``; this package declares and runs the model's
+tool surface. Tools are root-scoped: filesystem and search tools refuse to
+operate outside their configured root.
+
+Provider wire formats are not produced here. A tool exposes one neutral
+``declaration()``; provider adapters map it onto their own wire shape.
 """
 
 from __future__ import annotations
@@ -17,29 +20,18 @@ from typing import Any
 
 @dataclass
 class Tool:
-    """Base class for all model-facing agent tools."""
+    """Base class for every model-facing tool."""
 
     name: str
     description: str
     input_schema: dict[str, Any]
 
-    def to_dict(self) -> dict[str, Any]:
-        """Return the Anthropic tool-use format."""
+    def declaration(self) -> dict[str, Any]:
+        """Return the provider-neutral declaration of this tool."""
         return {
             "name": self.name,
             "description": self.description,
             "input_schema": self.input_schema,
-        }
-
-    def to_openai_dict(self) -> dict[str, Any]:
-        """Return the OpenAI chat-completions function format."""
-        return {
-            "type": "function",
-            "function": {
-                "name": self.name,
-                "description": self.description,
-                "parameters": self.input_schema,
-            },
         }
 
     def execute(self, **kwargs: Any) -> str:
