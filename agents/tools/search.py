@@ -41,7 +41,7 @@ class RepositorySearchTool(Tool):
             },
         )
 
-    def execute(
+    def execute(  # type: ignore[override]
         self,
         terms: list[str],
         scope: str = ".",

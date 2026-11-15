@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from typing import Any
 
 from agents.shared.events.event import create_event
 from agents.shared.io import Request
@@ -21,14 +22,15 @@ _TERMINAL_EVENTS = {
 }
 
 
-def _parse_response(stdout: str) -> dict | None:
+def _parse_response(stdout: str) -> dict[str, Any] | None:
     """Return the last JSON object in stdout, or None when the child produced none."""
     for line in reversed(stdout.splitlines()):
         line = line.strip()
         if not line.startswith("{"):
             continue
         try:
-            return json.loads(line)
+            parsed: dict[str, Any] | None = json.loads(line)
+            return parsed
         except json.JSONDecodeError:
             continue
     return None

@@ -30,6 +30,6 @@ class ThinkTool(Tool):
             },
         )
 
-    def execute(self, thought: str) -> str:
+    def execute(self, thought: str) -> str:  # type: ignore[override]
         """Return the thought back to the model; nothing else happens."""
         return "Thinking complete!"

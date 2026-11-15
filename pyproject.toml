@@ -64,8 +64,8 @@ markers = ["e2e: end-to-end tests that drive real host stores and CLI entrypoint
 
 [tool.deptry]
 known_first_party = ["agents"]
-extend_exclude = ["deployment/modal", ".transfer-quarantine", ".pytest-", "video/examples"]
+extend_exclude = ["deployment/modal", ".transfer-quarantine", ".pytest-", "video/examples", "examples"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["modal"]
-DEP002 = ["claude-agent-sdk", "openai-codex", "uvicorn"]
+DEP002 = ["claude-agent-sdk", "openai-codex", "uvicorn", "fastapi", "modal", "openai", "mcp"]

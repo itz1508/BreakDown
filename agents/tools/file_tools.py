@@ -41,7 +41,9 @@ class FileReadTool(Tool):
             },
         )
 
-    def execute(self, operation: str, path: str, max_lines: int = 0, pattern: str = "*") -> str:
+    def execute(  # type: ignore[override]
+        self, operation: str, path: str, max_lines: int = 0, pattern: str = "*"
+    ) -> str:
         if operation == "read":
             return self._read_file(path, max_lines)
         if operation == "list":
@@ -121,7 +123,7 @@ class FileWriteTool(Tool):
             },
         )
 
-    def execute(
+    def execute(  # type: ignore[override]
         self,
         operation: str,
         path: str,
@@ -194,7 +196,7 @@ class ReadSourceTool(Tool):
             },
         )
 
-    def execute(self, path: str, start_line: int = 1, max_lines: int = 20) -> str:
+    def execute(self, path: str, start_line: int = 1, max_lines: int = 20) -> str:  # type: ignore[override]
         try:
             file_path = resolve_scoped(self.root, path)
             if not file_path.is_file():

@@ -2,8 +2,15 @@
 
 from __future__ import annotations
 
-from agents.skills.auditor.contracts.code_design import CodeDesign
-from agents.skills.coder.coding import review_questions
+from dataclasses import asdict
+from typing import Any
+
+from pydantic import TypeAdapter
+
+from agents.skills.auditor.contracts._discovery import CodeDesign
+from agents.skills.coder.coding import DesignQuestion, review_questions
+
+_DESIGN_ADAPTER = TypeAdapter(CodeDesign)
 
 
 def main() -> int:
@@ -15,9 +22,9 @@ def main() -> int:
         write_response(error_response("invalid_request", f"{type(exc).__name__}: {exc}"))
         return 1
     try:
-        design = CodeDesign.model_validate(request.payload.get("design", {}))
-        questions = review_questions(design)
-        write_response(ok_response({"questions": [q.model_dump(mode="json") for q in questions]}))
+        design: Any = _DESIGN_ADAPTER.validate_python(request.payload.get("design", {}))
+        questions: tuple[DesignQuestion, ...] = review_questions(design)
+        write_response(ok_response({"questions": [asdict(q) for q in questions]}))
         return 0
     except Exception as exc:  # the process boundary is the error surface
         write_response(error_response("coder_failed", f"{type(exc).__name__}: {exc}"))

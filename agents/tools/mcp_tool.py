@@ -30,7 +30,7 @@ class MCPTool(Tool):
         super().__init__(name=name, description=description, input_schema=input_schema)
         self.connection = connection
 
-    async def execute(self, **kwargs: Any) -> str:
+    async def execute(self, **kwargs: Any) -> str:  # type: ignore[override]
         """Call the MCP tool and return its first text result."""
         try:
             result = await self.connection.call_tool(self.name, arguments=kwargs)
@@ -39,5 +39,6 @@ class MCPTool(Tool):
         content = getattr(result, "content", None)
         for item in content or []:
             if getattr(item, "type", None) == "text":
-                return item.text
+                text: str = item.text
+                return text
         return "No text content in tool response"

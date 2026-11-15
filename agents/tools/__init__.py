@@ -46,5 +46,5 @@ def manifest(root: str | Any) -> dict[str, list[dict[str, Any]]]:
     """Return per-stage tool declarations in provider format for the given root."""
     manifest: dict[str, list[dict[str, Any]]] = {}
     for stage, tool_types in _STAGE_TOOLS.items():
-        manifest[stage] = [tool_type(root=root).to_openai_dict() for tool_type in tool_types]
+        manifest[stage] = [tool_type(root=root).to_openai_dict() for tool_type in tool_types]  # type: ignore[call-arg]
     return manifest

@@ -349,7 +349,7 @@ def _persist(
 ) -> dict[str, dict[str, object]]:
     """Persist observed evidence under the existing research contracts."""
     evidence = tuple(item for call in calls for item in call.evidence)
-    store = context.host.artifact_store
+    store = context.artifact_store
     requirement = Requirement(
         requirement_id=REQUIREMENT_ID,
         source_reference=f"stdin:{request.task_id}",
