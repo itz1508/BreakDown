@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
-from agents.skills.shared.contracts.workflow.common import (
+from agents.shared.base import (
     ArtifactRef,
     ContractModel,
     DiagnosticStatus,

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from agents.skills.shared.contracts.workflow.common import ContractModel
+from agents.shared.base import ContractModel
 
 
 class AuditFinding(ContractModel):

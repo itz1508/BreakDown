@@ -8,7 +8,7 @@ shared/contracts/workflow/validation/audit_discovery.py.
 from __future__ import annotations
 
 from agents.skills.auditor.contracts._discovery import AuditDiscoveryPackage
-from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.shared.base import ArtifactRef
 
 
 def validate_research_lineage(package: AuditDiscoveryPackage, expected_research_ref: ArtifactRef) -> list[str]:

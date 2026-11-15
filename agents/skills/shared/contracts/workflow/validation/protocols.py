@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.shared.base import ArtifactRef
 from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
 
 

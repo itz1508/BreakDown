@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.shared.base import ArtifactRef
 
 
 def validate_artifact_chain(refs: list[ArtifactRef]) -> list[str]:

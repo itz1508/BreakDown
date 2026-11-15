@@ -10,8 +10,8 @@ from agents.skills.planner.contracts.specification import (
     MoveAction,
     RemoveAction,
 )
+from agents.shared.base import ArtifactRef
 from agents.skills.planner.contracts.task_todo import Build, TaskTodo, paths_overlap
-from agents.skills.shared.contracts.workflow.common import ArtifactRef
 from agents.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
 
 

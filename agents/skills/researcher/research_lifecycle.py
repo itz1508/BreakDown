@@ -26,7 +26,7 @@ from agents.skills.researcher.contracts.research import (
     ReviewDisposition,
 )
 from agents.skills.researcher.research_catalog import ResearchCatalog
-from agents.skills.shared.contracts.workflow.common import EvidenceRef
+from agents.shared.base import EvidenceRef
 from agents.skills.shared.storage.artifact_store import (
     ArtifactStore,
     StaleRevisionError,

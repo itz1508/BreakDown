@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.shared.base import ArtifactRef
 from agents.skills.shared.contracts.workflow.system.host import PackageLockReceipt, ReceiptRef
 from agents.skills.shared.storage.artifact_store import ArtifactStore
 from agents.skills.shared.storage.receipt_store import ReceiptStore

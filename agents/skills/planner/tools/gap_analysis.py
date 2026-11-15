@@ -16,7 +16,7 @@ from pathlib import Path
 
 from pydantic import Field
 
-from agents.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, DiagnosticStatus, StepStatus
+from agents.shared.base import ArtifactRef, ContractModel, DiagnosticStatus, StepStatus
 from agents.skills.shared.contracts.workflow.validation.structural import (
     ConcernCell,
     ReferenceNeed,

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from agents.skills.planner.contracts.specification import IssueType
-from agents.skills.shared.contracts.workflow.common import ContractModel
+from agents.shared.base import ContractModel
 
 
 class PlanningCoverage(ContractModel):

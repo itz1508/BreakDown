@@ -12,7 +12,7 @@ from agents.skills.planner.contracts.specification import (
     CreateAction,
     PlanningRecord,
 )
-from agents.skills.shared.contracts.workflow.common import ArtifactRef
+from agents.shared.base import ArtifactRef
 from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
 
 

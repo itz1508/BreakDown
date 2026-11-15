@@ -6,7 +6,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from agents.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, Sha256, StepResult
+from agents.shared.base import ArtifactRef, ContractModel, Sha256, StepResult
 from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
 
 

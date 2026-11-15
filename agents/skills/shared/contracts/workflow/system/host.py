@@ -11,7 +11,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from agents.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, OperationState, Sha256
+from agents.shared.base import ArtifactRef, ContractModel, OperationState, Sha256
 
 
 class HostDispatchEnvelope(ContractModel):
@@ -228,25 +228,3 @@ class OperationRecord(ContractModel):
     tool_identity: str = Field(min_length=1)
     input_digest: Sha256
     state: OperationState = OperationState.NOT_RUN
-
-
-class Checkpoint(ContractModel):
-    """Full checkpoint model with artifact, delegation, and operation refs."""
-
-    checkpoint_id: str = Field(min_length=1)
-    checkpoint_revision: int = Field(ge=1)
-    expected_previous_revision: int = Field(ge=0, default=0)
-    checkpoint_digest: Sha256
-    task_id: str = Field(min_length=1)
-    run_id: str = Field(min_length=1)
-    stage: str = Field(min_length=1)
-    phase: str = Field(min_length=1)
-    stage_revision: int = Field(ge=1)
-    repository_identity_ref: str | None = None
-    artifact_refs: tuple[ArtifactRef, ...] = ()
-    delegation_refs: tuple[str, ...] = ()
-    provider_session_refs: tuple[str, ...] = ()
-    completed_operation_ids: tuple[str, ...] = ()
-    uncertain_operation_refs: tuple[str, ...] = ()
-    resume_point: str | None = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

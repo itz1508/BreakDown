@@ -23,7 +23,7 @@ from agents.skills.planner.tools.gap_analysis import (
     WorkflowContractBundle,
     WorkflowExecutionTrace,
 )
-from agents.skills.shared.contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
+from agents.shared.base import ArtifactRef, ContractModel, StepStatus
 from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
 from agents.skills.shared.storage.artifact_store import ArtifactStore
 from agents.skills.shared.storage.receipt_store import ReceiptStore

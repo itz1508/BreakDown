@@ -20,7 +20,7 @@ from agents.skills.planner.contracts.scanner import (
     ScannerOutcome,
     ScannerResult,
 )
-from agents.skills.shared.contracts.workflow.common import DiagnosticStatus
+from agents.shared.base import DiagnosticStatus
 
 Scalar = bool | int | float | str
 

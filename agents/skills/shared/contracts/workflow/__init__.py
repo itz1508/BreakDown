@@ -1,6 +1,10 @@
-"""OneShot contract schemas — Pydantic v2 typed primitives and stage records."""
+"""OneShot contract schemas — Pydantic v2 typed primitives and stage records.
 
-from agents.skills.shared.contracts.workflow.common import (
+Primitives live in ``agents.shared.base`` (single copy); this package
+re-exports them for existing import paths.
+"""
+
+from agents.shared.base import (
     ArtifactRef,
     ContractModel,
     CriterionId,
