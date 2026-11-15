@@ -15,7 +15,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 if TYPE_CHECKING:
-    from contracts.workflow.auditor.code_design import CodeDesign
+    # CodeDesign contract not yet defined; annotations are string-only
+    # under ``from __future__ import annotations``.
+    CodeDesign = object
 
 
 IntentOrigin = Literal[
