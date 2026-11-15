@@ -6,7 +6,6 @@ runtime may create and verify.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from enum import StrEnum
 
 from pydantic import Field

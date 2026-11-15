@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pydantic import Field, model_validator
 
-from agents.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
 from agents.shared.base import ArtifactRef, ContractModel, Sha256
+from agents.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
 from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
 from agents.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
 
