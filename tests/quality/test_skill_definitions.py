@@ -7,9 +7,6 @@ from pathlib import Path
 import pytest
 import yaml
 
-from agents.skills.shared.host.skill_dispatch import role_for_stage
-from agents.skills.shared.host.sys_controller import Stage
-
 SKILLS = {
     "auditor": ("audit.yaml", "auditing.py"),
     "researcher": ("research.yaml", "researching.py"),
@@ -86,56 +83,6 @@ def test_role_definitions_are_owned_and_closed() -> None:
         assert definition["pipeline_id"].startswith(role + ".")
 
 
-def test_host_stages_match_breakdown_and_explicit_runtime_skill_routes() -> None:
-    assert tuple(s.value for s in Stage) == (
-        "user_request",
-        "intent_summary",
-        "search_confirmation",
-        "discovery",
-        "edit_preview",
-        "specification_gap_check",
-        "research",
-        "repository_reconciliation",
-        "candidate_completion",
-        "gap_inspection",
-        "planning",
-        "fixture_preparation",
-        "gap_resolution",
-        "task_todo_creation",
-        "final_scan",
-        "package_persist",
-        "preflight",
-        "user_review_and_approval",
-        "sandbox_execution",
-        "completion_and_retention",
-    )
-    assert role_for_stage("discovery") == "auditor"
-    assert role_for_stage("repository_reconciliation") == "auditor"
-    assert role_for_stage("gap_inspection") == "auditor"
-    assert role_for_stage("research") == "researcher"
-    assert role_for_stage("candidate_completion") == "coder"
-    assert role_for_stage("planning") == "planner"
-    assert role_for_stage("sandbox_execution") == "builder"
-    for stage in (
-        "user_request",
-        "intent_summary",
-        "search_confirmation",
-        "edit_preview",
-        "specification_gap_check",
-        "fixture_preparation",
-        "gap_resolution",
-        "task_todo_creation",
-        "final_scan",
-        "package_persist",
-        "preflight",
-        "user_review_and_approval",
-        "completion_and_retention",
-        "unknown",
-    ):
-        with pytest.raises(KeyError):
-            role_for_stage(stage)
-
-
 @pytest.mark.parametrize(
     "mutation", ["duplicate_key", "wrong_owner", "forward_dependency", "unknown_segment", "active_operation"]
 )
@@ -166,33 +113,3 @@ def test_builder_cannot_issue_approvals_from_yaml() -> None:
     data = load_definition(text, role="builder")
     assert data["policy"]["executes_effects"] is False
     assert data["policy"]["issues_approval"] is False
-
-
-def test_breakdown_mapping_matches_implemented_routes() -> None:
-    """The workflow mapping cannot drift from Stage, dispatch, or the file layout."""
-    from agents.skills.shared.host.skill_dispatch import registered_skills
-
-    mapping = yaml.safe_load(Path("agents/breakdown.yaml").read_text(encoding="utf-8"))
-    stages = mapping["stages"]
-    assert [stage["order"] for stage in stages] == list(range(1, len(stages) + 1))
-    assert tuple(stage["id"] for stage in stages) == tuple(stage.value for stage in Stage)
-
-    routed = {entry["stage"] for entry in registered_skills()}
-    dispatchable = {stage["id"] for stage in stages if stage["dispatchable"]}
-    assert dispatchable == routed
-
-    ownership = mapping["ownership"]
-    for stage in stages:
-        assert stage["id"] in ownership[stage["owner"]]["stages"], stage["id"]
-
-    capabilities = mapping["unrouted_capabilities"]
-    for capability in capabilities:
-        assert capability["routing"] == "none", capability["name"]
-
-    modules = [stage["module"] for stage in stages if stage.get("module")]
-    modules += [capability["module"] for capability in capabilities if capability.get("module")]
-    missing_modules = sorted(name for name in modules if not Path(name.replace(".", "/") + ".py").is_file())
-    assert missing_modules == [], missing_modules
-
-    fixturer = next(capability for capability in capabilities if capability["name"] == "fixturer")
-    assert not any(key in fixturer for key in ("module", "entry", "contract", "skill"))

@@ -11,7 +11,8 @@ from __future__ import annotations
 
 import json
 from dataclasses import asdict, dataclass
-from typing import Any, Literal
+from pathlib import Path
+from typing import Any, Literal, Protocol
 
 from agents.skills.auditor.tools.core import safe_read_bytes
 from agents.skills.researcher.contracts.research import (
@@ -25,8 +26,6 @@ from agents.skills.researcher.contracts.research import (
     ResearchPlan,
     ResearchRecord,
 )
-from agents.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agents.skills.shared.host.skill_dispatch import ResearchArguments, SkillContext
 from agents.skills.shared.providers.base import ProviderError, ProviderRequest
 from agents.skills.shared.storage.artifact_store import ArtifactStore
 from agents.skills.shared.storage.canonical_serialization import digest_raw
@@ -43,6 +42,33 @@ REQUIREMENT_ID = "REQ-001"
 
 ToolStatus = Literal["ok", "empty", "error"]
 Outcome = Literal["completed", "truncated", "pending", "exhausted", "failed"]
+
+
+class ProviderRegistryProtocol(Protocol):
+    """Registry surface the researcher needs; implementations are injected."""
+
+    default_provider: str
+
+    def generate(self, key: str, request: Any) -> Any: ...
+
+
+@dataclass(frozen=True)
+class ResearchContext:
+    """Everything the researcher needs, constructed by the caller over stdin."""
+
+    workspace_root: Path
+    artifact_store: ArtifactStore
+    providers: ProviderRegistryProtocol | None = None
+
+
+@dataclass(frozen=True)
+class ResearchRequest:
+    """One research request, decoded from the stdin envelope."""
+
+    task_id: str
+    run_id: str
+    information_needed: str
+    input_text: str
 
 
 @dataclass(frozen=True)
@@ -149,7 +175,7 @@ def _require_int(arguments: dict[str, Any], key: str, default: int, low: int, hi
     return value
 
 
-def _run_search(context: SkillContext, call_id: str, arguments: dict[str, Any]) -> ToolCallRecord:
+def _run_search(context: ResearchContext, call_id: str, arguments: dict[str, Any]) -> ToolCallRecord:
     terms = _require_terms(arguments)
     scope = arguments.get("scope", ".")
     if not isinstance(scope, str):
@@ -165,7 +191,7 @@ def _run_search(context: SkillContext, call_id: str, arguments: dict[str, Any]) 
     return ToolCallRecord(call_id, "search_repository", arguments, "ok", detail, evidence)
 
 
-def _run_read(context: SkillContext, call_id: str, arguments: dict[str, Any]) -> ToolCallRecord:
+def _run_read(context: ResearchContext, call_id: str, arguments: dict[str, Any]) -> ToolCallRecord:
     raw_path = arguments.get("path")
     if not isinstance(raw_path, str) or not raw_path.strip():
         raise ValueError("path must be a non-empty string")
@@ -183,7 +209,7 @@ def _run_read(context: SkillContext, call_id: str, arguments: dict[str, Any]) ->
     return ToolCallRecord(call_id, "read_source", arguments, "ok", f"{len(window)} line(s)", evidence)
 
 
-def _execute_tool(context: SkillContext, call: dict[str, Any]) -> ToolCallRecord:
+def _execute_tool(context: ResearchContext, call: dict[str, Any]) -> ToolCallRecord:
     """Validate one model-requested call and execute only a known read-only tool."""
     raw_function = call.get("function")
     function = raw_function if isinstance(raw_function, dict) else {}
@@ -206,10 +232,8 @@ def _execute_tool(context: SkillContext, call: dict[str, Any]) -> ToolCallRecord
         return ToolCallRecord(call_id, name, decoded, "error", f"{type(exc).__name__}: {exc}")
 
 
-def _input_text(context: SkillContext, envelope: HostDispatchEnvelope) -> str:
-    ref = envelope.input_request_ref
-    raw = context.host.artifact_store.get_verified(ref.artifact_id, ref.artifact_revision)
-    return raw[:MAX_INPUT_BYTES].decode("utf-8", "replace")
+def _input_text(request: ResearchRequest) -> str:
+    return request.input_text[:MAX_INPUT_BYTES]
 
 
 def _terms_from(text: str) -> tuple[str, ...]:
@@ -223,10 +247,10 @@ def _terms_from(text: str) -> tuple[str, ...]:
     return tuple(unique)
 
 
-def _build_plan(envelope: HostDispatchEnvelope, input_text: str) -> ResearchPlan:
-    terms = _terms_from(f"{envelope.information_needed}\n{input_text}") or ("evidence",)
+def _build_plan(request: ResearchRequest, input_text: str) -> ResearchPlan:
+    terms = _terms_from(f"{request.information_needed}\n{input_text}") or ("evidence",)
     return ResearchPlan(
-        investigation_question=envelope.information_needed,
+        investigation_question=request.information_needed,
         related_requirement_refs=(REQUIREMENT_ID,),
         evidence_to_obtain=tuple(f"inspect source for {term!r}" for term in terms),
         expected_findings=("source locations with snippet digests",),
@@ -237,16 +261,12 @@ def _build_plan(envelope: HostDispatchEnvelope, input_text: str) -> ResearchPlan
     )
 
 
-def _initial_messages(envelope: HostDispatchEnvelope, input_text: str) -> list[dict[str, Any]]:
-    ref = envelope.input_request_ref
+def _initial_messages(request: ResearchRequest, input_text: str) -> list[dict[str, Any]]:
     return [
         {"role": "system", "content": _SYSTEM},
         {
             "role": "user",
-            "content": (
-                f"Objective: {envelope.information_needed}\n\n"
-                f"Admitted input ({ref.artifact_id}@{ref.artifact_revision}):\n{input_text}"
-            ),
+            "content": (f"Objective: {request.information_needed}\n\nSubmitted input:\n{input_text}"),
         },
     ]
 
@@ -320,8 +340,8 @@ def _store(store: ArtifactStore, model: Any, artifact_id: str, contract: str) ->
 
 
 def _persist(
-    context: SkillContext,
-    envelope: HostDispatchEnvelope,
+    context: ResearchContext,
+    request: ResearchRequest,
     calls: tuple[ToolCallRecord, ...],
     findings: tuple[ResearchFinding, ...],
     constraints: list[str],
@@ -332,9 +352,9 @@ def _persist(
     store = context.host.artifact_store
     requirement = Requirement(
         requirement_id=REQUIREMENT_ID,
-        source_reference=f"{envelope.input_request_ref.artifact_id}@{envelope.input_request_ref.artifact_revision}",
-        original_wording=envelope.information_needed,
-        statement=envelope.information_needed,
+        source_reference=f"stdin:{request.task_id}",
+        original_wording=request.information_needed,
+        statement=request.information_needed,
     )
     verified = tuple(item for item in findings if item.information_class is InformationClass.VERIFIED_EVIDENCE)
     submitted = tuple(item for item in findings if item.information_class is not InformationClass.VERIFIED_EVIDENCE)
@@ -370,13 +390,13 @@ def _persist(
             sort_keys=True,
         ).encode("utf-8")
     )[:12]
-    base = f"{envelope.task_id}:{envelope.run_id}:{fingerprint}"
+    base = f"{request.task_id}:{request.run_id}:{fingerprint}"
     artifacts = {
         "audit": _store(
             store,
             ResearchRecord(
-                task_id=envelope.task_id,
-                run_id=envelope.run_id,
+                task_id=request.task_id,
+                run_id=request.run_id,
                 stage_revision=1,
                 requirements=(requirement,),
                 claims=claims,
@@ -389,8 +409,8 @@ def _persist(
         "code": _store(
             store,
             ResearchRecord(
-                task_id=envelope.task_id,
-                run_id=envelope.run_id,
+                task_id=request.task_id,
+                run_id=request.run_id,
                 stage_revision=1,
                 requirements=(requirement,),
                 evidence=evidence_models,
@@ -405,7 +425,7 @@ def _persist(
         artifacts["fixture"] = _store(
             store,
             FixtureSpecification(
-                fixture_id=f"FIX-{envelope.task_id}",
+                fixture_id=f"FIX-{request.task_id}",
                 requirement_ref=REQUIREMENT_ID,
                 purpose="reproduce the observed evidence state",
                 preconditions=(f"repository contains {evidence[0].path}",),
@@ -421,14 +441,12 @@ def _persist(
     return artifacts
 
 
-def search(context: SkillContext, envelope: HostDispatchEnvelope, arguments: ResearchArguments) -> ResearchSearchResult:
+def search(context: ResearchContext, request: ResearchRequest) -> ResearchSearchResult:
     """Run the bounded model/tool loop and persist what was actually observed."""
-    del arguments  # the dispatch envelope carries the objective and input identity
-    context.host.verify_agent_dispatch(envelope)
-    input_text = _input_text(context, envelope)
-    plan = _build_plan(envelope, input_text)
-    messages = _initial_messages(envelope, input_text)
-    registry = context.host.providers
+    input_text = _input_text(request)
+    plan = _build_plan(request, input_text)
+    messages = _initial_messages(request, input_text)
+    registry = context.providers
     if registry is None:
         raise ProviderError("no provider registry configured on the host")
     calls: list[ToolCallRecord] = []
@@ -441,8 +459,8 @@ def search(context: SkillContext, envelope: HostDispatchEnvelope, arguments: Res
             result = registry.generate(
                 registry.default_provider,
                 ProviderRequest(
-                    run_id=envelope.run_id,
-                    prompt=envelope.information_needed,
+                    run_id=request.run_id,
+                    prompt=request.information_needed,
                     messages=tuple(messages),
                     tools=tuple(_tool_schemas()),
                     tool_choice="auto",
@@ -506,7 +524,7 @@ def search(context: SkillContext, envelope: HostDispatchEnvelope, arguments: Res
             findings, constraints, model_unknowns = parsed
             limitations.extend(model_unknowns)
 
-    artifacts = _persist(context, envelope, tuple(calls), findings, constraints, limitations)
+    artifacts = _persist(context, request, tuple(calls), findings, constraints, limitations)
     return ResearchSearchResult(
         outcome=outcome,
         plan=plan,
@@ -517,10 +535,6 @@ def search(context: SkillContext, envelope: HostDispatchEnvelope, arguments: Res
     )
 
 
-def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: ResearchArguments) -> dict[str, object]:
-    """Preserve the injected-service path; otherwise run the bounded search."""
-    if context.research_service is not None:
-        if context.research_service.host.state_root.resolve() != context.host.state_root.resolve():
-            raise ValueError("Research service and dispatch host use different state roots")
-        return context.research_service.execute_research(envelope.task_id)
-    return search(context, envelope, arguments).to_dict()
+def execute(context: ResearchContext, request: ResearchRequest) -> dict[str, object]:
+    """Run the bounded search and return the result as a plain dictionary."""
+    return search(context, request).to_dict()

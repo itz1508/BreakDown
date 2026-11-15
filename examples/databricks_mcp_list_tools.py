@@ -72,9 +72,11 @@ def databricks_token() -> str:
 async def main() -> None:
     token = os.environ.get("DATABRICKS_TOKEN") or databricks_token()
     http_client = httpx2.AsyncClient(headers={"Authorization": f"Bearer {token}"})
-    async with http_client, streamable_http_client(
-        MCP_URL, http_client=http_client
-    ) as (read, write), ClientSession(read, write) as session:
+    async with (
+        http_client,
+        streamable_http_client(MCP_URL, http_client=http_client) as (read, write),
+        ClientSession(read, write) as session,
+    ):
         await session.initialize()
         result = await session.list_tools()
         for tool in result.tools:

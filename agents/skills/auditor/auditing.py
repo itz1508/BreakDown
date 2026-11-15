@@ -1,17 +1,22 @@
-"""Execute read-only source checks through the host-assigned Auditor role."""
+"""Execute read-only source checks for the Auditor role."""
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from agents.skills.auditor.tools.core import AuditResult, scan
-from agents.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agents.skills.shared.host.skill_dispatch import AuditArguments, SkillContext
 
 
-def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: AuditArguments) -> AuditResult:
+def run(
+    workspace_root: str | Path,
+    request: str,
+    scope: str = ".",
+    capabilities: tuple[str, ...] = (),
+) -> AuditResult:
     """Return source-grounded findings without issuing receipts or modifying source."""
     return scan(
-        context.workspace_root,
-        scope=arguments.scope,
-        capabilities=arguments.capabilities,
-        request=envelope.information_needed,
+        Path(workspace_root),
+        scope=scope,
+        capabilities=capabilities,
+        request=request,
     )

@@ -1,13 +1,15 @@
-"""Planner entrypoints: candidate creation intent and existing Host-bound Scanner."""
+"""Planner entrypoints: candidate creation intent and the Host-free Scanner."""
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from agents.skills.planner.scanner_gateway import ScannerGateway
+from agents.skills.shared.storage.artifact_store import ArtifactStore
+
 if TYPE_CHECKING:
-    from agents.skills.planner.contracts.scanner import ScannerResult
-    from agents.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-    from agents.skills.shared.host.skill_dispatch import PlanningArguments, SkillContext
+    from agents.skills.planner.contracts.scanner import ScannerResult, ScannerRunInput
 
 
 class PlanningPipelineNotActive(RuntimeError):
@@ -24,17 +26,12 @@ def create(request: object, context: object) -> Any:
     )
 
 
-def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: PlanningArguments) -> ScannerResult:
-    """Preserve the existing Host-owned Scanner path."""
-    scan = arguments.scan
-    if scan.run_id != envelope.run_id:
-        raise ValueError("Planner scan run does not match the persisted assignment")
-    return context.host.scan_planning_candidate(
-        task_id=envelope.task_id,
-        run_id=envelope.run_id,
-        candidate_ref=scan.candidate_ref,
-        repository_identity=scan.repository_identity,
-        capabilities=scan.capabilities,
-        gap_result_ref=scan.gap_result_ref,
-        gap_receipt_ref=scan.gap_receipt_ref,
+def scan(state_root: str | Path, request: ScannerRunInput) -> ScannerResult:
+    """Run the structural scanner over the candidate and persist the result."""
+    store = ArtifactStore(Path(state_root))
+    gateway = ScannerGateway(store)
+    return gateway.scan_exact(
+        request.candidate_ref,
+        request.repository_identity,
+        request.capabilities,
     )

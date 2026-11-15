@@ -30,3 +30,13 @@ Read first each session; newest entries at the top. Stable lessons migrate to
 - 2026-11-14 — Validation is not a workflow stage (user ruling). Independent
   validation runs out-of-band against retained artifacts; do not re-add a
   validation stage or verifier routing.
+
+- 2026-11-14 — Architecture pivot (user directive): the host transition and
+  dispatch machinery (sys_controller, skill_dispatch, work_todo manager and
+  contract, cli) was DELETED, not migrated. The execution model is now
+  agents/system: coordinate() -> delegating() -> call_ref() -> sys_runtime()
+  (subprocess, stdin/stdout/stderr, asyncio.timeout) with agents/shared
+  models (TaskTodo, ExecTodo, Event) and agents/shared/io envelope. Roles
+  are subprocess entrypoints reading one JSON request from stdin and
+  writing one JSON response. Do not reintroduce the Host/stage-transition
+  machinery; extend the shared/system layers instead.

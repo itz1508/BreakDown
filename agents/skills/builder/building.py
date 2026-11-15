@@ -2,20 +2,30 @@
 
 from __future__ import annotations
 
-from agents.skills.builder.contracts.build import BuildActionExecution
-from agents.skills.shared.contracts.workflow.system.host import HostDispatchEnvelope
-from agents.skills.shared.host.skill_dispatch import BuildArguments, SkillContext
+from pathlib import Path
+from typing import Any
+
+from agents.skills.builder.effect_executor import EffectExecutor
+from agents.skills.shared.storage.artifact_store import ArtifactStore
+from agents.skills.shared.storage.checkpoint_store import CheckpointStore
+from agents.skills.shared.storage.receipt_store import ReceiptStore
 
 
-def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: BuildArguments) -> BuildActionExecution:
-    """Delegate effect-time gates and checkpoints to Runtime; never self-authorize."""
-    return context.build_executor().execute_admitted(
-        action_id=arguments.action_id,
-        action_kind=arguments.action_kind,
-        admission_receipt=arguments.admission_receipt,
-        target_path=arguments.target_path,
-        source_path=arguments.source_path,
-        content=arguments.content,
-        expected_source_digest=arguments.expected_source_digest,
-        wave=arguments.wave,
+def build_executor(state_root: str | Path, workspace_root: str | Path) -> EffectExecutor:
+    """Construct the authorized Runtime executor over the given roots."""
+    from agents.skills.shared.host.sys_policy_enforcer import AuthorizationEngine
+
+    state = Path(state_root)
+    workspace = Path(workspace_root)
+    return EffectExecutor(
+        authorization=AuthorizationEngine(allowed_roots=(str(workspace), str(state))),
+        checkpoint_store=CheckpointStore(state),
+        receipt_store=ReceiptStore(state),
+        workspace_root=workspace,
+        artifact_store=ArtifactStore(state),
     )
+
+
+def execute_admitted(state_root: str | Path, workspace_root: str | Path, **arguments: Any) -> Any:
+    """Delegate effect-time gates and checkpoints to the executor; never self-authorize."""
+    return build_executor(state_root, workspace_root).execute_admitted(**arguments)
