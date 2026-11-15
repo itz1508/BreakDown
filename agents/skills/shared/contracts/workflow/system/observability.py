@@ -6,6 +6,8 @@ EventStatus and ExecutionEvent are owned by the event store
 
 from __future__ import annotations
 
+from pydantic import Field
+
 from agents.shared.base import ContractModel
 
 
