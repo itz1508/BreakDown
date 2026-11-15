@@ -6,7 +6,7 @@ import ast
 import re
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
 
 _API_PREFIX = re.compile(r"/api/[\w/{}-]+")
 

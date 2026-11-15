@@ -9,7 +9,7 @@ from contracts.workflow.common import ArtifactRef
 from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
 from system.storage.artifact_store import StaleRevisionError
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
-from system.host.workflow_control import HostController, Stage, TransitionError
+from system.host.sys_controller import HostController, Stage, TransitionError
 from system.host.work_todo import WorkTodoError
 
 

@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 from contracts.workflow.planner.scanner import ScannerOutcome, ScannerRunInput
-from system.host.workflow_control import HostController, Stage, TransitionError
+from system.host.sys_controller import HostController, Stage, TransitionError
 
 
 def cmd_doctor(state_root: str = "/tmp/oneshot-state") -> int:

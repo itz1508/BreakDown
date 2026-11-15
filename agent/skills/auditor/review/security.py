@@ -5,7 +5,7 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, python_files, safe_read_text
+from agent.skills.auditor.review.core import Finding, evidence, python_files, safe_read_text
 
 DANGEROUS = {("subprocess", "run"), ("subprocess", "Popen"), ("os", "system")}
 

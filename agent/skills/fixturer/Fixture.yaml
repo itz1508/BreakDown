@@ -1,0 +1,25 @@
+# Nested Planner sub-process, not a runtime stage or validator.
+kind: skill_mini_pipeline
+definition_version: 1
+pipeline_id: fixturer.prepare
+owner: fixturer
+implementation_intent: agent/skills/fixturer/Fixturer.py
+process_only: true
+artifact_contract_refs: [contracts/workflow/planner/specification.py]
+segments:
+- id: prepare
+  steps:
+  - id: extract_fixture_requirements
+    operation_id: fixturer.extract_requirements
+    status: unbound
+  - id: prepare_cases
+    depends_on: [extract_fixture_requirements]
+    operation_id: fixturer.prepare_cases
+    status: unbound
+  - id: emit_fixture_drafts
+    depends_on: [prepare_cases]
+    operation_id: fixturer.emit_drafts
+    status: unbound
+policy:
+  can_validate_independently: false
+  can_approve_or_execute: false

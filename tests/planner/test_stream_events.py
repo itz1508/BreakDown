@@ -10,8 +10,8 @@ import pytest
 
 import contracts.workflow.validation.planning as planning
 from contracts.workflow.planner.scanner import ScannerOutcome
-from system.host.policy_enforce import Capability
-from system.host.workflow_control import HostController
+from system.host.sys_policy_enforcer import Capability
+from system.host.sys_controller import HostController
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record, revised_record
 
 

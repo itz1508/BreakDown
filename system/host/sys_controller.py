@@ -23,7 +23,7 @@ from contracts.workflow.validation.planning import validate_action_graph
 from contracts.workflow.validation.structural import CONCERNS
 from contracts.workflow.planner.work_todo import TodoList, WorkBinding
 from system.storage.artifact_store import ArtifactStore
-from system.host.policy_enforce import AuthorizationEngine, Capability
+from system.host.sys_policy_enforcer import AuthorizationEngine, Capability
 from system.storage.canonical_serialization import SERIALIZER_PROFILE
 from system.storage.checkpoint_store import CheckpointStore, CompetingWriterError
 from system.storage.event_store import EventStore

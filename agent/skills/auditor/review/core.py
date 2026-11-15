@@ -123,17 +123,17 @@ Scanner = Callable[[Path, Path], list[Finding]]
 
 
 def scan(root: Path, scope: str = ".", capabilities: tuple[str, ...] = (), request: str = "") -> AuditResult:
-    from agent.skills.auditor.checks.completeness import scan_completeness
-    from agent.skills.auditor.checks.contracts import scan_contracts
-    from agent.skills.auditor.checks.dependencies import scan_dependencies
-    from agent.skills.auditor.checks.frontend import scan_frontend
-    from agent.skills.auditor.checks.integration import scan_integration
-    from agent.skills.auditor.checks.paths import scan_paths
-    from agent.skills.auditor.checks.recovery import scan_recovery
-    from agent.skills.auditor.checks.security import scan_security
-    from agent.skills.auditor.checks.state import scan_state
-    from agent.skills.auditor.checks.verification import scan_verification
-    from agent.skills.auditor.checks.wiring import scan_wiring
+    from agent.skills.auditor.review.completeness import scan_completeness
+    from agent.skills.auditor.review.contracts import scan_contracts
+    from agent.skills.auditor.review.dependencies import scan_dependencies
+    from agent.skills.auditor.review.frontend import scan_frontend
+    from agent.skills.auditor.review.integration import scan_integration
+    from agent.skills.auditor.review.paths import scan_paths
+    from agent.skills.auditor.review.recovery import scan_recovery
+    from agent.skills.auditor.review.security import scan_security
+    from agent.skills.auditor.review.state import scan_state
+    from agent.skills.auditor.review.verification import scan_verification
+    from agent.skills.auditor.review.wiring import scan_wiring
 
     scanners: dict[str, Scanner] = {
         "paths": scan_paths,

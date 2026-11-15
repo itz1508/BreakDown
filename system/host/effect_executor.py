@@ -11,7 +11,7 @@ from contracts.workflow.builder.build import BuildActionExecution, BuildActionSt
 from contracts.workflow.builder.schedule import BuildWave, VerifiedWaveResult
 from contracts.workflow.system.host import BuildAdmissionReceipt, admission_receipt_subject
 from system.storage.artifact_store import ArtifactStore
-from system.host.policy_enforce import AuthorizationEngine, AuthorizationError
+from system.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
 from system.storage.checkpoint_store import CheckpointStore
 from system.storage.receipt_store import ReceiptStore
 

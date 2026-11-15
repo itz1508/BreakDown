@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding, evidence, safe_read_text
+from agent.skills.auditor.review.core import Finding, evidence, safe_read_text
 
 
 def scan_frontend(root: Path, scope: Path) -> list[Finding]:

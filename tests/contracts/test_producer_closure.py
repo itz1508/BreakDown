@@ -12,7 +12,7 @@ from contracts.workflow.researcher.research import ResearchIntent
 from contracts.workflow.planner.task_todo import TaskTodo
 from system.host.research_catalog import ResearchCatalog
 from system.storage.artifact_store import ArtifactStore
-from system.host.policy_enforce import AuthorizationEngine
+from system.host.sys_policy_enforcer import AuthorizationEngine
 from system.host.build_admission import BuildAdmission
 from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
 from system.storage.checkpoint_store import CheckpointStore

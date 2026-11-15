@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from agent.skills.auditor.checks.core import Finding
+from agent.skills.auditor.review.core import Finding
 
 
 def scan_paths(root: Path, scope: Path) -> list[Finding]:
