@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+pytestmark = pytest.mark.e2e
+
 from contracts.workflow.common import ArtifactRef
 from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
