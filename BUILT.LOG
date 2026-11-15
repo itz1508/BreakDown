@@ -68,3 +68,14 @@ Not done / differs from intent:
   commit: MEM.LOG hard-boundary record, planner __main__/planning.py
   gap fixes from 5bd9c72. Unfinished: guard-list ruling, evidence-
   separation review, wheel/deptry pass — all pending user instruction.
+- 2026-11-14 — role-validator relocation (commit 350872a): planning,
+  research and audit-discovery validators moved out of
+  shared/contracts/workflow/validation/ into their owning roles
+  (planner/contracts/validation.py, researcher/contracts/validation.py,
+  auditor/contracts/validation.py); shared __init__ rewritten to
+  cross-role only; scanner-coupled traced detector not moved (retired
+  stack); benchmark_decision_trace.py and evaluate_gap_sklearn.py
+  deleted. Evidence: full suite all-pass, ruff clean, guard 226 paths,
+  mypy reduced to the single frozen verify_all.py orphan. Untouched:
+  host_gap_analyzer.py (frozen evidence-review candidate),
+  shared/host/, shared/storage/, queue location ruling (pending).
