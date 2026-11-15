@@ -471,7 +471,7 @@ wheels = [
 ]
 
 [[package]]
-name = "modal-build-sandbox"
+name = "oneshot-sandbox"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
@@ -485,7 +485,6 @@ modal = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "modal" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "ruff" },
@@ -500,7 +499,6 @@ provides-extras = ["modal"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "modal", specifier = ">=1.1,<2" },
     { name = "mypy", specifier = ">=1.13" },
     { name = "pytest", specifier = ">=8,<10" },
     { name = "ruff", specifier = ">=0.8" },

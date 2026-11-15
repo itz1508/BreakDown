@@ -6,11 +6,11 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .contracts import SandboxExecutionRequest
+from ..contracts import SandboxExecutionRequest
 
 WORKER_ENTRY = (
-    "import sys; sys.path.insert(0, '/opt/oneshot-v3'); "
-    "from modal_build_sandbox.runner import sandbox_worker; "
+    "import sys; sys.path.insert(0, '/opt/oneshot-sandbox'); "
+    "from oneshot_sandbox.runner import sandbox_worker; "
     "sandbox_worker('/input/request.json')"
 )
 
@@ -62,10 +62,11 @@ class ModalRuntime:
         sb.filesystem.make_directory("/workspace", create_parents=True)
         sb.filesystem.make_directory("/input", create_parents=True)
         sb.filesystem.make_directory("/output", create_parents=True)
+        sb.filesystem.make_directory("/opt/oneshot-sandbox/oneshot_sandbox", create_parents=True)
         sb.filesystem.copy_from_local(req.source_snapshot_ref, "/input/source.tar")
         sb.filesystem.copy_from_local(req.candidate_bundle_ref, "/input/bundle.zip")
         # Copy only trusted runner source, never host credentials / authoritative repository.
-        source = Path(__file__).parent
+        source = Path(__file__).resolve().parents[1]
         for filename in (
             "__init__.py",
             "contracts.py",
@@ -75,7 +76,7 @@ class ModalRuntime:
             "evidence.py",
             "runner.py",
         ):
-            sb.filesystem.copy_from_local(source / filename, "/opt/oneshot-v3/modal_build_sandbox/" + filename)
+            sb.filesystem.copy_from_local(source / filename, "/opt/oneshot-sandbox/oneshot_sandbox/" + filename)
         sb.filesystem.write_text(req.model_dump_json(), "/input/request.json")
         sb.filesystem.write_text(str(sb.object_id), "/input/sandbox-id.txt")
 
@@ -95,3 +96,11 @@ class ModalRuntime:
 
     def terminate(self, sb: Any) -> None:
         sb.terminate(wait=True)
+
+
+def verify_backend_credentials() -> None:
+    """Check required Modal credentials without exposing their values."""
+    import os
+
+    if not (os.environ.get("MODAL_TOKEN_ID") and os.environ.get("MODAL_TOKEN_SECRET")):
+        raise RuntimeError("Modal backend credentials absent")

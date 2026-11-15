@@ -8,10 +8,10 @@ from pathlib import Path
 
 import pytest
 
-from modal_build_sandbox.contracts import Outcome
-from modal_build_sandbox.modal_runtime import ModalRuntime
-from modal_build_sandbox.recovery import AttemptStore
-from modal_build_sandbox.runner import StandaloneRunner
+from oneshot_sandbox.contracts import Outcome
+from oneshot_sandbox.integrations.modal import ModalRuntime
+from oneshot_sandbox.recovery import AttemptStore
+from oneshot_sandbox.runner import StandaloneRunner
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from test_contracts import make_request
@@ -33,7 +33,7 @@ def test_real_modal_bad_then_good(tmp_path: Path):
     # The explicit production-mode fixture constructor is used to ensure both attempts
     # use the exact prebuilt immutable image. It never grants OneShot host Build Admission.
     image_id = os.environ["ONESHOT_MODAL_IMAGE_ID"]
-    from modal_build_sandbox.runner import profile_digest
+    from oneshot_sandbox.runner import profile_digest
 
     for attempt, replacement, expected in (
         ("attempt-1", "    return value.strip()\n", Outcome.FAILED),

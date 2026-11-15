@@ -3,7 +3,7 @@ import tarfile
 
 import pytest
 
-from modal_build_sandbox.snapshot import archive_directory, extract_verified_tar, scan_tree, sha256_file, tree_digest
+from oneshot_sandbox.snapshot import archive_directory, extract_verified_tar, scan_tree, sha256_file, tree_digest
 
 
 def _tar(tmp_path, entries):

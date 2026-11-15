@@ -1,7 +1,7 @@
 [project]
-name = "modal-build-sandbox"
+name = "oneshot-sandbox"
 version = "0.1.0"
-description = "Standalone, host-authorized, patch-first Modal Sandbox executor"
+description = "Provider-neutral, host-admitted, patch-first isolated Sandbox"
 requires-python = ">=3.11,<3.14"
 dependencies = ["pydantic>=2.10,<3"]
 
@@ -9,17 +9,17 @@ dependencies = ["pydantic>=2.10,<3"]
 modal = ["modal>=1.1,<2"]
 
 [dependency-groups]
-dev = ["pytest>=8,<10", "ruff>=0.8", "mypy>=1.13", "modal>=1.1,<2"]
+dev = ["pytest>=8,<10", "ruff>=0.8", "mypy>=1.13"]
 
 [build-system]
 requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/modal_build_sandbox"]
+packages = ["src/oneshot_sandbox"]
 
 [project.scripts]
-modal-build-sandbox = "modal_build_sandbox.cli:main"
+oneshot-sandbox = "oneshot_sandbox.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

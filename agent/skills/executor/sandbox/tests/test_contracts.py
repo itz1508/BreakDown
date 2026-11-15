@@ -10,11 +10,11 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from modal_build_sandbox.contracts import CandidateManifest, CommandSpec, SandboxExecutionRequest
-from modal_build_sandbox.evidence import build_candidate_bundle
-from modal_build_sandbox.policy import commands_digest
-from modal_build_sandbox.runner import preflight, profile_digest
-from modal_build_sandbox.snapshot import archive_directory
+from oneshot_sandbox.contracts import CandidateManifest, CommandSpec, SandboxExecutionRequest
+from oneshot_sandbox.evidence import build_candidate_bundle
+from oneshot_sandbox.policy import commands_digest
+from oneshot_sandbox.runner import preflight, profile_digest
+from oneshot_sandbox.snapshot import archive_directory
 
 FIXTURE = Path(__file__).parent / "fixtures" / "email_normalizer"
 
