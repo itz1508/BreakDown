@@ -1,11 +1,42 @@
-# Researcher — sourced evidence execution
+# Researcher Skill
 
-**Executable:** `agent.skills.researcher.run.run(context, envelope, ResearchArguments)`.
+## Purpose
+Research and catalog frontend API patterns, component specifications, and integration references.
 
-**Input:** Verified Research dispatch, existing task, injected `MVPService` sharing the Host state root.
+## Entry Point
+```bash
+uv run --no-sync python -m agent.skills.researcher.run <repository-root>
+```
 
-**Tools:** Existing `mvp.research_host.execute_research`, MCP research adapter and host-owned `ResearchLifecycle`. Catalog templates are guidance, not evidence.
+## Tools
+- `research_catalog` - Catalog researched findings and evidence
 
-**Output:** Existing Research result payload and independently persisted host artifacts. The skill cannot mint trusted receipts or unilaterally advance a stage.
+## Output
+- Catalog entries with evidence references and reliability status
+- Research gap analysis summaries
+# Researcher Skill
 
-**Runtime:** Host verifies task/run/stage/request/revision/input digest and return route. Uncertain effects require reconciliation.
+## Ownership
+Research execution, sourced claims, evidence requests.
+
+## Responsibilities
+- Execute research tasks against configured MCP transports
+- Produce sourced ResearchRecord artifacts with RFC 8785 digests
+- Match research intents against synthetic catalog samples
+- Never advance workflow stages or issue receipts
+
+## Tools
+| Tool | Inputs | Outputs |
+|------|--------|---------|
+| `research_catalog` | research intent, keywords | `CatalogMatch` with match status and conditions |
+
+## Runtime Integration
+- Reports results through `HostDispatchResult` with `research_record` contract
+- Never issues trusted receipts
+- Never authorizes operations
+- Host validates artifacts and advances workflow stages
+
+## Constraints
+- Cannot advance workflow stages
+- Cannot issue trusted receipts
+- Cannot modify artifacts or receipts owned by the host

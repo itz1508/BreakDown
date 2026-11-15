@@ -1,5 +1,7 @@
-"""Read-only Audit capabilities within the existing Research entry point."""
+"""Auditor skill checks — validation routines for Auditor output.
 
-from agent.skills.auditor.checks.core import AuditResult, Finding, scan
+Checks verify that Auditor findings are well-formed, evidence-grounded,
+and within the read-only scope of the skill.
+"""
 
-__all__ = ["AuditResult", "Finding", "scan"]
+__all__ = []

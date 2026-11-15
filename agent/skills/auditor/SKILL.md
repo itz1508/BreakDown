@@ -1,15 +1,46 @@
-# Auditor — read-only repository inspection
+# Auditor Skill
 
-**Executable:** `agent.skills.auditor.run.run(context, envelope, AuditArguments)`.
+## Purpose
+Run read-only inspection tools against a repository to produce audit findings.
 
-**Input:** Host-persisted audit-discovery dispatch, Runtime workspace root, requested capabilities and bounded scope. Existing persisted role ID `audit_discovery` is preserved.
+## Entry Point
+```bash
+uv run --no-sync python -m agent.skills.auditor.run <repository-root>
+```
 
-**Checks (fixed order):** paths, contracts, dependencies, security, completeness, wiring, frontend, integration, state, recovery, verification. The CLI and Host use the same `CAPABILITY_ORDER` and fail closed on unreadable or symlinked sources.
+## Tools
+- `scan_paths` - Scan for path-related patterns
+- `scan_security` - Scan for security-related patterns  
+- `scan_state` - Scan for state-related patterns
 
-**CodeDesign preparation:** After repository inspection, requirement assessment and findings—and before Planning, `agent.skills.auditor.code_design.review_questions` supplies evidence questions for existing CodeDesign candidate origins. Audit Discovery records source-grounded candidates and unknowns; it does not choose an implementation design or modify application source.
+## Output
+- Audit disposition: `not_e2e_verified`, `findings_open`, or `blocked`
+- Executed capabilities list
+- Finding tuples with capability, path, line, code, message, severity
+# Auditor Skill
 
-**Output:** Source-grounded `AuditResult` with findings and limitations. Candidate CodeDesign requirements remain informational until Planner review. No repository edits, approved Build actions, trusted receipts, or stage transitions.
+## Ownership
+Read-only repository inspection, CodeIntent discovery, source-grounded diagnostic findings.
 
-**Boundary:** The standalone CLI and MVP Audit capability return static `AuditResult` / `AuditFindingsRecord`, not the full Research-bound `AuditDiscoveryPackage`. Source entry/exit checkpoints, requirement assessments, CodeDesign candidate publication and stage transition are Host-owned and cannot be inferred from a static scan.
+## Responsibilities
+- Filesystem integrity: broken symlinks, repo containment (paths tool)
+- Security-sensitive source pattern detection (security tool)
+- Static host ownership and receipt-binding audits (state tool)
 
-**Runtime:** `agent.runtime.skill_dispatch.execute_skill` validates persisted routing before loading this role. References: `references/audit_guidance.md`.
+## Tools
+| Tool | Inputs | Outputs |
+|------|--------|---------|
+| `paths` | repository root, scope | `Finding` tuples: PATH_OUTSIDE_REPOSITORY, BROKEN_SYMLINK |
+| `security` | repository root, scope | `Finding` tuples: COMMAND_EXECUTION_REVIEW, SHELL_TRUE_REVIEW |
+| `state` | repository root, scope | `Finding` tuples: RECEIPT_SUBJECT_UNBOUND |
+
+## Runtime Integration
+- Reports findings through `HostDispatchResult` with `audit_findings` contract
+- Never issues trusted receipts
+- Never authorizes operations
+- Host validates and persists all output
+
+## Constraints
+- Read-only: no file writes, no subprocess execution, no network
+- Cannot advance workflow stages
+- Cannot modify artifacts or receipts
