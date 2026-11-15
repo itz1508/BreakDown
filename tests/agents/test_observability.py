@@ -22,7 +22,6 @@ def test_trace_context_instantiates_and_serializes_round_trip() -> None:
 
 def test_trace_context_rejects_unknown_fields() -> None:
     import pytest
-
     from pydantic import ValidationError
 
     with pytest.raises(ValidationError):

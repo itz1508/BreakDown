@@ -65,4 +65,3 @@ def test_checkpoint_model_is_storage_owned_and_frozen() -> None:
     except Exception:
         return
     raise AssertionError("Checkpoint must be frozen (immutable)")
-

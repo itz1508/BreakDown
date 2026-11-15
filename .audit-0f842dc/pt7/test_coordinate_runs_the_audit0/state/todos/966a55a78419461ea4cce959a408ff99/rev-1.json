@@ -1,1 +1,0 @@
-{"action": "discovery", "created_at": "2026-11-15T17:14:26.758699Z", "payload": {"capabilities": ["paths"], "request": "audit broken imports", "scope": "."}, "skill": "auditor", "todo_id": "966a55a78419461ea4cce959a408ff99", "todo_revision": 1}

@@ -1,0 +1,74 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> .audit-0f842dc\verify_probes.py:29:1
+   |
+27 |   print(f"P2 probe OK: TraceContext round-trip trace_id={restored.trace_id}")
+28 |
+29 | / from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
+30 | | from contracts.workflow.common import DiagnosticStatus as DCommon  # noqa: E402
+31 | | from contracts.workflow.shared import Sha256 as SShared  # noqa: E402
+   | |_______________________________________________________^
+32 |
+33 |   assert DiagnosticStatus is DCommon, "contracts.workflow.common identity broken"
+   |
+help: Organize imports
+   |
+28 |
+   - from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
+29 | from contracts.workflow.common import DiagnosticStatus as DCommon  # noqa: E402
+30 | from contracts.workflow.shared import Sha256 as SShared  # noqa: E402
+31 |
+32 + from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
+33 +
+34 | assert DiagnosticStatus is DCommon, "contracts.workflow.common identity broken"
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\storage\checkpoint_store.py:3:1
+   |
+ 1 |   """CAS-based checkpoint store with operation ledger."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | import sqlite3
+ 7 | | from pathlib import Path
+ 8 | | from typing import Any
+ 9 | |
+10 | | from datetime import UTC, datetime
+11 | |
+12 | | from pydantic import Field
+13 | |
+14 | | from agents.shared.base import ArtifactRef, ContractModel, Sha256
+15 | | from system.storage.canonical_serialization import digest_raw
+   | |_____________________________________________________________^
+help: Organize imports
+   |
+6  | import sqlite3
+7  + from datetime import UTC, datetime
+8  | from pathlib import Path
+9  | from typing import Any
+   -
+   - from datetime import UTC, datetime
+10 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\agents\test_observability.py:24:5
+   |
+23 |   def test_trace_context_rejects_unknown_fields() -> None:
+24 | /     import pytest
+25 | |
+26 | |     from pydantic import ValidationError
+   | |________________________________________^
+27 |
+28 |       with pytest.raises(ValidationError):
+   |
+help: Organize imports
+   |
+24 |     import pytest
+   -
+25 |     from pydantic import ValidationError
+   |
+
+Found 3 errors.
+[*] 3 fixable with `--fix`.

@@ -1,3 +1,0 @@
-{"data": {}, "event_id": "819abb83c7c94da4a5125dc01abee8f8", "event_type": "todo_created", "exec_id": null, "timestamp": "2026-11-15T17:29:29.651890Z", "todo_id": "358d702234cc46699603012712f0016c"}
-{"data": {}, "event_id": "2097abac93d745c6b6a0f5ea583e7331", "event_type": "exec_started", "exec_id": "0beb123f96544561a8e9ee876dfc7ab7", "timestamp": "2026-11-15T17:29:29.656332Z", "todo_id": "358d702234cc46699603012712f0016c"}
-{"data": {}, "event_id": "6a52bfb2fb4d4e38a982592b72f70913", "event_type": "exec_completed", "exec_id": "0beb123f96544561a8e9ee876dfc7ab7", "timestamp": "2026-11-15T17:29:30.657796Z", "todo_id": "358d702234cc46699603012712f0016c"}

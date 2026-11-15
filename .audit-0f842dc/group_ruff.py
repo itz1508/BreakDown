@@ -23,4 +23,3 @@ lines.append("== by code ==")
 lines += [f"{k}: {v}" for k, v in by_code.most_common(12)]
 out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 print("\n".join(lines))
-

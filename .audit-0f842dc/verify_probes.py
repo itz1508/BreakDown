@@ -26,9 +26,10 @@ restored = observability.TraceContext.model_validate_json(trace.model_dump_json(
 assert restored == trace
 print(f"P2 probe OK: TraceContext round-trip trace_id={restored.trace_id}")
 
-from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
 from contracts.workflow.common import DiagnosticStatus as DCommon  # noqa: E402
 from contracts.workflow.shared import Sha256 as SShared  # noqa: E402
+
+from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
 
 assert DiagnosticStatus is DCommon, "contracts.workflow.common identity broken"
 assert Sha256 is SShared, "contracts.workflow.shared identity broken"

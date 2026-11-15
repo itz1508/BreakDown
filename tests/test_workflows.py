@@ -49,11 +49,7 @@ def test_workflow_has_one_ordered_definition() -> None:
 
 def test_workflow_has_exactly_two_user_approval_stops() -> None:
     workflow = load_workflow()
-    approval_stages = [
-        stage["id"]
-        for stage in workflow["stages"]
-        if stage.get("approval", {}).get("required") is True
-    ]
+    approval_stages = [stage["id"] for stage in workflow["stages"] if stage.get("approval", {}).get("required") is True]
 
     assert approval_stages == ["search_confirmation", "build_approval"]
     assert stages_by_id(workflow)["search_confirmation"]["owner"] == "user"

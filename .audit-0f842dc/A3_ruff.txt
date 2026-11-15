@@ -1,0 +1,4108 @@
+F401 [*] `agent.nonexistent` imported but unused
+ --> .audit-0f842dc\pt10\test_audit_request_and_finding0\agent\broken.py:1:8
+  |
+1 | import agent.nonexistent
+  |        ^^^^^^^^^^^^^^^^^
+help: Remove unused import: `agent.nonexistent`
+  |
+  - import agent.nonexistent
+  |
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt10\test_dynamic_frontend_api_pref0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/tasks/{task_id}/events")
+  |  ^^^
+2 | def events(): pass
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .audit-0f842dc\pt10\test_finds_literal_terms_with_0\pkg\mod.py:3:7
+  |
+1 | TOKEN = 'x'
+2 | other
+3 | TOKEN again
+  |       ^^^^^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt10\test_frontend_missing_research0\mvp\api.py:1:2
+  |
+1 | @app.post("/api/tasks/{task_id}/research")
+  |  ^^^
+2 | def research(): pass
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt10\test_import_sentinel_never_exe0\boom.py:1:1
+  |
+1 | from pathlib import Path
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+2 | Path(r'D:\breakdown\.audit-0f842dc\pt10\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+3 | raise RuntimeError('scanned code was imported')
+  |
+help: Organize imports
+  |
+1 | from pathlib import Path
+2 +
+3 | Path(r'D:\breakdown\.audit-0f842dc\pt10\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+  |
+
+F821 Undefined name `self`
+ --> .audit-0f842dc\pt10\test_in_process_lock_and_recon0\mvp\service.py:1:1
+  |
+1 | self._active_guard = Lock()
+  | ^^^^
+2 | _active_requests: set[str]
+  |
+
+F821 Undefined name `Lock`
+ --> .audit-0f842dc\pt10\test_in_process_lock_and_recon0\mvp\service.py:1:22
+  |
+1 | self._active_guard = Lock()
+  |                      ^^^^
+2 | _active_requests: set[str]
+  |
+
+F401 [*] `mvp.missing` imported but unused
+ --> .audit-0f842dc\pt10\test_mvp_import_targets_are_ch0\mvp\service.py:1:8
+  |
+1 | import mvp.missing
+  |        ^^^^^^^^^^^
+help: Remove unused import: `mvp.missing`
+  |
+  - import mvp.missing
+  |
+
+F401 [*] `agents.skills` imported but unused
+ --> .audit-0f842dc\pt10\test_preflight_import_boundary0\systemlib\core.py:1:8
+  |
+1 | import agents.skills
+  |        ^^^^^^^^^^^^^
+help: Remove unused import: `agents.skills`
+  |
+  - import agents.skills
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+F821 Undefined name `line1`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+F821 Undefined name `line2`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+F821 Undefined name `line3`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+F821 Undefined name `line4`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+F821 Undefined name `line5`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+F821 Undefined name `line6`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+F821 Undefined name `line7`
+ --> .audit-0f842dc\pt10\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+F821 Undefined name `line8`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+F821 Undefined name `line9`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+F821 Undefined name `line10`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+F821 Undefined name `line11`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+F821 Undefined name `line12`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+F821 Undefined name `line13`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+F821 Undefined name `line14`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+F821 Undefined name `line15`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+F821 Undefined name `line16`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+F821 Undefined name `line17`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+F821 Undefined name `line18`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+F821 Undefined name `line19`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+F821 Undefined name `line20`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+F821 Undefined name `line21`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+F821 Undefined name `line22`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+F821 Undefined name `line23`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+F821 Undefined name `line24`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+F821 Undefined name `line25`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+F821 Undefined name `line26`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+F821 Undefined name `line27`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+F821 Undefined name `line28`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+F821 Undefined name `line29`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+F821 Undefined name `line30`
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+W292 [*] No newline at end of file
+  --> .audit-0f842dc\pt10\test_read_source_window0\code.py:30:7
+   |
+28 | line28
+29 | line29
+30 | line30
+   |       ^
+help: Add trailing newline
+   |
+29 | line29
+   - line30
+30 + line30
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt10\test_security_candidate_is_not0\task.py:1:1
+  |
+1 | import subprocess
+  | ^^^^^^^^^^^^^^^^^
+2 | subprocess.run('echo ok', shell=True)
+  |
+help: Organize imports
+  |
+1 | import subprocess
+2 +
+3 | subprocess.run('echo ok', shell=True)
+  |
+
+F401 [*] `agent.missing` imported but unused
+ --> .audit-0f842dc\pt10\test_static_findings_are_not_e0\agent\work.py:1:8
+  |
+1 | import agent.missing
+  |        ^^^^^^^^^^^^^
+2 | # TODO: implement
+  |
+help: Remove unused import: `agent.missing`
+  |
+  - import agent.missing
+1 | # TODO: implement
+  |
+
+invalid-syntax: Expected a parameter or the end of the parameter list
+ --> .audit-0f842dc\pt10\test_syntax_error_reported_wit0\broken.py:1:7
+  |
+1 | def f(:
+  |       ^
+
+invalid-syntax: unexpected EOF while parsing
+ --> .audit-0f842dc\pt10\test_syntax_error_reported_wit0\broken.py:1:9
+  |
+1 | def f(:
+  |        ^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt10\test_unrecognized_static_api_r0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/health")
+  |  ^^^
+2 | def health(): pass
+  |
+
+F401 [*] `agent.nonexistent` imported but unused
+ --> .audit-0f842dc\pt3\test_audit_request_and_finding0\agent\broken.py:1:8
+  |
+1 | import agent.nonexistent
+  |        ^^^^^^^^^^^^^^^^^
+help: Remove unused import: `agent.nonexistent`
+  |
+  - import agent.nonexistent
+  |
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt3\test_dynamic_frontend_api_pref0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/tasks/{task_id}/events")
+  |  ^^^
+2 | def events(): pass
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .audit-0f842dc\pt3\test_finds_literal_terms_with_0\pkg\mod.py:3:7
+  |
+1 | TOKEN = 'x'
+2 | other
+3 | TOKEN again
+  |       ^^^^^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt3\test_frontend_missing_research0\mvp\api.py:1:2
+  |
+1 | @app.post("/api/tasks/{task_id}/research")
+  |  ^^^
+2 | def research(): pass
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt3\test_import_sentinel_never_exe0\boom.py:1:1
+  |
+1 | from pathlib import Path
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+2 | Path(r'D:\breakdown\.audit-0f842dc\pt3\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+3 | raise RuntimeError('scanned code was imported')
+  |
+help: Organize imports
+  |
+1 | from pathlib import Path
+2 +
+3 | Path(r'D:\breakdown\.audit-0f842dc\pt3\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+  |
+
+F821 Undefined name `self`
+ --> .audit-0f842dc\pt3\test_in_process_lock_and_recon0\mvp\service.py:1:1
+  |
+1 | self._active_guard = Lock()
+  | ^^^^
+2 | _active_requests: set[str]
+  |
+
+F821 Undefined name `Lock`
+ --> .audit-0f842dc\pt3\test_in_process_lock_and_recon0\mvp\service.py:1:22
+  |
+1 | self._active_guard = Lock()
+  |                      ^^^^
+2 | _active_requests: set[str]
+  |
+
+F401 [*] `mvp.missing` imported but unused
+ --> .audit-0f842dc\pt3\test_mvp_import_targets_are_ch0\mvp\service.py:1:8
+  |
+1 | import mvp.missing
+  |        ^^^^^^^^^^^
+help: Remove unused import: `mvp.missing`
+  |
+  - import mvp.missing
+  |
+
+F401 [*] `agents.skills` imported but unused
+ --> .audit-0f842dc\pt3\test_preflight_import_boundary0\systemlib\core.py:1:8
+  |
+1 | import agents.skills
+  |        ^^^^^^^^^^^^^
+help: Remove unused import: `agents.skills`
+  |
+  - import agents.skills
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+F821 Undefined name `line1`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+F821 Undefined name `line2`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+F821 Undefined name `line3`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+F821 Undefined name `line4`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+F821 Undefined name `line5`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+F821 Undefined name `line6`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+F821 Undefined name `line7`
+ --> .audit-0f842dc\pt3\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+F821 Undefined name `line8`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+F821 Undefined name `line9`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+F821 Undefined name `line10`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+F821 Undefined name `line11`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+F821 Undefined name `line12`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+F821 Undefined name `line13`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+F821 Undefined name `line14`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+F821 Undefined name `line15`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+F821 Undefined name `line16`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+F821 Undefined name `line17`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+F821 Undefined name `line18`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+F821 Undefined name `line19`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+F821 Undefined name `line20`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+F821 Undefined name `line21`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+F821 Undefined name `line22`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+F821 Undefined name `line23`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+F821 Undefined name `line24`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+F821 Undefined name `line25`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+F821 Undefined name `line26`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+F821 Undefined name `line27`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+F821 Undefined name `line28`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+F821 Undefined name `line29`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+F821 Undefined name `line30`
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+W292 [*] No newline at end of file
+  --> .audit-0f842dc\pt3\test_read_source_window0\code.py:30:7
+   |
+28 | line28
+29 | line29
+30 | line30
+   |       ^
+help: Add trailing newline
+   |
+29 | line29
+   - line30
+30 + line30
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt3\test_security_candidate_is_not0\task.py:1:1
+  |
+1 | import subprocess
+  | ^^^^^^^^^^^^^^^^^
+2 | subprocess.run('echo ok', shell=True)
+  |
+help: Organize imports
+  |
+1 | import subprocess
+2 +
+3 | subprocess.run('echo ok', shell=True)
+  |
+
+F401 [*] `agent.missing` imported but unused
+ --> .audit-0f842dc\pt3\test_static_findings_are_not_e0\agent\work.py:1:8
+  |
+1 | import agent.missing
+  |        ^^^^^^^^^^^^^
+2 | # TODO: implement
+  |
+help: Remove unused import: `agent.missing`
+  |
+  - import agent.missing
+1 | # TODO: implement
+  |
+
+invalid-syntax: Expected a parameter or the end of the parameter list
+ --> .audit-0f842dc\pt3\test_syntax_error_reported_wit0\broken.py:1:7
+  |
+1 | def f(:
+  |       ^
+
+invalid-syntax: unexpected EOF while parsing
+ --> .audit-0f842dc\pt3\test_syntax_error_reported_wit0\broken.py:1:9
+  |
+1 | def f(:
+  |        ^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt3\test_unrecognized_static_api_r0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/health")
+  |  ^^^
+2 | def health(): pass
+  |
+
+F401 [*] `agent.nonexistent` imported but unused
+ --> .audit-0f842dc\pt7\test_audit_request_and_finding0\agent\broken.py:1:8
+  |
+1 | import agent.nonexistent
+  |        ^^^^^^^^^^^^^^^^^
+help: Remove unused import: `agent.nonexistent`
+  |
+  - import agent.nonexistent
+  |
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt7\test_dynamic_frontend_api_pref0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/tasks/{task_id}/events")
+  |  ^^^
+2 | def events(): pass
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .audit-0f842dc\pt7\test_finds_literal_terms_with_0\pkg\mod.py:3:7
+  |
+1 | TOKEN = 'x'
+2 | other
+3 | TOKEN again
+  |       ^^^^^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt7\test_frontend_missing_research0\mvp\api.py:1:2
+  |
+1 | @app.post("/api/tasks/{task_id}/research")
+  |  ^^^
+2 | def research(): pass
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt7\test_import_sentinel_never_exe0\boom.py:1:1
+  |
+1 | from pathlib import Path
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+2 | Path(r'D:\breakdown\.audit-0f842dc\pt7\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+3 | raise RuntimeError('scanned code was imported')
+  |
+help: Organize imports
+  |
+1 | from pathlib import Path
+2 +
+3 | Path(r'D:\breakdown\.audit-0f842dc\pt7\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+  |
+
+F821 Undefined name `self`
+ --> .audit-0f842dc\pt7\test_in_process_lock_and_recon0\mvp\service.py:1:1
+  |
+1 | self._active_guard = Lock()
+  | ^^^^
+2 | _active_requests: set[str]
+  |
+
+F821 Undefined name `Lock`
+ --> .audit-0f842dc\pt7\test_in_process_lock_and_recon0\mvp\service.py:1:22
+  |
+1 | self._active_guard = Lock()
+  |                      ^^^^
+2 | _active_requests: set[str]
+  |
+
+F401 [*] `mvp.missing` imported but unused
+ --> .audit-0f842dc\pt7\test_mvp_import_targets_are_ch0\mvp\service.py:1:8
+  |
+1 | import mvp.missing
+  |        ^^^^^^^^^^^
+help: Remove unused import: `mvp.missing`
+  |
+  - import mvp.missing
+  |
+
+F401 [*] `agents.skills` imported but unused
+ --> .audit-0f842dc\pt7\test_preflight_import_boundary0\systemlib\core.py:1:8
+  |
+1 | import agents.skills
+  |        ^^^^^^^^^^^^^
+help: Remove unused import: `agents.skills`
+  |
+  - import agents.skills
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+F821 Undefined name `line1`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+F821 Undefined name `line2`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+F821 Undefined name `line3`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+F821 Undefined name `line4`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+F821 Undefined name `line5`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+F821 Undefined name `line6`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+F821 Undefined name `line7`
+ --> .audit-0f842dc\pt7\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+F821 Undefined name `line8`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+F821 Undefined name `line9`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+F821 Undefined name `line10`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+F821 Undefined name `line11`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+F821 Undefined name `line12`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+F821 Undefined name `line13`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+F821 Undefined name `line14`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+F821 Undefined name `line15`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+F821 Undefined name `line16`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+F821 Undefined name `line17`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+F821 Undefined name `line18`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+F821 Undefined name `line19`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+F821 Undefined name `line20`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+F821 Undefined name `line21`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+F821 Undefined name `line22`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+F821 Undefined name `line23`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+F821 Undefined name `line24`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+F821 Undefined name `line25`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+F821 Undefined name `line26`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+F821 Undefined name `line27`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+F821 Undefined name `line28`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+F821 Undefined name `line29`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+F821 Undefined name `line30`
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+W292 [*] No newline at end of file
+  --> .audit-0f842dc\pt7\test_read_source_window0\code.py:30:7
+   |
+28 | line28
+29 | line29
+30 | line30
+   |       ^
+help: Add trailing newline
+   |
+29 | line29
+   - line30
+30 + line30
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt7\test_security_candidate_is_not0\task.py:1:1
+  |
+1 | import subprocess
+  | ^^^^^^^^^^^^^^^^^
+2 | subprocess.run('echo ok', shell=True)
+  |
+help: Organize imports
+  |
+1 | import subprocess
+2 +
+3 | subprocess.run('echo ok', shell=True)
+  |
+
+F401 [*] `agent.missing` imported but unused
+ --> .audit-0f842dc\pt7\test_static_findings_are_not_e0\agent\work.py:1:8
+  |
+1 | import agent.missing
+  |        ^^^^^^^^^^^^^
+2 | # TODO: implement
+  |
+help: Remove unused import: `agent.missing`
+  |
+  - import agent.missing
+1 | # TODO: implement
+  |
+
+invalid-syntax: Expected a parameter or the end of the parameter list
+ --> .audit-0f842dc\pt7\test_syntax_error_reported_wit0\broken.py:1:7
+  |
+1 | def f(:
+  |       ^
+
+invalid-syntax: unexpected EOF while parsing
+ --> .audit-0f842dc\pt7\test_syntax_error_reported_wit0\broken.py:1:9
+  |
+1 | def f(:
+  |        ^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt7\test_unrecognized_static_api_r0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/health")
+  |  ^^^
+2 | def health(): pass
+  |
+
+F401 [*] `agent.nonexistent` imported but unused
+ --> .audit-0f842dc\pt8\test_audit_request_and_finding0\agent\broken.py:1:8
+  |
+1 | import agent.nonexistent
+  |        ^^^^^^^^^^^^^^^^^
+help: Remove unused import: `agent.nonexistent`
+  |
+  - import agent.nonexistent
+  |
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt8\test_dynamic_frontend_api_pref0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/tasks/{task_id}/events")
+  |  ^^^
+2 | def events(): pass
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .audit-0f842dc\pt8\test_finds_literal_terms_with_0\pkg\mod.py:3:7
+  |
+1 | TOKEN = 'x'
+2 | other
+3 | TOKEN again
+  |       ^^^^^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt8\test_frontend_missing_research0\mvp\api.py:1:2
+  |
+1 | @app.post("/api/tasks/{task_id}/research")
+  |  ^^^
+2 | def research(): pass
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt8\test_import_sentinel_never_exe0\boom.py:1:1
+  |
+1 | from pathlib import Path
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+2 | Path(r'D:\breakdown\.audit-0f842dc\pt8\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+3 | raise RuntimeError('scanned code was imported')
+  |
+help: Organize imports
+  |
+1 | from pathlib import Path
+2 +
+3 | Path(r'D:\breakdown\.audit-0f842dc\pt8\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+  |
+
+F821 Undefined name `self`
+ --> .audit-0f842dc\pt8\test_in_process_lock_and_recon0\mvp\service.py:1:1
+  |
+1 | self._active_guard = Lock()
+  | ^^^^
+2 | _active_requests: set[str]
+  |
+
+F821 Undefined name `Lock`
+ --> .audit-0f842dc\pt8\test_in_process_lock_and_recon0\mvp\service.py:1:22
+  |
+1 | self._active_guard = Lock()
+  |                      ^^^^
+2 | _active_requests: set[str]
+  |
+
+F401 [*] `mvp.missing` imported but unused
+ --> .audit-0f842dc\pt8\test_mvp_import_targets_are_ch0\mvp\service.py:1:8
+  |
+1 | import mvp.missing
+  |        ^^^^^^^^^^^
+help: Remove unused import: `mvp.missing`
+  |
+  - import mvp.missing
+  |
+
+F401 [*] `agents.skills` imported but unused
+ --> .audit-0f842dc\pt8\test_preflight_import_boundary0\systemlib\core.py:1:8
+  |
+1 | import agents.skills
+  |        ^^^^^^^^^^^^^
+help: Remove unused import: `agents.skills`
+  |
+  - import agents.skills
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+F821 Undefined name `line1`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+F821 Undefined name `line2`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+F821 Undefined name `line3`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+F821 Undefined name `line4`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+F821 Undefined name `line5`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+F821 Undefined name `line6`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+F821 Undefined name `line7`
+ --> .audit-0f842dc\pt8\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+F821 Undefined name `line8`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+F821 Undefined name `line9`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+F821 Undefined name `line10`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+F821 Undefined name `line11`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+F821 Undefined name `line12`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+F821 Undefined name `line13`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+F821 Undefined name `line14`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+F821 Undefined name `line15`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+F821 Undefined name `line16`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+F821 Undefined name `line17`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+F821 Undefined name `line18`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+F821 Undefined name `line19`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+F821 Undefined name `line20`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+F821 Undefined name `line21`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+F821 Undefined name `line22`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+F821 Undefined name `line23`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+F821 Undefined name `line24`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+F821 Undefined name `line25`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+F821 Undefined name `line26`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+F821 Undefined name `line27`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+F821 Undefined name `line28`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+F821 Undefined name `line29`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+F821 Undefined name `line30`
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+W292 [*] No newline at end of file
+  --> .audit-0f842dc\pt8\test_read_source_window0\code.py:30:7
+   |
+28 | line28
+29 | line29
+30 | line30
+   |       ^
+help: Add trailing newline
+   |
+29 | line29
+   - line30
+30 + line30
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt8\test_security_candidate_is_not0\task.py:1:1
+  |
+1 | import subprocess
+  | ^^^^^^^^^^^^^^^^^
+2 | subprocess.run('echo ok', shell=True)
+  |
+help: Organize imports
+  |
+1 | import subprocess
+2 +
+3 | subprocess.run('echo ok', shell=True)
+  |
+
+F401 [*] `agent.missing` imported but unused
+ --> .audit-0f842dc\pt8\test_static_findings_are_not_e0\agent\work.py:1:8
+  |
+1 | import agent.missing
+  |        ^^^^^^^^^^^^^
+2 | # TODO: implement
+  |
+help: Remove unused import: `agent.missing`
+  |
+  - import agent.missing
+1 | # TODO: implement
+  |
+
+invalid-syntax: Expected a parameter or the end of the parameter list
+ --> .audit-0f842dc\pt8\test_syntax_error_reported_wit0\broken.py:1:7
+  |
+1 | def f(:
+  |       ^
+
+invalid-syntax: unexpected EOF while parsing
+ --> .audit-0f842dc\pt8\test_syntax_error_reported_wit0\broken.py:1:9
+  |
+1 | def f(:
+  |        ^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt8\test_unrecognized_static_api_r0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/health")
+  |  ^^^
+2 | def health(): pass
+  |
+
+F401 [*] `agent.nonexistent` imported but unused
+ --> .audit-0f842dc\pt9\test_audit_request_and_finding0\agent\broken.py:1:8
+  |
+1 | import agent.nonexistent
+  |        ^^^^^^^^^^^^^^^^^
+help: Remove unused import: `agent.nonexistent`
+  |
+  - import agent.nonexistent
+  |
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt9\test_dynamic_frontend_api_pref0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/tasks/{task_id}/events")
+  |  ^^^
+2 | def events(): pass
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .audit-0f842dc\pt9\test_finds_literal_terms_with_0\pkg\mod.py:3:7
+  |
+1 | TOKEN = 'x'
+2 | other
+3 | TOKEN again
+  |       ^^^^^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt9\test_frontend_missing_research0\mvp\api.py:1:2
+  |
+1 | @app.post("/api/tasks/{task_id}/research")
+  |  ^^^
+2 | def research(): pass
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt9\test_import_sentinel_never_exe0\boom.py:1:1
+  |
+1 | from pathlib import Path
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+2 | Path(r'D:\breakdown\.audit-0f842dc\pt9\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+3 | raise RuntimeError('scanned code was imported')
+  |
+help: Organize imports
+  |
+1 | from pathlib import Path
+2 +
+3 | Path(r'D:\breakdown\.audit-0f842dc\pt9\test_import_sentinel_never_exe0\marker.txt').write_text('imported')
+  |
+
+F821 Undefined name `self`
+ --> .audit-0f842dc\pt9\test_in_process_lock_and_recon0\mvp\service.py:1:1
+  |
+1 | self._active_guard = Lock()
+  | ^^^^
+2 | _active_requests: set[str]
+  |
+
+F821 Undefined name `Lock`
+ --> .audit-0f842dc\pt9\test_in_process_lock_and_recon0\mvp\service.py:1:22
+  |
+1 | self._active_guard = Lock()
+  |                      ^^^^
+2 | _active_requests: set[str]
+  |
+
+F401 [*] `mvp.missing` imported but unused
+ --> .audit-0f842dc\pt9\test_mvp_import_targets_are_ch0\mvp\service.py:1:8
+  |
+1 | import mvp.missing
+  |        ^^^^^^^^^^^
+help: Remove unused import: `mvp.missing`
+  |
+  - import mvp.missing
+  |
+
+F401 [*] `agents.skills` imported but unused
+ --> .audit-0f842dc\pt9\test_preflight_import_boundary0\systemlib\core.py:1:8
+  |
+1 | import agents.skills
+  |        ^^^^^^^^^^^^^
+help: Remove unused import: `agents.skills`
+  |
+  - import agents.skills
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+F821 Undefined name `line1`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:1:1
+  |
+1 | line1
+  | ^^^^^
+2 | line2
+3 | line3
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+F821 Undefined name `line2`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:2:1
+  |
+1 | line1
+2 | line2
+  | ^^^^^
+3 | line3
+4 | line4
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+F821 Undefined name `line3`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:3:1
+  |
+1 | line1
+2 | line2
+3 | line3
+  | ^^^^^
+4 | line4
+5 | line5
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+F821 Undefined name `line4`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:4:1
+  |
+2 | line2
+3 | line3
+4 | line4
+  | ^^^^^
+5 | line5
+6 | line6
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+F821 Undefined name `line5`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:5:1
+  |
+3 | line3
+4 | line4
+5 | line5
+  | ^^^^^
+6 | line6
+7 | line7
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+F821 Undefined name `line6`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:6:1
+  |
+4 | line4
+5 | line5
+6 | line6
+  | ^^^^^
+7 | line7
+8 | line8
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+F821 Undefined name `line7`
+ --> .audit-0f842dc\pt9\test_read_source_window0\code.py:7:1
+  |
+5 | line5
+6 | line6
+7 | line7
+  | ^^^^^
+8 | line8
+9 | line9
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+F821 Undefined name `line8`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:8:1
+   |
+ 6 | line6
+ 7 | line7
+ 8 | line8
+   | ^^^^^
+ 9 | line9
+10 | line10
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+F821 Undefined name `line9`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:9:1
+   |
+ 7 | line7
+ 8 | line8
+ 9 | line9
+   | ^^^^^
+10 | line10
+11 | line11
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+F821 Undefined name `line10`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:10:1
+   |
+ 8 | line8
+ 9 | line9
+10 | line10
+   | ^^^^^^
+11 | line11
+12 | line12
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+F821 Undefined name `line11`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:11:1
+   |
+ 9 | line9
+10 | line10
+11 | line11
+   | ^^^^^^
+12 | line12
+13 | line13
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+F821 Undefined name `line12`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:12:1
+   |
+10 | line10
+11 | line11
+12 | line12
+   | ^^^^^^
+13 | line13
+14 | line14
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+F821 Undefined name `line13`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:13:1
+   |
+11 | line11
+12 | line12
+13 | line13
+   | ^^^^^^
+14 | line14
+15 | line15
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+F821 Undefined name `line14`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:14:1
+   |
+12 | line12
+13 | line13
+14 | line14
+   | ^^^^^^
+15 | line15
+16 | line16
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+F821 Undefined name `line15`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:15:1
+   |
+13 | line13
+14 | line14
+15 | line15
+   | ^^^^^^
+16 | line16
+17 | line17
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+F821 Undefined name `line16`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:16:1
+   |
+14 | line14
+15 | line15
+16 | line16
+   | ^^^^^^
+17 | line17
+18 | line18
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+F821 Undefined name `line17`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:17:1
+   |
+15 | line15
+16 | line16
+17 | line17
+   | ^^^^^^
+18 | line18
+19 | line19
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+F821 Undefined name `line18`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:18:1
+   |
+16 | line16
+17 | line17
+18 | line18
+   | ^^^^^^
+19 | line19
+20 | line20
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+F821 Undefined name `line19`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:19:1
+   |
+17 | line17
+18 | line18
+19 | line19
+   | ^^^^^^
+20 | line20
+21 | line21
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+F821 Undefined name `line20`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:20:1
+   |
+18 | line18
+19 | line19
+20 | line20
+   | ^^^^^^
+21 | line21
+22 | line22
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+F821 Undefined name `line21`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:21:1
+   |
+19 | line19
+20 | line20
+21 | line21
+   | ^^^^^^
+22 | line22
+23 | line23
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+F821 Undefined name `line22`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:22:1
+   |
+20 | line20
+21 | line21
+22 | line22
+   | ^^^^^^
+23 | line23
+24 | line24
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+F821 Undefined name `line23`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:23:1
+   |
+21 | line21
+22 | line22
+23 | line23
+   | ^^^^^^
+24 | line24
+25 | line25
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+F821 Undefined name `line24`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:24:1
+   |
+22 | line22
+23 | line23
+24 | line24
+   | ^^^^^^
+25 | line25
+26 | line26
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+F821 Undefined name `line25`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:25:1
+   |
+23 | line23
+24 | line24
+25 | line25
+   | ^^^^^^
+26 | line26
+27 | line27
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+F821 Undefined name `line26`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:26:1
+   |
+24 | line24
+25 | line25
+26 | line26
+   | ^^^^^^
+27 | line27
+28 | line28
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+F821 Undefined name `line27`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:27:1
+   |
+25 | line25
+26 | line26
+27 | line27
+   | ^^^^^^
+28 | line28
+29 | line29
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+F821 Undefined name `line28`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:28:1
+   |
+26 | line26
+27 | line27
+28 | line28
+   | ^^^^^^
+29 | line29
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+F821 Undefined name `line29`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:29:1
+   |
+27 | line27
+28 | line28
+29 | line29
+   | ^^^^^^
+30 | line30
+   |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+F821 Undefined name `line30`
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:30:1
+   |
+28 | line28
+29 | line29
+30 | line30
+   | ^^^^^^
+
+W292 [*] No newline at end of file
+  --> .audit-0f842dc\pt9\test_read_source_window0\code.py:30:7
+   |
+28 | line28
+29 | line29
+30 | line30
+   |       ^
+help: Add trailing newline
+   |
+29 | line29
+   - line30
+30 + line30
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> .audit-0f842dc\pt9\test_security_candidate_is_not0\task.py:1:1
+  |
+1 | import subprocess
+  | ^^^^^^^^^^^^^^^^^
+2 | subprocess.run('echo ok', shell=True)
+  |
+help: Organize imports
+  |
+1 | import subprocess
+2 +
+3 | subprocess.run('echo ok', shell=True)
+  |
+
+F401 [*] `agent.missing` imported but unused
+ --> .audit-0f842dc\pt9\test_static_findings_are_not_e0\agent\work.py:1:8
+  |
+1 | import agent.missing
+  |        ^^^^^^^^^^^^^
+2 | # TODO: implement
+  |
+help: Remove unused import: `agent.missing`
+  |
+  - import agent.missing
+1 | # TODO: implement
+  |
+
+invalid-syntax: Expected a parameter or the end of the parameter list
+ --> .audit-0f842dc\pt9\test_syntax_error_reported_wit0\broken.py:1:7
+  |
+1 | def f(:
+  |       ^
+
+invalid-syntax: unexpected EOF while parsing
+ --> .audit-0f842dc\pt9\test_syntax_error_reported_wit0\broken.py:1:9
+  |
+1 | def f(:
+  |        ^
+
+F821 Undefined name `app`
+ --> .audit-0f842dc\pt9\test_unrecognized_static_api_r0\mvp\api.py:1:2
+  |
+1 | @app.get("/api/health")
+  |  ^^^
+2 | def health(): pass
+  |
+
+invalid-syntax: Simple statements must be separated by newlines or semicolons
+ --> .audit-0f842dc\pytest-tmp\test_s4_build_contradicts_plan0\existing.py:1:10
+  |
+1 | original content
+  |          ^^^^^^^
+
+W292 No newline at end of file
+ --> .audit-0f842dc\pytest-tmp\test_s4_build_contradicts_plan0\existing.py:1:17
+  |
+1 | original content
+  |                 ^
+help: Add trailing newline
+
+E902 Failed to create cache key
+  Cause: Failed to create cache key
+  Cause: The system cannot find the file specified. (os error 2)
+--> .audit-0f842dc\pytest-tmp\test_s4g_symlink_escape_blocke0\workspace\evil_link.py:1:1
+
+W292 [*] No newline at end of file
+ --> .audit-0f842dc\pytest-tmp\test_s6_crash_safe_reconciliat0\workspace\output.py:1:19
+  |
+1 | print('corrupted')
+  |                   ^
+help: Add trailing newline
+  |
+  - print('corrupted')
+1 + print('corrupted')
+  |
+
+W292 [*] No newline at end of file
+ --> .audit-0f842dc\pytest-tmp\test_s6b_effect_uncertain_afte0\workspace\output2.py:1:15
+  |
+1 | print('hello')
+  |               ^
+help: Add trailing newline
+  |
+  - print('hello')
+1 + print('hello')
+  |
+
+B018 Found useless expression. Either assign it to a variable or remove it.
+ --> .audit-0f842dc\pytest-tmp\test_s6c_post_effect_reconcile0\workspace\output3.py:1:1
+  |
+1 | test
+  | ^^^^
+
+F821 Undefined name `test`
+ --> .audit-0f842dc\pytest-tmp\test_s6c_post_effect_reconcile0\workspace\output3.py:1:1
+  |
+1 | test
+  | ^^^^
+
+W292 [*] No newline at end of file
+ --> .audit-0f842dc\pytest-tmp\test_s6c_post_effect_reconcile0\workspace\output3.py:1:5
+  |
+1 | test
+  |     ^
+help: Add trailing newline
+  |
+  - test
+1 + test
+  |
+
+W292 [*] No newline at end of file
+ --> .audit-0f842dc\pytest-tmp\test_s7_full_host_controlled_e0\workspace\built.py:1:15
+  |
+1 | print('built')
+  |               ^
+help: Add trailing newline
+  |
+  - print('built')
+1 + print('built')
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> .audit-0f842dc\verify_probes.py:29:1
+   |
+27 |   print(f"P2 probe OK: TraceContext round-trip trace_id={restored.trace_id}")
+28 |
+29 | / from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
+30 | | from contracts.workflow.common import DiagnosticStatus as DCommon  # noqa: E402
+31 | | from contracts.workflow.shared import Sha256 as SShared  # noqa: E402
+   | |_______________________________________________________^
+32 |
+33 |   assert DiagnosticStatus is DCommon, "contracts.workflow.common identity broken"
+   |
+help: Organize imports
+   |
+28 |
+   - from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
+29 | from contracts.workflow.common import DiagnosticStatus as DCommon  # noqa: E402
+30 | from contracts.workflow.shared import Sha256 as SShared  # noqa: E402
+31 |
+32 + from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
+33 +
+34 | assert DiagnosticStatus is DCommon, "contracts.workflow.common identity broken"
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\storage\checkpoint_store.py:3:1
+   |
+ 1 |   """CAS-based checkpoint store with operation ledger."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | import sqlite3
+ 7 | | from pathlib import Path
+ 8 | | from typing import Any
+ 9 | |
+10 | | from datetime import UTC, datetime
+11 | |
+12 | | from pydantic import Field
+13 | |
+14 | | from agents.shared.base import ArtifactRef, ContractModel, Sha256
+15 | | from system.storage.canonical_serialization import digest_raw
+   | |_____________________________________________________________^
+help: Organize imports
+   |
+6  | import sqlite3
+7  + from datetime import UTC, datetime
+8  | from pathlib import Path
+9  | from typing import Any
+   -
+   - from datetime import UTC, datetime
+10 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\agents\test_observability.py:24:5
+   |
+23 |   def test_trace_context_rejects_unknown_fields() -> None:
+24 | /     import pytest
+25 | |
+26 | |     from pydantic import ValidationError
+   | |________________________________________^
+27 |
+28 |       with pytest.raises(ValidationError):
+   |
+help: Organize imports
+   |
+24 |     import pytest
+   -
+25 |     from pydantic import ValidationError
+   |
+
+Found 387 errors.
+[*] 42 fixable with `--fix`.
