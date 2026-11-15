@@ -10,7 +10,7 @@ from __future__ import annotations
 from system.storage._ref import sys_ref
 from system.storage.event import EVENT_TYPES, Event, create_event
 from system.storage.exec_todo import ExecStatus, ExecTodo, create_exec_todo, finish_exec_todo
-from system.storage.queue_store import Storage, sys_storage
+from system.storage.queue import Storage, sys_storage
 from system.storage.task_todo import TaskTodo, create_todo
 
 __all__ = [
