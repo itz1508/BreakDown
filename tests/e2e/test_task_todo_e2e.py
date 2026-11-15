@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 
 import pytest
+
+pytestmark = pytest.mark.e2e
 from pydantic import BaseModel
 
 from contracts.workflow.planner.specification import BuildSpecification

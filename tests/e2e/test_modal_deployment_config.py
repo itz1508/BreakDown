@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+
+pytestmark = pytest.mark.e2e
 from fastapi import Request
 
 

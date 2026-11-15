@@ -9,6 +9,8 @@ from types import SimpleNamespace
 
 import pytest
 
+pytestmark = pytest.mark.e2e
+
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
 from mvp.mcp_research import (
     MCPResearchAdapter,

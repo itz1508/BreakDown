@@ -1,6 +1,8 @@
 """Real host-backed MVP behavior: state, immutable input, events, and recovery."""
 
 import pytest
+
+pytestmark = pytest.mark.e2e
 from mvp.service import MVPError, MVPService
 
 

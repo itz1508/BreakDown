@@ -6,6 +6,8 @@ import json
 
 import pytest
 
+pytestmark = pytest.mark.e2e
+
 pytest.importorskip("fastapi")
 pytest.importorskip("httpx")
 
