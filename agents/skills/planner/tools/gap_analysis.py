@@ -269,11 +269,16 @@ class CapabilityConsumer(ContractModel):
 
 
 class CapabilityRequirement(ContractModel):
-    """One capability whose producer and consumers must close."""
+    """One capability whose producer and consumers must close.
+
+    ``retired=True`` marks a capability whose producer lived in a retired
+    generation: it is reported honestly instead of counted as a live gap.
+    """
 
     capability_id: str = Field(min_length=1)
     producers: tuple[CapabilityProducer, ...] = Field(min_length=1)
     consumers: tuple[CapabilityConsumer, ...] = ()
+    retired: bool = False
 
 
 class RepositorySnapshot(ContractModel):
@@ -295,6 +300,7 @@ class CapabilityAuditResult(ContractModel):
     diagnostic_status: DiagnosticStatus
     checked_capabilities: tuple[str, ...]
     gaps: tuple[CapabilityGap, ...]
+    retired_capabilities: tuple[str, ...] = ()
     limitations: tuple[str, ...] = (
         "static producer/symbol/consumer audit; walking-skeleton execution is a separate host pass",
     )
@@ -309,7 +315,11 @@ class MissingCapabilityAnalyzer:
         requirements: tuple[CapabilityRequirement, ...],
     ) -> CapabilityAuditResult:
         gaps: list[CapabilityGap] = []
+        retired: list[str] = []
         for requirement in requirements:
+            if requirement.retired:
+                retired.append(requirement.capability_id)
+                continue
             for producer in requirement.producers:
                 source = snapshot.files.get(producer.path)
                 if source is None:
@@ -358,6 +368,7 @@ class MissingCapabilityAnalyzer:
             diagnostic_status=DiagnosticStatus.VALID if not gaps else DiagnosticStatus.NOT_VALID,
             checked_capabilities=tuple(requirement.capability_id for requirement in requirements),
             gaps=tuple(gaps),
+            retired_capabilities=tuple(retired),
         )
 
     @staticmethod
@@ -551,6 +562,16 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                     symbols=("SandboxProfile", "ToolRegistrySnapshot"),
                 ),
             ),
+        ),
+        CapabilityRequirement(
+            capability_id="scanner_check_registry",
+            producers=(
+                CapabilityProducer(
+                    path="system/host/scanner_check_registry.py",
+                    symbols=("ScannerCheckRegistry",),
+                ),
+            ),
+            retired=True,
         ),
         CapabilityRequirement(
             capability_id="runtime_root_registry",

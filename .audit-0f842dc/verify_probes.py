@@ -26,14 +26,15 @@ restored = observability.TraceContext.model_validate_json(trace.model_dump_json(
 assert restored == trace
 print(f"P2 probe OK: TraceContext round-trip trace_id={restored.trace_id}")
 
-from contracts.workflow.common import DiagnosticStatus as DCommon  # noqa: E402
-from contracts.workflow.shared import Sha256 as SShared  # noqa: E402
-
-from agents.shared.base import DiagnosticStatus, Sha256  # noqa: E402
-
-assert DiagnosticStatus is DCommon, "contracts.workflow.common identity broken"
-assert Sha256 is SShared, "contracts.workflow.shared identity broken"
-print("P7-adjacent probe OK: primitive identity unified across legacy shims")
+# The legacy primitive copies (contracts.workflow.common / .shared) were
+# retired with the contracts/ tree; single-source identity means the
+# canonical classes are the only definition. Verify the retired module
+# files stay gone rather than comparing class identity.
+legacy_common = Path("contracts/workflow/common.py")
+legacy_shared = Path("contracts/workflow/shared.py")
+assert not legacy_common.exists(), "legacy primitives copy must stay retired"
+assert not legacy_shared.exists(), "legacy primitives copy must stay retired"
+print("P7 probe OK: canonical primitives are the only definition")
 
 shutil.rmtree(state, ignore_errors=True)
 print("ALL PROBES PASSED")

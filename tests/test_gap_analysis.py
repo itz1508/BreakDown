@@ -43,6 +43,9 @@ def test_current_repository_uses_canonical_gap_owner_and_finds_real_missing_capa
     assert "reference_closure" not in gaps_by_capability
     assert "execution_trace" not in gaps_by_capability
     # Producer implementations exist; don't preserve historical omissions as tests.
+    # scanner_check_registry retired with the legacy scanner stack: reported
+    # honestly in retired_capabilities, not dropped silently.
+    assert result.retired_capabilities == ("scanner_check_registry",)
     assert "runtime_root_registry" not in gaps_by_capability
     assert "recovery_readiness" not in gaps_by_capability
     assert "wave_preimage_pinning" not in gaps_by_capability
