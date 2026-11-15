@@ -40,3 +40,12 @@ Read first each session; newest entries at the top. Stable lessons migrate to
   are subprocess entrypoints reading one JSON request from stdin and
   writing one JSON response. Do not reintroduce the Host/stage-transition
   machinery; extend the shared/system layers instead.
+
+- 2026-11-14 — Scanner rebuild (user directive): the retired scanner
+  implementation (gateway, evidence, check registry, telemetry, contracts)
+  was DELETED from the package root, not restored or migrated. The scanner
+  is rebuilt fresh as system/scanner/ (read-only static analysis engine).
+  Evidence issuance and the receipt machinery are SEPARATED FOR REVIEW and
+  not rebuilt; do not re-add them without that review. The guard ban on
+  `system/` was narrowed to the specific dissolved subpaths so
+  system/scanner/ is allowed; other system/ subpaths remain retired.

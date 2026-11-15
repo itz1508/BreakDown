@@ -12,10 +12,18 @@ RETIRED_PREFIXES = (
     ".agents/",
     "deployment/modal/sandbox_v3/",
     "agent/",
+    "system/host/",
+    "system/storage/",
+    "system/bootstrap/",
+    "system/settings/",
+    "system/runtime/",
+    "system/memory/",
+    "system/dbm/",
+    "system/tools/",
+    "system/conf.toml",
     "tests/fixtures/repo_compat/",
     "contracts/runtime/",
     "contracts/",
-    "system/",
 )
 RETIRED_EXACT = frozenset(
     {
