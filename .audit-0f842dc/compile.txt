@@ -1,0 +1,6 @@
+*** Error compiling 'agent\\skills\\auditor\\review\\__init__.py'...
+  File "agent\skills\auditor\review\__init__.py", line 1
+    """Auditor skill checks ù validation routines for Auditor output.
+    ^
+SyntaxError: unterminated triple-quoted string literal (detected at line 6)
+

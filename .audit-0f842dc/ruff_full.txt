@@ -1,0 +1,3693 @@
+Installed 71 packages in 1.00s
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\cli.py:61:5
+   |
+59 |   def _cmd_run(task_id: str, state_root: str = "/tmp/oneshot-state") -> int:
+60 |       """Execute an existing Research task through the registered host, never simulate completion."""
+61 | /     from agent.runtime.controller import Stage
+62 | |
+63 | |     from agent.skills.researcher.researching import execute_research
+64 | |     from app.service import MVPError, MVPService
+   | |________________________________________________^
+65 |
+66 |       service = MVPService(state_root)
+   |
+help: Organize imports
+   |
+61 |     from agent.runtime.controller import Stage
+   -
+62 |     from agent.skills.researcher.researching import execute_research
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\cli.py:88:5
+   |
+86 |   def _cmd_scan(task_id: str, request_file: str, state_root: str = "/tmp/oneshot-state") -> int:
+87 |       """Run the API's exact host scanner and print persisted events as JSON lines."""
+88 | /     from pydantic import ValidationError
+89 | |
+90 | |     from agent.contracts.scanner import ScannerOutcome, ScannerRunInput
+91 | |     from agent.runtime.controller import TransitionError
+92 | |
+93 | |     from app.service import MVPError, MVPService
+   | |________________________________________________^
+94 |
+95 |       try:
+   |
+help: Organize imports
+   |
+91 |     from agent.runtime.controller import TransitionError
+   -
+92 |     from app.service import MVPError, MVPService
+   |
+
+RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+   --> agent\cli.py:195:16
+    |
+193 |     def do_doctor(self, arg: str) -> bool:
+194 |         """Run environment diagnostics."""
+195 |         return _cmd_doctor() == 0 and False or True
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+196 |
+197 |     def do_audit(self, arg: str) -> bool:
+    |
+help: Parenthesize the `and` subexpression
+    |
+194 |         """Run environment diagnostics."""
+    -         return _cmd_doctor() == 0 and False or True
+195 +         return (_cmd_doctor() == 0 and False) or True
+196 |
+    |
+
+SIM102 Use a single `if` statement instead of nested `if` statements
+  --> agent\contracts\validation\audit_discovery.py:42:9
+   |
+40 |               if not intent.verified_paths:
+41 |                   errors.append(f"existing gap intent {intent.intent_id} has no verified paths")
+42 | /         elif intent.intent_origin == "new_feature":
+43 | |             if not intent.destination_responsibility:
+   | |_____________________________________________________^
+44 |                   errors.append(f"new feature intent {intent.intent_id} missing destination responsibility")
+45 |       return errors
+   |
+help: Combine `if` statements using `and`
+   |
+41 |                 errors.append(f"existing gap intent {intent.intent_id} has no verified paths")
+   -         elif intent.intent_origin == "new_feature":
+   -             if not intent.destination_responsibility:
+   -                 errors.append(f"new feature intent {intent.intent_id} missing destination responsibility")
+42 +         elif intent.intent_origin == "new_feature" and not intent.destination_responsibility:
+43 +             errors.append(f"new feature intent {intent.intent_id} missing destination responsibility")
+44 |     return errors
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+F841 Local variable `receipt` is assigned to but never used
+   --> agent\runtime\specification_freeze.py:109:9
+    |
+107 |         )
+108 |         _, receipt_digest = self._receipts.issue_verified(receipt_id, issuer_id, subject)
+109 |         receipt = ReceiptRef(
+    |         ^^^^^^^
+110 |             receipt_id=receipt_id,
+111 |             receipt_digest=receipt_digest,
+    |
+help: Remove assignment to unused variable `receipt`
+    |
+108 |         _, receipt_digest = self._receipts.issue_verified(receipt_id, issuer_id, subject)
+    -         receipt = ReceiptRef(
+109 +         ReceiptRef(
+110 |             receipt_id=receipt_id,
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+F841 Local variable `args` is assigned to but never used
+  --> agent\skills\analyzer\__main__.py:18:5
+   |
+16 |         help="Print the declared pipeline operations.",
+17 |     )
+18 |     args = parser.parse_args()
+   |     ^^^^
+19 |     info = {
+20 |         "skill": "analyzer",
+   |
+help: Remove assignment to unused variable `args`
+   |
+17 |     )
+   -     args = parser.parse_args()
+18 +     parser.parse_args()
+19 |     info = {
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+W292 [*] No newline at end of file
+  --> agent\skills\analyzer\__main__.py:37:29
+   |
+36 | if __name__ == "__main__":
+37 |     raise SystemExit(main())
+   |                             ^
+help: Add trailing newline
+   |
+36 | if __name__ == "__main__":
+   -     raise SystemExit(main())
+37 +     raise SystemExit(main())
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\analyzer\analyzing.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | from collections.abc import Callable
+11 | | from dataclasses import dataclass
+12 | | from typing import TYPE_CHECKING
+13 | |
+14 | | from agent.analyzer.gap_analysis import (
+15 | |     ComparableSystemAnalysis,
+16 | |     GapAnalyzer,
+17 | |     GapBacktestCorpus,
+18 | |     RegistrySnapshotSet,
+19 | |     SourceGroundedAnalysis,
+20 | |     StructuralGapRequest,
+21 | |     StructuralGapResult,
+22 | |     WalkingSkeletonObservation,
+23 | |     WorkflowConcernMatrix,
+24 | |     WorkflowContractBundle,
+25 | |     WorkflowExecutionTrace,
+26 | | )
+27 | | from agent.contracts.common import ArtifactRef, ContractModel, StepStatus
+28 | | from agent.contracts.host import ReceiptRef
+29 | | from agent.skills.shared.storage.storing import ArtifactStore
+30 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+31 |
+32 |   __all__ = (
+   |
+help: Organize imports
+   |
+28 | from agent.contracts.host import ReceiptRef
+29 + from agent.skills.shared.storage.receipting import ReceiptStore
+30 | from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+31 |
+   |
+
+F401 [*] `typing.TYPE_CHECKING` imported but unused
+  --> agent\skills\analyzer\analyzing.py:12:20
+   |
+10 | from collections.abc import Callable
+11 | from dataclasses import dataclass
+12 | from typing import TYPE_CHECKING
+   |                    ^^^^^^^^^^^^^
+13 |
+14 | from agent.analyzer.gap_analysis import (
+   |
+help: Remove unused import: `typing.TYPE_CHECKING`
+   |
+11 | from dataclasses import dataclass
+   - from typing import TYPE_CHECKING
+12 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\analyzer\diagnosing.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | import json
+10 | | import re
+11 | | from hashlib import sha256
+12 | | from typing import Protocol
+13 | |
+14 | | from agent.contracts.common import ArtifactRef, DiagnosticStatus
+15 | | from agent.contracts.scanner import ScannerResult
+16 | | from agent.contracts.diagnostic import (
+17 | |     DiagnosticDossier,
+18 | |     DiagnosticReview,
+19 | |     DossierFinding,
+20 | |     NormalizedException,
+21 | |     Recommendation,
+22 | |     RecommendationStatus,
+23 | | )
+24 | | from agent.skills.shared.providers.basing import ProviderRequest
+25 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes
+   | |_______________________________________________________________________________________^
+help: Organize imports
+   |
+14 | from agent.contracts.common import ArtifactRef, DiagnosticStatus
+   - from agent.contracts.scanner import ScannerResult
+15 | from agent.contracts.diagnostic import (
+--------------------------------------------------------------------------------
+22 | )
+23 + from agent.contracts.scanner import ScannerResult
+24 | from agent.skills.shared.providers.basing import ProviderRequest
+   |
+
+F841 Local variable `args` is assigned to but never used
+  --> agent\skills\auditor\__main__.py:18:5
+   |
+16 |         help="Print the declared pipeline operations from audit.yaml.",
+17 |     )
+18 |     args = parser.parse_args()
+   |     ^^^^
+19 |     info = {
+20 |         "skill": "auditor",
+   |
+help: Remove assignment to unused variable `args`
+   |
+17 |     )
+   -     args = parser.parse_args()
+18 +     parser.parse_args()
+19 |     info = {
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\auditor\checking.py:3:1
+   |
+ 1 |   """Host-pinned Scanner check selection; this module never executes a tool."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from pydantic import Field, model_validator
+ 6 | |
+ 7 | | from agent.contracts.common import ArtifactRef, ContractModel
+ 8 | | from agent.contracts.tool_registry import ToolEffect, ToolInvocation, resolve_invocation
+ 9 | | from agent.skills.shared.tooling import load_pinned_tool_registry
+10 | | from agent.skills.shared.storage.storing import ArtifactStore
+11 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
+   | |__________________________________________________________________________________^
+help: Organize imports
+   |
+8  | from agent.contracts.tool_registry import ToolEffect, ToolInvocation, resolve_invocation
+9  + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
+10 + from agent.skills.shared.storage.storing import ArtifactStore
+11 | from agent.skills.shared.tooling import load_pinned_tool_registry
+   - from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
+12 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\auditor\evidencing.py:3:1
+   |
+ 1 |   """Host-owned Scanner result persistence and approval-readiness verification."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from dataclasses import dataclass
+ 6 | |
+ 7 | | from agent.contracts.common import ArtifactRef
+ 8 | | from agent.contracts.planning_coverage import planning_coverage
+ 9 | | from agent.contracts.scanner import ScannerEvidence, ScannerOutcome, ScannerResult
+10 | | from agent.contracts.host import ReceiptRef
+11 | | from agent.contracts.validation.structural import CONCERNS
+12 | | from agent.skills.auditor.checking import ScannerCheckRegistry
+13 | | from agent.skills.shared.storage.storing import ArtifactStore
+14 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+15 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+help: Organize imports
+   |
+7  | from agent.contracts.common import ArtifactRef
+8  + from agent.contracts.host import ReceiptRef
+9  | from agent.contracts.planning_coverage import planning_coverage
+10 | from agent.contracts.scanner import ScannerEvidence, ScannerOutcome, ScannerResult
+   - from agent.contracts.host import ReceiptRef
+11 | from agent.contracts.validation.structural import CONCERNS
+12 | from agent.skills.auditor.checking import ScannerCheckRegistry
+   - from agent.skills.shared.storage.storing import ArtifactStore
+13 + from agent.skills.shared.storage.receipting import ReceiptStore
+14 | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+15 + from agent.skills.shared.storage.storing import ArtifactStore
+16 |
+   |
+
+invalid-syntax: missing closing quote in string literal
+ --> agent\skills\auditor\review\__init__.py:1:1
+  |
+1 | / """Auditor skill checks ΓÇö validation routines for Auditor output.
+2 | |
+3 | | from agent.skills.auditor.review.core import AuditResult, Finding, scan
+4 | |
+5 | |
+6 | | __all__ = []
+  | |_____________^
+
+F841 Local variable `args` is assigned to but never used
+  --> agent\skills\builder\__main__.py:18:5
+   |
+16 |         help="Print the declared pipeline operations from build.yaml.",
+17 |     )
+18 |     args = parser.parse_args()
+   |     ^^^^
+19 |     info = {
+20 |         "skill": "builder",
+   |
+help: Remove assignment to unused variable `args`
+   |
+17 |     )
+   -     args = parser.parse_args()
+18 +     parser.parse_args()
+19 |     info = {
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\builder\admitting.py:3:1
+   |
+ 1 |   """Independent, host-owned admission gate for a frozen Build and its tools."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from agent.contracts.planning import BuildSpecification, CandidateSpecification, PlanningRecord
+ 6 | | from agent.contracts.host import (
+ 7 | |     BuildAdmissionReceipt,
+ 8 | |     PackageLockReceipt,
+ 9 | |     ReceiptRef,
+10 | |     admission_receipt_subject,
+11 | | )
+12 | | from agent.contracts.validation.structural import tool_invocation_gaps
+13 | | from agent.skills.shared.tooling import load_pinned_tool_registry
+14 | | from agent.skills.shared.storage.storing import ArtifactStore
+15 | | from agent.skills.shared.storage.serializing import digest_raw
+16 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+help: Organize imports
+   |
+4  |
+   - from agent.contracts.planning import BuildSpecification, CandidateSpecification, PlanningRecord
+5  | from agent.contracts.host import (
+--------------------------------------------------------------------------------
+10 | )
+11 + from agent.contracts.planning import BuildSpecification, CandidateSpecification, PlanningRecord
+12 | from agent.contracts.validation.structural import tool_invocation_gaps
+13 + from agent.skills.shared.storage.receipting import ReceiptStore
+14 + from agent.skills.shared.storage.serializing import digest_raw
+15 + from agent.skills.shared.storage.storing import ArtifactStore
+16 | from agent.skills.shared.tooling import load_pinned_tool_registry
+   - from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import digest_raw
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+17 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\builder\executing.py:3:1
+   |
+ 1 |   """Effect executor ΓÇö sole producer of physical Build effects."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import hashlib
+ 6 | | import os
+ 7 | | from pathlib import Path
+ 8 | |
+ 9 | | from agent.skills.builder.file_operations import move_file, remove_file, write_atomic
+10 | | from agent.contracts.build import BuildActionExecution, BuildActionStatus
+11 | | from agent.contracts.build_schedule import BuildWave, VerifiedWaveResult
+12 | | from agent.contracts.host import admission_receipt_subject
+13 | | from agent.contracts.host import BuildAdmissionReceipt
+14 | | from agent.skills.shared.enforcing import AuthorizationEngine, AuthorizationError
+15 | | from agent.skills.shared.storage.storing import ArtifactStore
+16 | | from agent.skills.shared.storage.checkpointing import CheckpointStore
+17 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+help: Organize imports
+   |
+8  |
+   - from agent.skills.builder.file_operations import move_file, remove_file, write_atomic
+9  | from agent.contracts.build import BuildActionExecution, BuildActionStatus
+10 | from agent.contracts.build_schedule import BuildWave, VerifiedWaveResult
+   - from agent.contracts.host import admission_receipt_subject
+   - from agent.contracts.host import BuildAdmissionReceipt
+11 + from agent.contracts.host import BuildAdmissionReceipt, admission_receipt_subject
+12 + from agent.skills.builder.file_operations import move_file, remove_file, write_atomic
+13 | from agent.skills.shared.enforcing import AuthorizationEngine, AuthorizationError
+   - from agent.skills.shared.storage.storing import ArtifactStore
+14 | from agent.skills.shared.storage.checkpointing import CheckpointStore
+15 | from agent.skills.shared.storage.receipting import ReceiptStore
+16 + from agent.skills.shared.storage.storing import ArtifactStore
+17 |
+   |
+
+SIM105 Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
+  --> agent\skills\builder\file_operations.py:27:9
+   |
+25 |           os.replace(temporary, path)
+26 |       finally:
+27 | /         try:
+28 | |             Path(temporary).unlink(missing_ok=True)
+29 | |         except OSError:
+30 | |             # The caller retains the operation checkpoint for reconciliation.
+31 | |             # Cleanup failures must never conceal an interrupted operation.
+32 | |             pass
+   | |________________^
+help: Replace `try`-`except`-`pass` with `with contextlib.suppress(OSError): ...`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> agent\skills\coder\__main__.py:3:1
+  |
+1 |   """Coder CLI: print evidence questions for a CodeDesign intent origin."""
+2 |
+3 | / from __future__ import annotations
+4 | |
+5 | | import argparse
+6 | | import json
+7 | | import sys
+8 | |
+9 | | from agent.skills.coder.coding import DesignQuestion, _BASE_QUESTIONS, _ORIGIN_QUESTIONS
+  | |________________________________________________________________________________________^
+help: Organize imports
+   |
+8  |
+   - from agent.skills.coder.coding import DesignQuestion, _BASE_QUESTIONS, _ORIGIN_QUESTIONS
+9  + from agent.skills.coder.coding import _BASE_QUESTIONS, _ORIGIN_QUESTIONS, DesignQuestion
+10 |
+   |
+
+F401 [*] `sys` imported but unused
+ --> agent\skills\coder\__main__.py:7:8
+  |
+5 | import argparse
+6 | import json
+7 | import sys
+  |        ^^^
+8 |
+9 | from agent.skills.coder.coding import DesignQuestion, _BASE_QUESTIONS, _ORIGIN_QUESTIONS
+  |
+help: Remove unused import: `sys`
+  |
+6 | import json
+  - import sys
+7 |
+  |
+
+F401 [*] `agent.skills.coder.coding.DesignQuestion` imported but unused
+ --> agent\skills\coder\__main__.py:9:39
+  |
+7 | import sys
+8 |
+9 | from agent.skills.coder.coding import DesignQuestion, _BASE_QUESTIONS, _ORIGIN_QUESTIONS
+  |                                       ^^^^^^^^^^^^^^
+help: Remove unused import: `agent.skills.coder.coding.DesignQuestion`
+   |
+8  |
+   - from agent.skills.coder.coding import DesignQuestion, _BASE_QUESTIONS, _ORIGIN_QUESTIONS
+9  + from agent.skills.coder.coding import _BASE_QUESTIONS, _ORIGIN_QUESTIONS
+10 |
+   |
+
+UP035 [*] Import from `collections.abc` instead: `Mapping`
+  --> agent\skills\pipeline_contract.py:12:1
+   |
+10 | from dataclasses import dataclass
+11 | from pathlib import Path, PurePosixPath
+12 | from typing import Any, Literal, Mapping
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 |
+14 | import yaml
+   |
+help: Import from `collections.abc`
+   |
+11 | from pathlib import Path, PurePosixPath
+   - from typing import Any, Literal, Mapping
+12 + from typing import Any, Literal
+13 + from collections.abc import Mapping
+14 |
+   |
+
+UP037 [*] Remove quotes from type annotation
+  --> agent\skills\pipeline_contract.py:53:31
+   |
+52 |     @model_validator(mode="after")
+53 |     def validate_ids(self) -> "SkillPipeline":
+   |                               ^^^^^^^^^^^^^^^
+54 |         if not self.pipeline_id.startswith(f"{self.owner}."):
+55 |             raise ValueError("pipeline_id must be namespaced to owner")
+   |
+help: Remove quotes
+   |
+52 |     @model_validator(mode="after")
+   -     def validate_ids(self) -> "SkillPipeline":
+53 +     def validate_ids(self) -> SkillPipeline:
+54 |         if not self.pipeline_id.startswith(f"{self.owner}."):
+   |
+
+UP037 [*] Remove quotes from type annotation
+  --> agent\skills\pipeline_contract.py:82:40
+   |
+81 |     @model_validator(mode="after")
+82 |     def validate_dependencies(self) -> "AgentProcessGraph":
+   |                                        ^^^^^^^^^^^^^^^^^^^
+83 |         _unique_ids([step.id for step in self.steps], f"{self.graph_id} step")
+84 |         _validate_dag({step.id: step.depends_on for step in self.steps}, self.graph_id)
+   |
+help: Remove quotes
+   |
+81 |     @model_validator(mode="after")
+   -     def validate_dependencies(self) -> "AgentProcessGraph":
+82 +     def validate_dependencies(self) -> AgentProcessGraph:
+83 |         _unique_ids([step.id for step in self.steps], f"{self.graph_id} step")
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\planner\freezing.py:3:1
+   |
+ 1 |   """Specification freezer ΓÇö exact bytes, write-once immutable freeze."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from pydantic import BaseModel
+ 6 | |
+ 7 | | from agent.contracts.common import ArtifactRef
+ 8 | | from agent.contracts.host import FreezeReceipt, ReceiptRef
+ 9 | | from agent.skills.shared.storage.storing import ArtifactStore
+10 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+help: Organize imports
+   |
+8  | from agent.contracts.host import FreezeReceipt, ReceiptRef
+9  + from agent.skills.shared.storage.receipting import ReceiptStore
+10 | from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+11 |
+   |
+
+F821 Undefined name `SkillContext`
+  --> agent\skills\planner\planning.py:28:18
+   |
+28 | def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: PlanningArguments) -> ScannerResult:
+   |                  ^^^^^^^^^^^^
+29 |     """Preserve the existing Host-owned Scanner path."""
+30 |     scan = arguments.scan
+   |
+
+F821 Undefined name `PlanningArguments`
+  --> agent\skills\planner\planning.py:28:75
+   |
+28 | def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: PlanningArguments) -> ScannerResult:
+   |                                                                           ^^^^^^^^^^^^^^^^^
+29 |     """Preserve the existing Host-owned Scanner path."""
+30 |     scan = arguments.scan
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\planner\scheduling.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | from agent.contracts.common import ArtifactRef
+10 | | from agent.contracts.work_todo import (
+11 | |     TodoAction,
+12 | |     TodoList,
+13 | |     WorkBinding,
+14 | |     WorkPlan,
+15 | |     WorkStatus,
+16 | | )
+17 | | from agent.skills.shared.storage.storing import ArtifactStore, StaleRevisionError
+18 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+19 | | from agent.skills.shared.storage.eventing import EventStore
+   | |___________________________________________________________^
+help: Organize imports
+   |
+16 | )
+17 + from agent.skills.shared.storage.eventing import EventStore
+18 + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+19 | from agent.skills.shared.storage.storing import ArtifactStore, StaleRevisionError
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+   - from agent.skills.shared.storage.eventing import EventStore
+20 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> agent\skills\planner\templating.py:3:1
+  |
+1 |   """Host-owned accepted Planning template publication, without execution authority."""
+2 |
+3 | / from __future__ import annotations
+4 | |
+5 | | from agent.contracts.common import ArtifactRef
+6 | | from agent.contracts.plan_template import PlanTemplate, TemplateStatus
+7 | | from agent.skills.shared.storage.storing import ArtifactStore
+8 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_model
+9 | | from agent.skills.shared.storage.receipting import ReceiptStore
+  | |_______________________________________________________________^
+help: Organize imports
+   |
+6  | from agent.contracts.plan_template import PlanTemplate, TemplateStatus
+7  + from agent.skills.shared.storage.receipting import ReceiptStore
+8  + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_model
+9  | from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_model
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+10 |
+   |
+
+W292 [*] No newline at end of file
+  --> agent\skills\planner\tools\_create_task_todo.py:77:24
+   |
+75 |         todos.append(todo)
+76 |
+77 |     return tuple(todos)
+   |                        ^
+help: Add trailing newline
+   |
+76 |
+   -     return tuple(todos)
+77 +     return tuple(todos)
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\planner\tools\_structural.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | # --- Contract base and primitives (from agent.contracts.common) ---
+10 | | from agent.contracts.common import (
+11 | |     ArtifactRef,
+12 | |     AssessmentId,
+13 | |     ContractModel,
+14 | |     CriterionId,
+15 | |     DecisionId,
+16 | |     DiagnosticStatus,
+17 | |     EvidenceId,
+18 | |     EvidenceRef,
+19 | |     FindingId,
+20 | |     IssueId,
+21 | |     OperationState,
+22 | |     RequirementId,
+23 | |     ReviewId,
+24 | |     Sha256,
+25 | |     SpecificationState,
+26 | |     StepResult,
+27 | |     StepStatus,
+28 | | )
+29 | |
+30 | | # --- Host types (from agent.contracts.host) ---
+31 | | from agent.contracts.host import HostDispatchEnvelope, ReceiptRef
+32 | |
+33 | | # --- Build types (from agent.contracts.build) ---
+34 | | from agent.contracts.build import BuildActionExecution
+35 | |
+36 | | # --- Tool registry types (from agent.contracts.tool_registry) ---
+37 | | from agent.contracts.tool_registry import StageId, ToolId, ToolInvocation, safe_relative_path
+38 | |
+39 | | # --- Structural types and gap functions (from agent.contracts.validation.structural) ---
+40 | | from agent.contracts.validation.structural import (
+41 | |     CONCERNS,
+42 | |     ConcernCell,
+43 | |     PersistenceDeclaration,
+44 | |     ReferenceNeed,
+45 | |     SourceDeclaration,
+46 | |     TraceStep,
+47 | |     concern_gaps,
+48 | |     reference_gaps,
+49 | |     registry_resolution_gaps,
+50 | |     trace_gaps,
+51 | | )
+52 | |
+53 | | # --- Scanner types (from agent.contracts.scanner) ---
+54 | | from agent.contracts.scanner import (
+55 | |     CriterionResult,
+56 | |     CriterionValidity,
+57 | |     ObservationState,
+58 | |     ScannerOutcome,
+59 | | )
+   | |_^
+60 |
+61 |   __all__ = [
+   |
+help: Organize imports
+   |
+8  |
+9  + # --- Build types (from agent.contracts.build) ---
+10 + from agent.contracts.build import BuildActionExecution
+11 +
+12 | # --- Contract base and primitives (from agent.contracts.common) ---
+--------------------------------------------------------------------------------
+35 |
+   - # --- Build types (from agent.contracts.build) ---
+   - from agent.contracts.build import BuildActionExecution
+36 + # --- Scanner types (from agent.contracts.scanner) ---
+37 + from agent.contracts.scanner import (
+38 +     CriterionResult,
+39 +     CriterionValidity,
+40 +     ObservationState,
+41 +     ScannerOutcome,
+42 + )
+43 |
+--------------------------------------------------------------------------------
+58 |     trace_gaps,
+   - )
+   -
+   - # --- Scanner types (from agent.contracts.scanner) ---
+   - from agent.contracts.scanner import (
+   -     CriterionResult,
+   -     CriterionValidity,
+   -     ObservationState,
+   -     ScannerOutcome,
+59 | )
+   |
+
+RUF022 [*] `__all__` is not sorted
+   --> agent\skills\planner\tools\_structural.py:61:11
+    |
+ 59 |   )
+ 60 |
+ 61 |   __all__ = [
+    |  ___________^
+ 62 | |     "ArtifactRef",
+ 63 | |     "AssessmentId",
+ 64 | |     "BuildActionExecution",
+ 65 | |     "CONCERNS",
+ 66 | |     "ConcernCell",
+ 67 | |     "ContractModel",
+ 68 | |     "CriterionId",
+ 69 | |     "CriterionResult",
+ 70 | |     "CriterionValidity",
+ 71 | |     "DecisionId",
+ 72 | |     "DiagnosticStatus",
+ 73 | |     "EvidenceId",
+ 74 | |     "EvidenceRef",
+ 75 | |     "FindingId",
+ 76 | |     "HostDispatchEnvelope",
+ 77 | |     "IssueId",
+ 78 | |     "ObservationState",
+ 79 | |     "OperationState",
+ 80 | |     "PersistenceDeclaration",
+ 81 | |     "ReceiptRef",
+ 82 | |     "ReferenceNeed",
+ 83 | |     "RequirementId",
+ 84 | |     "ReviewId",
+ 85 | |     "ScannerOutcome",
+ 86 | |     "Sha256",
+ 87 | |     "SourceDeclaration",
+ 88 | |     "SpecificationState",
+ 89 | |     "StageId",
+ 90 | |     "StepResult",
+ 91 | |     "StepStatus",
+ 92 | |     "ToolId",
+ 93 | |     "ToolInvocation",
+ 94 | |     "TraceStep",
+ 95 | |     "concern_gaps",
+ 96 | |     "reference_gaps",
+ 97 | |     "registry_resolution_gaps",
+ 98 | |     "safe_relative_path",
+ 99 | |     "trace_gaps",
+100 | | ]
+    | |_^
+help: Apply an isort-style sorting to `__all__`
+   |
+61 | __all__ = [
+62 +     "CONCERNS",
+63 |     "ArtifactRef",
+64 |     "AssessmentId",
+65 |     "BuildActionExecution",
+   -     "CONCERNS",
+66 |     "ConcernCell",
+   |
+
+F841 Local variable `args` is assigned to but never used
+  --> agent\skills\researcher\__main__.py:18:5
+   |
+16 |         help="Print the declared pipeline operations from research.yaml.",
+17 |     )
+18 |     args = parser.parse_args()
+   |     ^^^^
+19 |     info = {
+20 |         "skill": "researcher",
+   |
+help: Remove assignment to unused variable `args`
+   |
+17 |     )
+   -     args = parser.parse_args()
+18 +     parser.parse_args()
+19 |     info = {
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\researcher\lifecycling.py:13:1
+   |
+11 |   """
+12 |
+13 | / from __future__ import annotations
+14 | |
+15 | | from agent.contracts.common import EvidenceRef
+16 | | from agent.contracts.research import (
+17 | |     AdmissionDisposition,
+18 | |     ExecutionStatus,
+19 | |     FixtureSpecification,
+20 | |     FixtureValidityAssessment,
+21 | |     InputRequest,
+22 | |     OutputResult,
+23 | |     RequirementTrace,
+24 | |     ResearchAdmission,
+25 | |     ResearchIntent,
+26 | |     ResearchRequest,
+27 | |     ReviewDisposition,
+28 | | )
+29 | | from agent.skills.researcher.cataloging import ResearchCatalog
+30 | | from agent.skills.shared.storage.storing import (
+31 | |     ArtifactStore,
+32 | |     StaleRevisionError,
+33 | | )
+34 | | from agent.skills.shared.storage.eventing import EventStore
+35 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+help: Organize imports
+   |
+29 | from agent.skills.researcher.cataloging import ResearchCatalog
+30 + from agent.skills.shared.storage.eventing import EventStore
+31 + from agent.skills.shared.storage.receipting import ReceiptStore
+32 | from agent.skills.shared.storage.storing import (
+33 |     ArtifactStore,
+34 |     StaleRevisionError,
+35 | )
+   - from agent.skills.shared.storage.eventing import EventStore
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+36 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\researcher\researching.py:3:1
+   |
+ 1 |   """Host-owned Research execution and persistence with strict MCP result validation."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | import os
+ 7 | | from pathlib import Path, PurePosixPath
+ 8 | |
+ 9 | | from agent.contracts.audit import AuditFinding as AuditCoreFinding
+10 | | from app.mcp_research import ResearchMCPOutput, mcp_transport_config, research_artifact_id
+11 | | from app.service import MVPError, MVPService
+12 | | from agent.contracts.audit import AuditFinding, AuditFindingsRecord
+13 | | from agent.contracts.common import ArtifactRef
+14 | | from agent.contracts.work_todo import WorkBinding, WorkStatus
+15 | | from agent.contracts.research import ResearchRecord
+16 | | from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult
+17 | | from agent.skills.shared.providers.basing import ProviderError, ProviderRequest
+18 | | from agent.skills.shared.controlling import Stage
+19 | | from agent.skills.shared.enforcing import Capability
+20 | | from agent.skills.planner.scheduling import WorkTodoManager
+21 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_dict, digest_model
+   | |_________________________________________________________________________________________________^
+help: Organize imports
+   |
+8  |
+9  + from agent.contracts.audit import AuditFinding, AuditFindingsRecord
+10 | from agent.contracts.audit import AuditFinding as AuditCoreFinding
+   - from app.mcp_research import ResearchMCPOutput, mcp_transport_config, research_artifact_id
+   - from app.service import MVPError, MVPService
+   - from agent.contracts.audit import AuditFinding, AuditFindingsRecord
+11 | from agent.contracts.common import ArtifactRef
+12 + from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult
+13 + from agent.contracts.research import ResearchRecord
+14 | from agent.contracts.work_todo import WorkBinding, WorkStatus
+   - from agent.contracts.research import ResearchRecord
+   - from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult
+   - from agent.skills.shared.providers.basing import ProviderError, ProviderRequest
+15 + from agent.skills.planner.scheduling import WorkTodoManager
+16 | from agent.skills.shared.controlling import Stage
+17 | from agent.skills.shared.enforcing import Capability
+   - from agent.skills.planner.scheduling import WorkTodoManager
+18 + from agent.skills.shared.providers.basing import ProviderError, ProviderRequest
+19 | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_dict, digest_model
+20 + from app.mcp_research import ResearchMCPOutput, mcp_transport_config, research_artifact_id
+21 + from app.service import MVPError, MVPService
+22 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\controlling.py:3:1
+   |
+ 1 |   """Host controller ΓÇö single transition authority for all stages."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | from collections.abc import Callable
+ 7 | | from contextlib import suppress
+ 8 | | from enum import StrEnum
+ 9 | | from hashlib import sha256
+10 | | from pathlib import Path
+11 | | from typing import TYPE_CHECKING
+12 | | from uuid import uuid4
+13 | |
+14 | | from pydantic import BaseModel, Field
+15 | |
+16 | | from agent.contracts.common import ArtifactRef
+17 | | from agent.contracts.planning_coverage import planning_coverage
+18 | | from agent.contracts.scanner import CriterionResult, ScannerOutcome, ScannerResult
+19 | | from agent.contracts.planning import PlanningRecord
+20 | | from agent.contracts.work_todo import TodoList, WorkBinding
+21 | | from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+22 | | from agent.contracts.validation.planning import validate_action_graph
+23 | | from agent.contracts.validation.structural import CONCERNS
+24 | | from agent.skills.analyzer.analyzing import (
+25 | |     HostGapAnalyzer,
+26 | |     SkeletonRunner,
+27 | |     StructuralGapOutcome,
+28 | |     StructuralGapRequest,
+29 | |     StructuralGapResult,
+30 | |     structural_gap_receipt_subject,
+31 | | )
+32 | | from agent.skills.shared.providers.registering import ProviderRegistry
+33 | | from agent.skills.shared.recovering import BoundedRecovery
+34 | | from agent.skills.auditor.checking import ScannerCheckRegistry
+35 | | from agent.skills.auditor.gatewaying import ScannerGateway
+36 | | from agent.skills.auditor.telemetring import scanner_span
+37 | | from agent.skills.shared.enforcing import AuthorizationEngine, Capability
+38 | | from agent.skills.planner.scheduling import WorkTodoError, WorkTodoManager
+39 | | from agent.skills.shared.storage.storing import ArtifactStore
+40 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+41 | | from agent.skills.shared.storage.checkpointing import CheckpointStore, CompetingWriterError
+42 | | from agent.skills.shared.storage.eventing import EventStore
+43 | | from agent.skills.shared.storage.receipting import ReceiptStore
+   | |_______________________________________________________________^
+44 |
+45 |   if TYPE_CHECKING:
+   |
+help: Organize imports
+   |
+16 | from agent.contracts.common import ArtifactRef
+17 + from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+18 + from agent.contracts.planning import PlanningRecord
+19 | from agent.contracts.planning_coverage import planning_coverage
+20 | from agent.contracts.scanner import CriterionResult, ScannerOutcome, ScannerResult
+   - from agent.contracts.planning import PlanningRecord
+   - from agent.contracts.work_todo import TodoList, WorkBinding
+   - from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+21 | from agent.contracts.validation.planning import validate_action_graph
+22 | from agent.contracts.validation.structural import CONCERNS
+23 + from agent.contracts.work_todo import TodoList, WorkBinding
+24 | from agent.skills.analyzer.analyzing import (
+--------------------------------------------------------------------------------
+31 | )
+   - from agent.skills.shared.providers.registering import ProviderRegistry
+   - from agent.skills.shared.recovering import BoundedRecovery
+32 | from agent.skills.auditor.checking import ScannerCheckRegistry
+33 | from agent.skills.auditor.gatewaying import ScannerGateway
+34 | from agent.skills.auditor.telemetring import scanner_span
+35 + from agent.skills.planner.scheduling import WorkTodoError, WorkTodoManager
+36 | from agent.skills.shared.enforcing import AuthorizationEngine, Capability
+   - from agent.skills.planner.scheduling import WorkTodoError, WorkTodoManager
+   - from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+37 + from agent.skills.shared.providers.registering import ProviderRegistry
+38 + from agent.skills.shared.recovering import BoundedRecovery
+39 | from agent.skills.shared.storage.checkpointing import CheckpointStore, CompetingWriterError
+40 | from agent.skills.shared.storage.eventing import EventStore
+41 | from agent.skills.shared.storage.receipting import ReceiptStore
+42 + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+43 + from agent.skills.shared.storage.storing import ArtifactStore
+44 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\controlling.py:46:5
+   |
+45 |   if TYPE_CHECKING:
+46 | /     from app.service import MVPService
+47 | |     from agent.skills.shared.dispatching import RoleArguments
+   | |_____________________________________________________________^
+help: Organize imports
+   |
+45 | if TYPE_CHECKING:
+46 +     from agent.skills.shared.dispatching import RoleArguments
+47 |     from app.service import MVPService
+   -     from agent.skills.shared.dispatching import RoleArguments
+48 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> agent\skills\shared\controlling.py:735:13
+    |
+733 |           try:
+734 |               raw = self.artifact_store.get_verified(output.artifact_id, output.artifact_revision)
+735 | /             from agent.contracts.audit_discovery import AuditDiscoveryPackage
+736 | |             from agent.contracts.build import BuildRecord
+737 | |             from agent.contracts.planning import PlanningRecord
+738 | |             from agent.contracts.research import ResearchRecord
+739 | |             from agent.contracts.build_validation import BuildValidationRecord
+740 | |             from agent.contracts.fixture_validation import FixtureValidationRecord
+    | |__________________________________________________________________________________^
+741 |
+742 |               contracts: dict[Stage, tuple[str, type[BaseModel]]] = {
+    |
+help: Organize imports
+    |
+736 |             from agent.contracts.build import BuildRecord
+737 +             from agent.contracts.build_validation import BuildValidationRecord
+738 +             from agent.contracts.fixture_validation import FixtureValidationRecord
+739 |             from agent.contracts.planning import PlanningRecord
+740 |             from agent.contracts.research import ResearchRecord
+    -             from agent.contracts.build_validation import BuildValidationRecord
+    -             from agent.contracts.fixture_validation import FixtureValidationRecord
+741 |
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\dispatching.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | from dataclasses import dataclass
+10 | | from importlib import import_module
+11 | | from pathlib import Path
+12 | | from typing import TYPE_CHECKING, TypeAlias
+13 | |
+14 | | from agent.contracts.build_schedule import BuildWave
+15 | | from agent.contracts.scanner import ScannerRunInput
+16 | | from agent.contracts.host import BuildAdmissionReceipt, HostDispatchEnvelope
+17 | | from agent.skills.builder.executing import EffectExecutor
+18 | | from agent.skills.shared.controlling import HostController, TransitionError
+   | |___________________________________________________________________________^
+19 |
+20 |   if TYPE_CHECKING:
+   |
+help: Organize imports
+   |
+14 | from agent.contracts.build_schedule import BuildWave
+15 + from agent.contracts.host import BuildAdmissionReceipt, HostDispatchEnvelope
+16 | from agent.contracts.scanner import ScannerRunInput
+   - from agent.contracts.host import BuildAdmissionReceipt, HostDispatchEnvelope
+17 | from agent.skills.builder.executing import EffectExecutor
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> agent\skills\shared\locking.py:3:1
+  |
+1 |   """Package Lock ΓÇö bind all upstream artifacts before build admission."""
+2 |
+3 | / from __future__ import annotations
+4 | |
+5 | | from agent.contracts.common import ArtifactRef
+6 | | from agent.contracts.host import PackageLockReceipt, ReceiptRef
+7 | | from agent.skills.shared.storage.storing import ArtifactStore
+8 | | from agent.skills.shared.storage.receipting import ReceiptStore
+  | |_______________________________________________________________^
+help: Organize imports
+  |
+6 | from agent.contracts.host import PackageLockReceipt, ReceiptRef
+7 + from agent.skills.shared.storage.receipting import ReceiptStore
+8 | from agent.skills.shared.storage.storing import ArtifactStore
+  - from agent.skills.shared.storage.receipting import ReceiptStore
+9 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\promoting.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | import re
+10 | |
+11 | | from pydantic import BaseModel
+12 | |
+13 | | from agent.contracts.build_memory import VerifiedBuildKnowledge
+14 | | from agent.contracts.build import BuildActionStatus, BuildRecord
+15 | | from agent.contracts.common import ArtifactRef, StepStatus
+16 | | from agent.contracts.plan_template import PlanTemplate, TemplateStatus
+17 | | from agent.contracts.host import (
+18 | |     BuildAdmissionReceipt,
+19 | |     PackageLockReceipt,
+20 | |     ReceiptRef,
+21 | |     admission_receipt_subject,
+22 | | )
+23 | | from agent.contracts.stage_log import StageLogEvent
+24 | | from agent.contracts.build_validation import BuildValidationRecord, CriterionResult
+25 | | from agent.skills.planner.templating import PlanTemplateService
+26 | | from agent.skills.shared.storage.storing import ArtifactStore
+27 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+28 | | from agent.skills.shared.storage.receipting import ReceiptStore
+29 | | from agent.skills.shared.storage.journaling import StageJournalService
+   | |______________________________________________________________________^
+help: Organize imports
+   |
+12 |
+13 + from agent.contracts.build import BuildActionStatus, BuildRecord
+14 | from agent.contracts.build_memory import VerifiedBuildKnowledge
+   - from agent.contracts.build import BuildActionStatus, BuildRecord
+15 + from agent.contracts.build_validation import BuildValidationRecord, CriterionResult
+16 | from agent.contracts.common import ArtifactRef, StepStatus
+   - from agent.contracts.plan_template import PlanTemplate, TemplateStatus
+17 | from agent.contracts.host import (
+--------------------------------------------------------------------------------
+22 | )
+23 + from agent.contracts.plan_template import PlanTemplate, TemplateStatus
+24 | from agent.contracts.stage_log import StageLogEvent
+   - from agent.contracts.build_validation import BuildValidationRecord, CriterionResult
+25 | from agent.skills.planner.templating import PlanTemplateService
+26 + from agent.skills.shared.storage.journaling import StageJournalService
+27 + from agent.skills.shared.storage.receipting import ReceiptStore
+28 + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+29 | from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE
+   - from agent.skills.shared.storage.receipting import ReceiptStore
+   - from agent.skills.shared.storage.journaling import StageJournalService
+30 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> agent\skills\shared\readinessing.py:3:1
+  |
+1 |   """Verified host evidence required before executable Build admission."""
+2 |
+3 | / from __future__ import annotations
+4 | |
+5 | | from pydantic import Field, model_validator
+6 | |
+7 | | from agent.contracts.common import ArtifactRef, ContractModel, DiagnosticStatus
+8 | | from agent.skills.shared.storage.storing import ArtifactStore
+9 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
+  | |__________________________________________________________________________________^
+help: Organize imports
+   |
+7  | from agent.contracts.common import ArtifactRef, ContractModel, DiagnosticStatus
+8  + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
+9  | from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_raw
+10 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\storage\durabling.py:3:1
+   |
+ 1 |   """SQLite durable checkpoint store with compare-and-swap revisions."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import sqlite3
+ 6 | | from pathlib import Path
+ 7 | |
+ 8 | | from agent.contracts.host import Checkpoint
+ 9 | | from agent.skills.shared.storage.serializing import canonical_bytes
+10 | | from agent.skills.shared.storage.checkpointing import CheckpointStoreError
+   | |__________________________________________________________________________^
+help: Organize imports
+   |
+8  | from agent.contracts.host import Checkpoint
+9  + from agent.skills.shared.storage.checkpointing import CheckpointStoreError
+10 | from agent.skills.shared.storage.serializing import canonical_bytes
+   - from agent.skills.shared.storage.checkpointing import CheckpointStoreError
+11 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\storage\serializing.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | import hashlib
+11 | | from typing import TYPE_CHECKING, Any
+12 | |
+13 | | import rfc8785
+14 | | from pydantic import BaseModel
+   | |______________________________^
+15 |
+16 |   if TYPE_CHECKING:
+   |
+help: Organize imports
+   |
+12 |
+   - import rfc8785
+13 | from pydantic import BaseModel
+14 |
+15 + import rfc8785
+16 +
+17 | if TYPE_CHECKING:
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agent\skills\shared\tooling.py:3:1
+   |
+ 1 |   """Host-owned immutable tool snapshot binding and executable preflight."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import hashlib
+ 6 | | from pathlib import Path
+ 7 | |
+ 8 | | from agent.contracts.common import ArtifactRef
+ 9 | | from agent.contracts.tool_registry import (
+10 | |     ResolvedCommand,
+11 | |     ToolRegistrySnapshot,
+12 | | )
+13 | | from agent.skills.shared.storage.storing import ArtifactStore
+14 | | from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+   | |___________________________________________________________________________________________________^
+help: Organize imports
+   |
+12 | )
+13 + from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+14 | from agent.skills.shared.storage.storing import ArtifactStore
+   - from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+15 |
+   |
+
+SIM102 Use a single `if` statement instead of nested `if` statements
+   --> agent\skills\tools\repo_scan.py:97:9
+    |
+ 95 |           if isinstance(node, ast.Import):
+ 96 |               mods.extend(alias.name for alias in node.names)
+ 97 | /         elif isinstance(node, ast.ImportFrom) and node.level == 0:
+ 98 | |             if node.module:
+    | |___________________________^
+ 99 |                   mods.append(node.module)
+100 |       return mods
+    |
+help: Combine `if` statements using `and`
+   |
+96 |             mods.extend(alias.name for alias in node.names)
+   -         elif isinstance(node, ast.ImportFrom) and node.level == 0:
+   -             if node.module:
+   -                 mods.append(node.module)
+97 +         elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+98 +             mods.append(node.module)
+99 |     return mods
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+E501 Line too long (145 > 120)
+   --> agent\skills\tools\repo_scan.py:500:121
+    |
+498 | ΓÇª
+499 | ΓÇª
+500 | ΓÇªcture, __init__.py, gap-analysis paths, dangling refs, workflow declarations",
+    |                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+501 | ΓÇªile paths via _module_to_path (no importlib, no sys.path mutation)",
+502 | ΓÇªills.<skill> (isolated PYTHONPATH, no sys.path mutation)",
+    |
+
+E501 Line too long (135 > 120)
+   --> agent\skills\tools\repo_scan.py:501:121
+    |
+499 | ΓÇª
+500 | ΓÇª structure, __init__.py, gap-analysis paths, dangling refs, workflow declarations",
+501 | ΓÇª to file paths via _module_to_path (no importlib, no sys.path mutation)",
+    |                                                            ^^^^^^^^^^^^^^^
+502 | ΓÇªnt.skills.<skill> (isolated PYTHONPATH, no sys.path mutation)",
+503 | ΓÇªypes tested",
+    |
+
+E501 Line too long (125 > 120)
+   --> agent\skills\tools\repo_scan.py:502:121
+    |
+500 | ΓÇª         "declaration_checks ΓÇö file/dir existence, YAML structure, __init__.py, gap-analysis paths, dangling refs, workflow declaratΓÇª
+501 | ΓÇª         "static_resolution ΓÇö ast-parsed imports mapped to file paths via _module_to_path (no importlib, no sys.path mutation)",
+502 | ΓÇª         "executed_cli_tests ΓÇö subprocess python -m agent.skills.<skill> (isolated PYTHONPATH, no sys.path mutation)",
+    |                                                                                                                   ^^^^^
+503 | ΓÇª         "detector_validation ΓÇö 4 independent fixture types tested",
+504 | ΓÇª     ],
+    |
+
+E501 Line too long (166 > 120)
+   --> agent\skills\tools\repo_scan.py:511:121
+    |
+509 | ΓÇª
+510 | ΓÇª
+511 | ΓÇªexecute imports or detect runtime errors, circular imports, or import-time side effects",
+    |                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+512 | ΓÇªcts or shared state",
+513 | ΓÇªtional imports (try/except, TYPE_CHECKING) are not fully resolved",
+    |
+
+E501 Line too long (144 > 120)
+   --> agent\skills\tools\repo_scan.py:513:121
+    |
+511 | ΓÇª; does not execute imports or detect runtime errors, circular imports, or import-time side effects",
+512 | ΓÇªs side effects or shared state",
+513 | ΓÇªevel; conditional imports (try/except, TYPE_CHECKING) are not fully resolved",
+    |                                                        ^^^^^^^^^^^^^^^^^^^^^^^^
+514 | ΓÇªdefects may have different patterns",
+515 | ΓÇªons are declarative (status=unbound)",
+    |
+
+F821 Undefined name `contract_leaks`
+  --> agent\skills\tools\wrapper_chaos.py:70:13
+   |
+68 |         if node.module.startswith("system.host") and not in_tc:
+69 |             # system.host modules are now under agent.skills.shared ΓÇö this is a stale import
+70 |             contract_leaks += 1
+   |             ^^^^^^^^^^^^^^
+71 |             findings.append(WrapperFinding(
+72 |                 skill=rel.split("/")[2] if len(rel.split("/")) > 2 else "?",
+   |
+
+F841 Local variable `contract_leaks` is assigned to but never used
+  --> agent\skills\tools\wrapper_chaos.py:70:13
+   |
+68 |         if node.module.startswith("system.host") and not in_tc:
+69 |             # system.host modules are now under agent.skills.shared ΓÇö this is a stale import
+70 |             contract_leaks += 1
+   |             ^^^^^^^^^^^^^^
+71 |             findings.append(WrapperFinding(
+72 |                 skill=rel.split("/")[2] if len(rel.split("/")) > 2 else "?",
+   |
+help: Remove assignment to unused variable `contract_leaks`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\auditor\contracts\validation.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | from agents.skills.auditor.contracts._discovery import AuditDiscoveryPackage
+11 | | from agents.shared.base import ArtifactRef
+   | |__________________________________________^
+help: Organize imports
+   |
+9  |
+10 + from agents.shared.base import ArtifactRef
+11 | from agents.skills.auditor.contracts._discovery import AuditDiscoveryPackage
+   - from agents.shared.base import ArtifactRef
+12 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\builder\build_todos.py:3:1
+   |
+ 1 |   """Deterministic frozen-Plan to TaskTodo compilation. No effects or admission."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from agents.skills.planner.contracts.specification import (
+ 6 | |     BuildAction,
+ 7 | |     BuildSpecification,
+ 8 | |     CreateAction,
+ 9 | |     ModifyAction,
+10 | |     MoveAction,
+11 | |     RemoveAction,
+12 | | )
+13 | | from agents.shared.base import ArtifactRef
+14 | | from agents.skills.planner.contracts.task_todo import Build, TaskTodo, paths_overlap
+15 | | from agents.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
+   | |___________________________________________________________________________________________^
+help: Organize imports
+   |
+4  |
+5  + from agents.shared.base import ArtifactRef
+6  | from agents.skills.planner.contracts.specification import (
+--------------------------------------------------------------------------------
+13 | )
+   - from agents.shared.base import ArtifactRef
+14 | from agents.skills.planner.contracts.task_todo import Build, TaskTodo, paths_overlap
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\builder\contracts\schedule.py:3:1
+   |
+ 1 |   """Build task, batch, and wave contracts over admitted TaskTodo records."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from pydantic import Field, model_validator
+ 6 | |
+ 7 | | from agents.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
+ 8 | | from agents.shared.base import ArtifactRef, ContractModel, Sha256
+ 9 | | from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+10 | | from agents.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
+   | |___________________________________________________________________________________________^
+help: Organize imports
+  |
+6 |
+7 + from agents.shared.base import ArtifactRef, ContractModel, Sha256
+8 | from agents.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
+  - from agents.shared.base import ArtifactRef, ContractModel, Sha256
+9 | from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\planner\host_gap_analyzer.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | from collections.abc import Callable
+11 | | from dataclasses import dataclass
+12 | |
+13 | | from agents.skills.planner.tools.gap_analysis import (
+14 | |     ComparableSystemAnalysis,
+15 | |     GapAnalyzer,
+16 | |     GapBacktestCorpus,
+17 | |     RegistrySnapshotSet,
+18 | |     SourceGroundedAnalysis,
+19 | |     StructuralGapRequest,
+20 | |     StructuralGapResult,
+21 | |     WalkingSkeletonObservation,
+22 | |     WorkflowConcernMatrix,
+23 | |     WorkflowContractBundle,
+24 | |     WorkflowExecutionTrace,
+25 | | )
+26 | | from agents.shared.base import ArtifactRef, ContractModel, StepStatus
+27 | | from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+28 | | from agents.skills.shared.storage.artifact_store import ArtifactStore
+29 | | from agents.skills.shared.storage.receipt_store import ReceiptStore
+   | |___________________________________________________________________^
+30 |
+31 |   __all__ = (
+   |
+help: Organize imports
+   |
+12 |
+13 + from agents.shared.base import ArtifactRef, ContractModel, StepStatus
+14 | from agents.skills.planner.tools.gap_analysis import (
+--------------------------------------------------------------------------------
+26 | )
+   - from agents.shared.base import ArtifactRef, ContractModel, StepStatus
+27 | from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\researcher\research_lifecycle.py:13:1
+   |
+11 |   """
+12 |
+13 | / from __future__ import annotations
+14 | |
+15 | | from agents.skills.researcher.contracts.research import (
+16 | |     AdmissionDisposition,
+17 | |     ExecutionStatus,
+18 | |     FixtureSpecification,
+19 | |     FixtureValidityAssessment,
+20 | |     InputRequest,
+21 | |     OutputResult,
+22 | |     RequirementTrace,
+23 | |     ResearchAdmission,
+24 | |     ResearchIntent,
+25 | |     ResearchRequest,
+26 | |     ReviewDisposition,
+27 | | )
+28 | | from agents.skills.researcher.research_catalog import ResearchCatalog
+29 | | from agents.shared.base import EvidenceRef
+30 | | from agents.skills.shared.storage.artifact_store import (
+31 | |     ArtifactStore,
+32 | |     StaleRevisionError,
+33 | | )
+34 | | from agents.skills.shared.storage.event_store import EventStore
+35 | | from agents.skills.shared.storage.receipt_store import ReceiptStore
+   | |___________________________________________________________________^
+help: Organize imports
+   |
+14 |
+15 + from agents.shared.base import EvidenceRef
+16 | from agents.skills.researcher.contracts.research import (
+--------------------------------------------------------------------------------
+29 | from agents.skills.researcher.research_catalog import ResearchCatalog
+   - from agents.shared.base import EvidenceRef
+30 | from agents.skills.shared.storage.artifact_store import (
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> agents\skills\shared\contracts\workflow\system\coverage.py:3:1
+  |
+1 |   """Shared Planning coverage result shape, independent of validation module imports."""
+2 |
+3 | / from __future__ import annotations
+4 | |
+5 | | from agents.skills.planner.contracts.specification import IssueType
+6 | | from agents.shared.base import ContractModel
+  | |____________________________________________^
+help: Organize imports
+  |
+4 |
+5 + from agents.shared.base import ContractModel
+6 | from agents.skills.planner.contracts.specification import IssueType
+  - from agents.shared.base import ContractModel
+7 |
+  |
+
+F401 [*] `datetime.UTC` imported but unused
+  --> agents\skills\shared\contracts\workflow\system\host.py:9:22
+   |
+ 7 | from __future__ import annotations
+ 8 |
+ 9 | from datetime import UTC, datetime
+   |                      ^^^
+10 | from enum import StrEnum
+   |
+help: Remove unused import
+  |
+8 |
+  - from datetime import UTC, datetime
+9 | from enum import StrEnum
+  |
+
+F401 [*] `datetime.datetime` imported but unused
+  --> agents\skills\shared\contracts\workflow\system\host.py:9:27
+   |
+ 7 | from __future__ import annotations
+ 8 |
+ 9 | from datetime import UTC, datetime
+   |                           ^^^^^^^^
+10 | from enum import StrEnum
+   |
+help: Remove unused import
+  |
+8 |
+  - from datetime import UTC, datetime
+9 | from enum import StrEnum
+  |
+
+F821 Undefined name `Field`
+  --> agents\skills\shared\contracts\workflow\system\observability.py:15:21
+   |
+13 |     """Distributed trace linking for cross-stage observability."""
+14 |
+15 |     trace_id: str = Field(min_length=1)
+   |                     ^^^^^
+16 |     group_id: str | None = None
+17 |     parent_span_id: str | None = None
+   |
+
+F821 Undefined name `Field`
+  --> agents\skills\shared\contracts\workflow\system\observability.py:18:32
+   |
+16 |     group_id: str | None = None
+17 |     parent_span_id: str | None = None
+18 |     metadata: dict[str, str] = Field(default_factory=dict)
+   |                                ^^^^^
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\shared\storage\checkpoint_store.py:3:1
+   |
+ 1 |   """CAS-based checkpoint store with operation ledger."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | import sqlite3
+ 7 | | from pathlib import Path
+ 8 | | from datetime import UTC, datetime
+ 9 | | from typing import Any
+10 | |
+11 | | from pydantic import Field
+12 | |
+13 | | from agents.shared.base import ArtifactRef, ContractModel, Sha256
+14 | | from agents.skills.shared.storage.canonical_serialization import digest_raw
+   | |___________________________________________________________________________^
+help: Organize imports
+  |
+6 | import sqlite3
+7 + from datetime import UTC, datetime
+8 | from pathlib import Path
+  - from datetime import UTC, datetime
+9 | from typing import Any
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> agents\skills\shared\tools\verify_all.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | import hashlib
+11 | | import json
+12 | | import math
+13 | | from collections.abc import Sequence
+14 | | from dataclasses import dataclass
+15 | |
+16 | | from agents.skills.planner.contracts.scanner import (
+17 | |     CriterionResult,
+18 | |     CriterionValidity,
+19 | |     ObservationState,
+20 | |     ScannerOutcome,
+21 | |     ScannerResult,
+22 | | )
+23 | | from agents.shared.base import DiagnosticStatus
+   | |_______________________________________________^
+24 |
+25 |   Scalar = bool | int | float | str
+   |
+help: Organize imports
+   |
+15 |
+16 + from agents.shared.base import DiagnosticStatus
+17 | from agents.skills.planner.contracts.scanner import (
+--------------------------------------------------------------------------------
+23 | )
+   - from agents.shared.base import DiagnosticStatus
+24 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> rfc8785.py:6:1
+  |
+4 | the canonicalize function used by the serialization module.
+5 | """
+6 | import json
+  | ^^^^^^^^^^^
+7 |
+8 | def canonicalize(obj) -> str:
+  |
+help: Organize imports
+  |
+7 |
+8 +
+9 | def canonicalize(obj) -> str:
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\host\effect_executor.py:3:1
+   |
+ 1 |   """Effect executor ΓÇö sole producer of physical Build effects."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import hashlib
+ 6 | | import os
+ 7 | | from pathlib import Path
+ 8 | |
+ 9 | | from agent.skills.builder.file_operations import move_file, remove_file, write_atomic
+10 | | from contracts.workflow.builder.build import BuildActionExecution, BuildActionStatus
+11 | | from contracts.workflow.builder.schedule import BuildWave, VerifiedWaveResult
+12 | | from contracts.workflow.system.host import BuildAdmissionReceipt, admission_receipt_subject
+13 | | from system.storage.artifact_store import ArtifactStore
+14 | | from system.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
+15 | | from system.storage.checkpoint_store import CheckpointStore
+16 | | from system.storage.receipt_store import ReceiptStore
+   | |_____________________________________________________^
+help: Organize imports
+   |
+12 | from contracts.workflow.system.host import BuildAdmissionReceipt, admission_receipt_subject
+13 + from system.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
+14 | from system.storage.artifact_store import ArtifactStore
+   - from system.host.sys_policy_enforcer import AuthorizationEngine, AuthorizationError
+15 | from system.storage.checkpoint_store import CheckpointStore
+   |
+
+SIM105 Use `contextlib.suppress(OSError)` instead of `try`-`except`-`pass`
+  --> system\host\file_operations.py:27:9
+   |
+25 |           os.replace(temporary, path)
+26 |       finally:
+27 | /         try:
+28 | |             Path(temporary).unlink(missing_ok=True)
+29 | |         except OSError:
+30 | |             # The caller retains the operation checkpoint for reconciliation.
+31 | |             # Cleanup failures must never conceal an interrupted operation.
+32 | |             pass
+   | |________________^
+help: Replace `try`-`except`-`pass` with `with contextlib.suppress(OSError): ...`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\host\host_gap_analyzer.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from __future__ import annotations
+ 9 | |
+10 | | from collections.abc import Callable
+11 | | from dataclasses import dataclass
+12 | |
+13 | | from contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
+14 | | from contracts.workflow.system.host import ReceiptRef
+15 | | from agent.skills.planner.review.gap_analysis import (
+16 | |     ComparableSystemAnalysis,
+17 | |     GapAnalyzer,
+18 | |     GapBacktestCorpus,
+19 | |     RegistrySnapshotSet,
+20 | |     SourceGroundedAnalysis,
+21 | |     StructuralGapRequest,
+22 | |     StructuralGapResult,
+23 | |     WalkingSkeletonObservation,
+24 | |     WorkflowConcernMatrix,
+25 | |     WorkflowContractBundle,
+26 | |     WorkflowExecutionTrace,
+27 | | )
+28 | | from system.storage.artifact_store import ArtifactStore
+29 | | from system.storage.receipt_store import ReceiptStore
+   | |_____________________________________________________^
+30 |
+31 |   __all__ = (
+   |
+help: Organize imports
+   |
+12 |
+   - from contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
+   - from contracts.workflow.system.host import ReceiptRef
+13 | from agent.skills.planner.review.gap_analysis import (
+--------------------------------------------------------------------------------
+25 | )
+26 + from contracts.workflow.common import ArtifactRef, ContractModel, StepStatus
+27 + from contracts.workflow.system.host import ReceiptRef
+28 | from system.storage.artifact_store import ArtifactStore
+   |
+
+F841 Local variable `receipt` is assigned to but never used
+   --> system\host\specification_freeze.py:109:9
+    |
+107 |         )
+108 |         _, receipt_digest = self._receipts.issue_verified(receipt_id, issuer_id, subject)
+109 |         receipt = ReceiptRef(
+    |         ^^^^^^^
+110 |             receipt_id=receipt_id,
+111 |             receipt_digest=receipt_digest,
+    |
+help: Remove assignment to unused variable `receipt`
+    |
+108 |         _, receipt_digest = self._receipts.issue_verified(receipt_id, issuer_id, subject)
+    -         receipt = ReceiptRef(
+109 +         ReceiptRef(
+110 |             receipt_id=receipt_id,
+    |
+note: This is an unsafe fix and may change runtime behavior
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\host\sys_controller.py:3:1
+   |
+ 1 |   """Host controller ΓÇö single transition authority for all stages."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | from collections.abc import Callable
+ 7 | | from contextlib import suppress
+ 8 | | from enum import StrEnum
+ 9 | | from hashlib import sha256
+10 | | from pathlib import Path
+11 | | from typing import TYPE_CHECKING
+12 | | from uuid import uuid4
+13 | |
+14 | | import yaml
+15 | | from pydantic import BaseModel, Field
+16 | |
+17 | | from contracts.workflow.common import ArtifactRef
+18 | | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+19 | | from contracts.workflow.planner.specification import PlanningRecord
+20 | | from contracts.workflow.planner.coverage import planning_coverage
+21 | | from contracts.workflow.planner.scanner import CriterionResult, ScannerOutcome, ScannerResult
+22 | | from contracts.workflow.validation.planning import validate_action_graph
+23 | | from contracts.workflow.validation.structural import CONCERNS
+24 | | from contracts.workflow.planner.work_todo import TodoList, WorkBinding
+25 | | from system.storage.artifact_store import ArtifactStore
+26 | | from system.host.sys_policy_enforcer import AuthorizationEngine, Capability
+27 | | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+28 | | from system.storage.checkpoint_store import CheckpointStore, CompetingWriterError
+29 | | from system.storage.event_store import EventStore
+30 | | from system.host.host_gap_analyzer import (
+31 | |     HostGapAnalyzer,
+32 | |     SkeletonRunner,
+33 | |     StructuralGapOutcome,
+34 | |     StructuralGapRequest,
+35 | |     StructuralGapResult,
+36 | |     structural_gap_receipt_subject,
+37 | | )
+38 | | from system.host.providers.registry import ProviderRegistry
+39 | | from system.storage.receipt_store import ReceiptStore
+40 | | from system.host.recovery import BoundedRecovery
+41 | | from system.host.scanner_check_registry import ScannerCheckRegistry
+42 | | from system.host.scanner_gateway import ScannerGateway
+43 | | from system.host.scanner_telemetry import scanner_span
+44 | | from system.host.work_todo import WorkTodoError, WorkTodoManager
+   | |________________________________________________________________^
+help: Organize imports
+   |
+17 | from contracts.workflow.common import ArtifactRef
+   - from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+   - from contracts.workflow.planner.specification import PlanningRecord
+18 | from contracts.workflow.planner.coverage import planning_coverage
+19 | from contracts.workflow.planner.scanner import CriterionResult, ScannerOutcome, ScannerResult
+20 + from contracts.workflow.planner.specification import PlanningRecord
+21 + from contracts.workflow.planner.work_todo import TodoList, WorkBinding
+22 + from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
+23 | from contracts.workflow.validation.planning import validate_action_graph
+24 | from contracts.workflow.validation.structural import CONCERNS
+   - from contracts.workflow.planner.work_todo import TodoList, WorkBinding
+   - from system.storage.artifact_store import ArtifactStore
+   - from system.host.sys_policy_enforcer import AuthorizationEngine, Capability
+   - from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   - from system.storage.checkpoint_store import CheckpointStore, CompetingWriterError
+   - from system.storage.event_store import EventStore
+25 | from system.host.host_gap_analyzer import (
+--------------------------------------------------------------------------------
+33 | from system.host.providers.registry import ProviderRegistry
+   - from system.storage.receipt_store import ReceiptStore
+34 | from system.host.recovery import BoundedRecovery
+35 | from system.host.scanner_check_registry import ScannerCheckRegistry
+36 | from system.host.scanner_gateway import ScannerGateway
+37 | from system.host.scanner_telemetry import scanner_span
+38 + from system.host.sys_policy_enforcer import AuthorizationEngine, Capability
+39 | from system.host.work_todo import WorkTodoError, WorkTodoManager
+   -
+40 + from system.storage.artifact_store import ArtifactStore
+41 + from system.storage.canonical_serialization import SERIALIZER_PROFILE
+42 + from system.storage.checkpoint_store import CheckpointStore, CompetingWriterError
+43 + from system.storage.event_store import EventStore
+44 + from system.storage.receipt_store import ReceiptStore
+45 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\host\sys_controller.py:48:5
+   |
+47 |   if TYPE_CHECKING:
+48 | /     from system.host.skill_dispatch import RoleArguments
+49 | |     from mvp.service import MVPService
+   | |______________________________________^
+help: Organize imports
+   |
+47 | if TYPE_CHECKING:
+48 +     from mvp.service import MVPService
+49 |     from system.host.skill_dispatch import RoleArguments
+   -     from mvp.service import MVPService
+50 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> system\host\sys_controller.py:743:13
+    |
+741 |           try:
+742 |               raw = self.artifact_store.get_verified(output.artifact_id, output.artifact_revision)
+743 | /             from contracts.workflow.auditor._discovery import AuditDiscoveryPackage
+744 | |             from contracts.workflow.builder.build import BuildRecord
+745 | |             from contracts.workflow.verifier.build_validation import BuildValidationRecord
+746 | |             from contracts.workflow.verifier.fixture_validation import FixtureValidationRecord
+747 | |             from contracts.workflow.planner.specification import PlanningRecord
+748 | |             from contracts.workflow.researcher.research import ResearchRecord
+    | |_____________________________________________________________________________^
+749 |
+750 |               contracts: dict[Stage, tuple[str, type[BaseModel]]] = {
+    |
+help: Organize imports
+    |
+744 |             from contracts.workflow.builder.build import BuildRecord
+745 +             from contracts.workflow.planner.specification import PlanningRecord
+746 +             from contracts.workflow.researcher.research import ResearchRecord
+747 |             from contracts.workflow.verifier.build_validation import BuildValidationRecord
+748 |             from contracts.workflow.verifier.fixture_validation import FixtureValidationRecord
+    -             from contracts.workflow.planner.specification import PlanningRecord
+    -             from contracts.workflow.researcher.research import ResearchRecord
+749 |
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> system\host\sys_controller.py:768:17
+    |
+766 |                 raise ValueError("agent result task/run identity mismatch")
+767 |             if Stage(envelope.stage) is Stage.BUILD:
+768 |                 from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, admission_receipt_subject
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+769 |
+770 |                 build = BuildRecord.model_validate(verified_record)
+    |
+help: Organize imports
+    |
+767 |             if Stage(envelope.stage) is Stage.BUILD:
+    -                 from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, admission_receipt_subject
+768 +                 from contracts.workflow.system.host import (
+769 +                     BuildAdmissionReceipt,
+770 +                     PackageLockReceipt,
+771 +                     admission_receipt_subject,
+772 +                 )
+773 |
+    |
+
+E501 Line too long (127 > 120)
+   --> system\host\sys_controller.py:768:121
+    |
+766 |                 raise ValueError("agent result task/run identity mismatch")
+767 |             if Stage(envelope.stage) is Stage.BUILD:
+768 |                 from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, admission_receipt_subject
+    |                                                                                                                         ^^^^^^^
+769 |
+770 |                 build = BuildRecord.model_validate(verified_record)
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> system\host\sys_policy_enforcer.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | from enum import StrEnum
+10 | | from pathlib import Path
+11 | |
+12 | | from system.host.sys_path import PathSafetyError, resolve_allowed_path
+13 | |
+14 | | from pydantic import BaseModel, Field
+15 | |
+16 | | from system.host.sys_path import PathSafetyError, resolve_allowed_path
+   | |______________________________________________________________________^
+help: Organize imports
+   |
+11 |
+   - from system.host.sys_path import PathSafetyError, resolve_allowed_path
+   -
+12 | from pydantic import BaseModel, Field
+   |
+
+F811 [*] Redefinition of unused `PathSafetyError` from line 12
+  --> system\host\sys_policy_enforcer.py:16:34
+   |
+10 | from pathlib import Path
+11 |
+12 | from system.host.sys_path import PathSafetyError, resolve_allowed_path
+   |                                  --------------- previous definition of `PathSafetyError` here
+13 |
+14 | from pydantic import BaseModel, Field
+15 |
+16 | from system.host.sys_path import PathSafetyError, resolve_allowed_path
+   |                                  ^^^^^^^^^^^^^^^ `PathSafetyError` redefined here
+help: Remove definition: `PathSafetyError`
+   |
+15 |
+   - from system.host.sys_path import PathSafetyError, resolve_allowed_path
+16 |
+   |
+
+F811 [*] Redefinition of unused `resolve_allowed_path` from line 12
+  --> system\host\sys_policy_enforcer.py:16:51
+   |
+10 | from pathlib import Path
+11 |
+12 | from system.host.sys_path import PathSafetyError, resolve_allowed_path
+   |                                                   -------------------- previous definition of `resolve_allowed_path` here
+13 |
+14 | from pydantic import BaseModel, Field
+15 |
+16 | from system.host.sys_path import PathSafetyError, resolve_allowed_path
+   |                                                   ^^^^^^^^^^^^^^^^^^^^ `resolve_allowed_path` redefined here
+help: Remove definition: `resolve_allowed_path`
+   |
+15 |
+   - from system.host.sys_path import PathSafetyError, resolve_allowed_path
+16 |
+   |
+
+SIM102 Use a single `if` statement instead of nested `if` statements
+  --> system\host\traceback_report.py:18:5
+   |
+17 |   def _safe_name(value: object, *, dotted: bool = False) -> str:
+18 | /     if isinstance(value, str) and len(value) <= (160 if dotted else 96):
+19 | |         if (_MODULE if dotted else _IDENTIFIER).fullmatch(value):
+   | |_________________________________________________________________^
+20 |               return value
+21 |       return "unknown"
+   |
+help: Combine `if` statements using `and`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\agent\test_skill_layout.py:7:1
+  |
+5 |   """
+6 |
+7 | / from pathlib import Path
+8 | |
+9 | | from system.host.skill_dispatch import registered_skills
+  | |________________________________________________________^
+help: Organize imports
+   |
+10 |
+   -
+11 | ROOT = Path(__file__).resolve().parents[2]
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\auditor\test_audit_integration.py:13:1
+   |
+11 |   pytest.importorskip("httpx")
+12 |
+13 | / from fastapi.testclient import TestClient
+14 | |
+15 | | from contracts.workflow.auditor._report import AuditFindingsRecord
+16 | | from system.host.workflow_control import Stage
+17 | | from system.storage.canonical_serialization import digest_model
+   | |_______________________________________________________________^
+help: Organize imports
+   |
+13 | from fastapi.testclient import TestClient
+14 + from system.host.workflow_control import Stage
+15 |
+16 | from contracts.workflow.auditor._report import AuditFindingsRecord
+   - from system.host.workflow_control import Stage
+17 | from system.storage.canonical_serialization import digest_model
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> tests\auditor\test_audit_integration.py:397:9
+    |
+396 |       def test_blocked_audit_persists_findings_but_never_advances(self, service, monkeypatch):
+397 | /         from mvp.research_host import execute_audit
+398 | |
+399 | |         from agent.skills.auditor.checks.core import AuditResult
+    | |________________________________________________________________^
+400 |
+401 |           def blocked_scan(root, scope=".", request=""):
+    |
+help: Organize imports
+    |
+396 |     def test_blocked_audit_persists_findings_but_never_advances(self, service, monkeypatch):
+397 +         from agent.skills.auditor.checks.core import AuditResult
+398 +
+399 |         from mvp.research_host import execute_audit
+    -
+    -         from agent.skills.auditor.checks.core import AuditResult
+400 |
+    |
+
+F821 Undefined name `app`
+  --> tests\auditor\test_order_and_source_safety.py:53:5
+   |
+51 |     mvp = tmp_path / "mvp"
+52 |     web.mkdir(parents=True)
+53 |     app.mkdir()
+   |     ^^^
+54 |     (web / "main.jsx").write_text("fetch('/api/unknown')\n", encoding="utf-8")
+55 |     (mvp / "api.py").symlink_to(outside)
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\boundaries\test_executor_sandbox_layout.py:3:1
+  |
+1 | """Regression: exactly one isolated Sandbox implementation under Executor."""
+2 |
+3 | from pathlib import Path
+  | ^^^^^^^^^^^^^^^^^^^^^^^^
+help: Organize imports
+  |
+4 |
+  -
+5 | ROOT = Path(__file__).resolve().parents[2]
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\contracts\test_host_gap_analysis.py:3:1
+   |
+ 1 |   """Host structural-gap analyzer regression tests and fail-closed behavior."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import pytest
+ 6 | |
+ 7 | | from contracts.workflow.common import DiagnosticStatus, StepStatus
+ 8 | | from contracts.workflow.planner.scanner import ScannerOutcome
+ 9 | | from system.host.sys_controller import HostController, TransitionError
+10 | | from system.host.host_gap_analyzer import StructuralGapError
+11 | | from tests.fixtures.structural_gap import build_gap_inputs, passing_gap
+   | |_______________________________________________________________________^
+help: Organize imports
+   |
+8  | from contracts.workflow.planner.scanner import ScannerOutcome
+9  + from system.host.host_gap_analyzer import StructuralGapError
+10 | from system.host.sys_controller import HostController, TransitionError
+   - from system.host.host_gap_analyzer import StructuralGapError
+11 | from tests.fixtures.structural_gap import build_gap_inputs, passing_gap
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\contracts\test_planning_coverage.py:3:1
+  |
+1 |   """Planning owns the eight issue categories across distinct check owners."""
+2 |
+3 | / from contracts.workflow.planner.coverage import ISSUE_CATEGORIES, planning_coverage
+4 | | from contracts.workflow.planner.scanner import ScannerResult
+5 | | from contracts.workflow.validation.structural import CONCERNS
+6 | | from system.host.sys_controller import HostController
+7 | | from system.host.scanner_evidence import persist_scan_result
+8 | | from tests.fixtures.scanner import passing_scan
+9 | | from tests.fixtures.structural_gap import passing_gap
+  | |_____________________________________________________^
+help: Organize imports
+  |
+5 | from contracts.workflow.validation.structural import CONCERNS
+6 + from system.host.scanner_evidence import persist_scan_result
+7 | from system.host.sys_controller import HostController
+  - from system.host.scanner_evidence import persist_scan_result
+8 | from tests.fixtures.scanner import passing_scan
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\contracts\test_producer_closure.py:3:1
+   |
+ 1 |   """Source producers enforce concrete host boundaries, not just symbol presence."""
+ 2 |
+ 3 | / from pathlib import Path
+ 4 | |
+ 5 | | import pytest
+ 6 | |
+ 7 | | from contracts.workflow.builder.build import BuildActionStatus
+ 8 | | from contracts.workflow.builder.schedule import BuildBatch, BuildTask, BuildWave, VerifiedWaveResult
+ 9 | | from contracts.workflow.common import ArtifactRef
+10 | | from contracts.workflow.system.host import ReceiptRef
+11 | | from contracts.workflow.researcher.research import ResearchIntent
+12 | | from contracts.workflow.planner.task_todo import TaskTodo
+13 | | from system.host.research_catalog import ResearchCatalog
+14 | | from system.storage.artifact_store import ArtifactStore
+15 | | from system.host.sys_policy_enforcer import AuthorizationEngine
+16 | | from system.host.build_admission import BuildAdmission
+17 | | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+18 | | from system.storage.checkpoint_store import CheckpointStore
+19 | | from system.host.effect_executor import EffectExecutor
+20 | | from system.storage.receipt_store import ReceiptStore
+21 | | from system.storage.runtime_root_registry import RuntimeRootRegistry
+   | |____________________________________________________________________^
+help: Organize imports
+   |
+9  | from contracts.workflow.common import ArtifactRef
+   - from contracts.workflow.system.host import ReceiptRef
+10 + from contracts.workflow.planner.task_todo import TaskTodo
+11 | from contracts.workflow.researcher.research import ResearchIntent
+   - from contracts.workflow.planner.task_todo import TaskTodo
+12 + from contracts.workflow.system.host import ReceiptRef
+13 + from system.host.build_admission import BuildAdmission
+14 + from system.host.effect_executor import EffectExecutor
+15 | from system.host.research_catalog import ResearchCatalog
+   - from system.storage.artifact_store import ArtifactStore
+16 | from system.host.sys_policy_enforcer import AuthorizationEngine
+   - from system.host.build_admission import BuildAdmission
+17 + from system.storage.artifact_store import ArtifactStore
+18 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+19 | from system.storage.checkpoint_store import CheckpointStore
+   - from system.host.effect_executor import EffectExecutor
+20 | from system.storage.receipt_store import ReceiptStore
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:9:1
+   |
+ 7 | pytestmark = pytest.mark.e2e
+ 8 |
+ 9 | from contracts.workflow.common import ArtifactRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
+11 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\e2e\test_host_dispatch.py:9:1
+   |
+ 7 |   pytestmark = pytest.mark.e2e
+ 8 |
+ 9 | / from contracts.workflow.common import ArtifactRef
+10 | | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
+11 | | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+12 | | from contracts.workflow.planner.work_todo import WorkStatus
+13 | | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | | from mvp.service import MVPService
+16 | | from tests.e2e.test_real_workflow import _advance_with_receipt
+   | |______________________________________________________________^
+help: Organize imports
+   |
+9  | from contracts.workflow.common import ArtifactRef
+10 + from contracts.workflow.planner.work_todo import WorkStatus
+11 + from contracts.workflow.researcher.research import Requirement, ResearchRecord
+12 | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
+   - from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   - from contracts.workflow.planner.work_todo import WorkStatus
+13 + from mvp.service import MVPService
+14 + from system.host.sys_controller import HostController, Stage, TransitionError
+15 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   - from system.host.sys_controller import HostController, Stage, TransitionError
+   - from mvp.service import MVPService
+16 | from tests.e2e.test_real_workflow import _advance_with_receipt
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:10:1
+   |
+ 9 | from contracts.workflow.common import ArtifactRef
+10 | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+11 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+12 | from contracts.workflow.planner.work_todo import WorkStatus
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:11:1
+   |
+ 9 | from contracts.workflow.common import ArtifactRef
+10 | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
+11 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 | from contracts.workflow.planner.work_todo import WorkStatus
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:12:1
+   |
+10 | from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
+11 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+12 | from contracts.workflow.planner.work_todo import WorkStatus
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:13:1
+   |
+11 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+12 | from contracts.workflow.planner.work_todo import WorkStatus
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | from mvp.service import MVPService
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:14:1
+   |
+12 | from contracts.workflow.planner.work_todo import WorkStatus
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from mvp.service import MVPService
+16 | from tests.e2e.test_real_workflow import _advance_with_receipt
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:15:1
+   |
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | from mvp.service import MVPService
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | from tests.e2e.test_real_workflow import _advance_with_receipt
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_dispatch.py:16:1
+   |
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | from mvp.service import MVPService
+16 | from tests.e2e.test_real_workflow import _advance_with_receipt
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:12:1
+   |
+11 | pytestmark = pytest.mark.e2e
+12 | from pydantic import BaseModel
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 |
+14 | from contracts.workflow.common import ArtifactRef
+   |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\e2e\test_host_integrity.py:12:1
+   |
+11 |   pytestmark = pytest.mark.e2e
+12 | / from pydantic import BaseModel
+13 | |
+14 | | from contracts.workflow.common import ArtifactRef
+15 | | from contracts.workflow.system.host import ReceiptRef
+16 | | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+17 | | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+18 | | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+19 | | from system.host.sys_controller import HostController, Stage, TransitionError
+20 | | from mvp.mcp_research import research_artifact_id
+21 | | from mvp.research_host import execute_research
+22 | | from mvp.service import MVPError, MVPService
+   | |____________________________________________^
+help: Organize imports
+   |
+14 | from contracts.workflow.common import ArtifactRef
+15 + from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+16 + from contracts.workflow.researcher.research import Requirement, ResearchRecord
+17 | from contracts.workflow.system.host import ReceiptRef
+   - from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   - from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+   - from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   - from system.host.sys_controller import HostController, Stage, TransitionError
+18 | from mvp.mcp_research import research_artifact_id
+19 | from mvp.research_host import execute_research
+20 | from mvp.service import MVPError, MVPService
+21 + from system.host.sys_controller import HostController, Stage, TransitionError
+22 + from system.storage.canonical_serialization import SERIALIZER_PROFILE
+23 |
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:14:1
+   |
+12 | from pydantic import BaseModel
+13 |
+14 | from contracts.workflow.common import ArtifactRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from contracts.workflow.system.host import ReceiptRef
+16 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:15:1
+   |
+14 | from contracts.workflow.common import ArtifactRef
+15 | from contracts.workflow.system.host import ReceiptRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+17 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:16:1
+   |
+14 | from contracts.workflow.common import ArtifactRef
+15 | from contracts.workflow.system.host import ReceiptRef
+16 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+17 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+18 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:17:1
+   |
+15 | from contracts.workflow.system.host import ReceiptRef
+16 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+17 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+19 | from system.host.sys_controller import HostController, Stage, TransitionError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:18:1
+   |
+16 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+17 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+18 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+19 | from system.host.sys_controller import HostController, Stage, TransitionError
+20 | from mvp.mcp_research import research_artifact_id
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:19:1
+   |
+17 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+18 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+19 | from system.host.sys_controller import HostController, Stage, TransitionError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+20 | from mvp.mcp_research import research_artifact_id
+21 | from mvp.research_host import execute_research
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:20:1
+   |
+18 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+19 | from system.host.sys_controller import HostController, Stage, TransitionError
+20 | from mvp.mcp_research import research_artifact_id
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+21 | from mvp.research_host import execute_research
+22 | from mvp.service import MVPError, MVPService
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:21:1
+   |
+19 | from system.host.sys_controller import HostController, Stage, TransitionError
+20 | from mvp.mcp_research import research_artifact_id
+21 | from mvp.research_host import execute_research
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 | from mvp.service import MVPError, MVPService
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_host_integrity.py:22:1
+   |
+20 | from mvp.mcp_research import research_artifact_id
+21 | from mvp.research_host import execute_research
+22 | from mvp.service import MVPError, MVPService
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_modal_deployment_config.py:15:1
+   |
+14 | pytestmark = pytest.mark.e2e
+15 | from fastapi import Request
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_api.py:12:1
+   |
+10 | pytest.importorskip("httpx")
+11 |
+12 | from fastapi.testclient import TestClient
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from mvp.api import app
+   |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\e2e\test_mvp_api.py:12:1
+   |
+10 |   pytest.importorskip("httpx")
+11 |
+12 | / from fastapi.testclient import TestClient
+13 | | from mvp.api import app
+   | |_______________________^
+help: Organize imports
+   |
+12 | from fastapi.testclient import TestClient
+13 +
+14 | from mvp.api import app
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_api.py:13:1
+   |
+12 | from fastapi.testclient import TestClient
+13 | from mvp.api import app
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_connectors.py:14:1
+   |
+12 | pytest.importorskip("httpx")
+13 |
+14 | from fastapi.testclient import TestClient
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 |
+16 | import mvp.api
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_connectors.py:16:1
+   |
+14 | from fastapi.testclient import TestClient
+15 |
+16 | import mvp.api
+   | ^^^^^^^^^^^^^^
+17 | from mvp.service import MVPService
+18 | from system.host.providers.base import ProviderError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_connectors.py:17:1
+   |
+16 | import mvp.api
+17 | from mvp.service import MVPService
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 | from system.host.providers.base import ProviderError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_connectors.py:18:1
+   |
+16 | import mvp.api
+17 | from mvp.service import MVPService
+18 | from system.host.providers.base import ProviderError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_mcp_research.py:14:1
+   |
+12 | pytestmark = pytest.mark.e2e
+13 |
+14 | from contracts.workflow.researcher.research import Requirement, ResearchRecord
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from mvp.mcp_research import (
+16 |     MCPResearchAdapter,
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_mcp_research.py:15:1
+   |
+14 |   from contracts.workflow.researcher.research import Requirement, ResearchRecord
+15 | / from mvp.mcp_research import (
+16 | |     MCPResearchAdapter,
+17 | |     _tool_json,
+18 | |     mcp_child_environment,
+19 | |     register_mcp_research,
+20 | |     research_artifact_id,
+21 | | )
+   | |_^
+22 |   from mvp.research_host import execute_research
+23 |   from mvp.service import MVPError, MVPService
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_mcp_research.py:22:1
+   |
+20 |     research_artifact_id,
+21 | )
+22 | from mvp.research_host import execute_research
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 | from mvp.service import MVPError, MVPService
+24 | from system.host.providers.base import ProviderError, ProviderRequest
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_mcp_research.py:23:1
+   |
+21 | )
+22 | from mvp.research_host import execute_research
+23 | from mvp.service import MVPError, MVPService
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+24 | from system.host.providers.base import ProviderError, ProviderRequest
+25 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_mcp_research.py:24:1
+   |
+22 | from mvp.research_host import execute_research
+23 | from mvp.service import MVPError, MVPService
+24 | from system.host.providers.base import ProviderError, ProviderRequest
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+25 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_mcp_research.py:25:1
+   |
+23 | from mvp.service import MVPError, MVPService
+24 | from system.host.providers.base import ProviderError, ProviderRequest
+25 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+F404 `from __future__` imports must occur at the beginning of the file
+ --> tests\e2e\test_mvp_scanner.py:7:1
+  |
+5 | """HTTP, SSE replay and CLI all consume the existing HostController Scanner."""
+6 |
+7 | from __future__ import annotations
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8 |
+9 | import json
+  |
+
+E402 Module level import not at top of file
+ --> tests\e2e\test_mvp_scanner.py:7:1
+  |
+5 | """HTTP, SSE replay and CLI all consume the existing HostController Scanner."""
+6 |
+7 | from __future__ import annotations
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8 |
+9 | import json
+  |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\e2e\test_mvp_scanner.py:7:1
+   |
+ 5 |   """HTTP, SSE replay and CLI all consume the existing HostController Scanner."""
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | import json
+10 | | import sqlite3
+11 | |
+12 | | from fastapi.testclient import TestClient
+13 | | from mvp.service import MVPService
+14 | |
+15 | | from agent.cli import cmd_scan
+16 | | from contracts.workflow.planner.scanner import ScannerRunInput
+17 | | from contracts.workflow.system.host import ReceiptRef
+18 | | from system.host.workflow_control import HostController
+19 | | from tests.planner.test_decision_trace import artifact_ref, make_planning_record
+   | |________________________________________________________________________________^
+help: Organize imports
+   |
+12 | from fastapi.testclient import TestClient
+   - from mvp.service import MVPService
+13 + from system.host.workflow_control import HostController
+14 |
+15 | from agent.cli import cmd_scan
+16 | from contracts.workflow.planner.scanner import ScannerRunInput
+17 | from contracts.workflow.system.host import ReceiptRef
+   - from system.host.workflow_control import HostController
+18 + from mvp.service import MVPService
+19 | from tests.planner.test_decision_trace import artifact_ref, make_planning_record
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:9:1
+   |
+ 7 | from __future__ import annotations
+ 8 |
+ 9 | import json
+   | ^^^^^^^^^^^
+10 | import sqlite3
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:10:1
+   |
+ 9 | import json
+10 | import sqlite3
+   | ^^^^^^^^^^^^^^
+11 |
+12 | from fastapi.testclient import TestClient
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:12:1
+   |
+10 | import sqlite3
+11 |
+12 | from fastapi.testclient import TestClient
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from mvp.service import MVPService
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:13:1
+   |
+12 | from fastapi.testclient import TestClient
+13 | from mvp.service import MVPService
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 |
+15 | from agent.cli import cmd_scan
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:15:1
+   |
+13 | from mvp.service import MVPService
+14 |
+15 | from agent.cli import cmd_scan
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 | from contracts.workflow.planner.scanner import ScannerRunInput
+17 | from contracts.workflow.system.host import ReceiptRef
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:16:1
+   |
+15 | from agent.cli import cmd_scan
+16 | from contracts.workflow.planner.scanner import ScannerRunInput
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+17 | from contracts.workflow.system.host import ReceiptRef
+18 | from system.host.workflow_control import HostController
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:17:1
+   |
+15 | from agent.cli import cmd_scan
+16 | from contracts.workflow.planner.scanner import ScannerRunInput
+17 | from contracts.workflow.system.host import ReceiptRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 | from system.host.workflow_control import HostController
+19 | from tests.planner.test_decision_trace import artifact_ref, make_planning_record
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:18:1
+   |
+16 | from contracts.workflow.planner.scanner import ScannerRunInput
+17 | from contracts.workflow.system.host import ReceiptRef
+18 | from system.host.workflow_control import HostController
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+19 | from tests.planner.test_decision_trace import artifact_ref, make_planning_record
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_mvp_scanner.py:19:1
+   |
+17 | from contracts.workflow.system.host import ReceiptRef
+18 | from system.host.workflow_control import HostController
+19 | from tests.planner.test_decision_trace import artifact_ref, make_planning_record
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> tests\e2e\test_mvp_scanner.py:164:5
+    |
+163 |   def test_real_host_structural_gap_receipt_allows_http_scanner_without_stub(tmp_path, monkeypatch):
+164 | /     import mvp.api
+165 | |
+166 | |     from tests.fixtures.structural_gap import build_gap_inputs
+    | |______________________________________________________________^
+167 |
+168 |       service, task_id, scan_input = prepared_scanner(tmp_path)
+    |
+help: Organize imports
+    |
+164 |     import mvp.api
+    -
+165 |     from tests.fixtures.structural_gap import build_gap_inputs
+    |
+
+E402 Module level import not at top of file
+ --> tests\e2e\test_mvp_service.py:6:1
+  |
+5 | pytestmark = pytest.mark.e2e
+6 | from mvp.service import MVPError, MVPService
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:9:1
+   |
+ 8 | pytestmark = pytest.mark.e2e
+ 9 | from pydantic import BaseModel
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+10 |
+11 | from contracts.workflow.builder.build import BuildActionStatus
+   |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\e2e\test_real_workflow.py:9:1
+   |
+ 8 |   pytestmark = pytest.mark.e2e
+ 9 | / from pydantic import BaseModel
+10 | |
+11 | | from contracts.workflow.builder.build import BuildActionStatus
+12 | | from contracts.workflow.common import ArtifactRef
+13 | | from contracts.workflow.system.host import ReceiptRef
+14 | | from contracts.workflow.researcher.research import (
+15 | |     AuthorizationStatus,
+16 | |     CriteriaStatus,
+17 | |     FeasibilityStatus,
+18 | |     Requirement,
+19 | |     ResearchRecord,
+20 | | )
+21 | | from contracts.workflow.planner.scanner import ScannerFinding
+22 | | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+23 | | from system.storage.artifact_store import ArtifactStore
+24 | | from system.host.sys_policy_enforcer import AuthorizationEngine
+25 | | from system.host.build_admission import BuildAdmission, BuildAdmissionError
+26 | | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+27 | | from system.storage.checkpoint_store import CheckpointStore
+28 | | from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+29 | | from system.host.effect_executor import EffectExecutor
+30 | | from system.storage.receipt_store import ReceiptStore
+31 | | from system.host.scanner_gateway import ScannerGateway
+32 | | from tests.fixtures.structural_gap import passing_gap
+   | |_____________________________________________________^
+33 |
+34 |   LOCK_SUBJECT = "package_lock"
+   |
+help: Organize imports
+   |
+12 | from contracts.workflow.common import ArtifactRef
+   - from contracts.workflow.system.host import ReceiptRef
+13 + from contracts.workflow.planner.scanner import ScannerFinding
+14 + from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+15 | from contracts.workflow.researcher.research import (
+--------------------------------------------------------------------------------
+21 | )
+   - from contracts.workflow.planner.scanner import ScannerFinding
+   - from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+22 + from contracts.workflow.system.host import ReceiptRef
+23 + from system.host.build_admission import BuildAdmission, BuildAdmissionError
+24 + from system.host.effect_executor import EffectExecutor
+25 + from system.host.scanner_gateway import ScannerGateway
+26 + from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+27 + from system.host.sys_policy_enforcer import AuthorizationEngine
+28 | from system.storage.artifact_store import ArtifactStore
+   - from system.host.sys_policy_enforcer import AuthorizationEngine
+   - from system.host.build_admission import BuildAdmission, BuildAdmissionError
+29 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+30 | from system.storage.checkpoint_store import CheckpointStore
+   - from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+   - from system.host.effect_executor import EffectExecutor
+31 | from system.storage.receipt_store import ReceiptStore
+   - from system.host.scanner_gateway import ScannerGateway
+32 | from tests.fixtures.structural_gap import passing_gap
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:11:1
+   |
+ 9 | from pydantic import BaseModel
+10 |
+11 | from contracts.workflow.builder.build import BuildActionStatus
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 | from contracts.workflow.common import ArtifactRef
+13 | from contracts.workflow.system.host import ReceiptRef
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:12:1
+   |
+11 | from contracts.workflow.builder.build import BuildActionStatus
+12 | from contracts.workflow.common import ArtifactRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from contracts.workflow.system.host import ReceiptRef
+14 | from contracts.workflow.researcher.research import (
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:13:1
+   |
+11 | from contracts.workflow.builder.build import BuildActionStatus
+12 | from contracts.workflow.common import ArtifactRef
+13 | from contracts.workflow.system.host import ReceiptRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | from contracts.workflow.researcher.research import (
+15 |     AuthorizationStatus,
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:14:1
+   |
+12 |   from contracts.workflow.common import ArtifactRef
+13 |   from contracts.workflow.system.host import ReceiptRef
+14 | / from contracts.workflow.researcher.research import (
+15 | |     AuthorizationStatus,
+16 | |     CriteriaStatus,
+17 | |     FeasibilityStatus,
+18 | |     Requirement,
+19 | |     ResearchRecord,
+20 | | )
+   | |_^
+21 |   from contracts.workflow.planner.scanner import ScannerFinding
+22 |   from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:21:1
+   |
+19 |     ResearchRecord,
+20 | )
+21 | from contracts.workflow.planner.scanner import ScannerFinding
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+23 | from system.storage.artifact_store import ArtifactStore
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:22:1
+   |
+20 | )
+21 | from contracts.workflow.planner.scanner import ScannerFinding
+22 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 | from system.storage.artifact_store import ArtifactStore
+24 | from system.host.sys_policy_enforcer import AuthorizationEngine
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:23:1
+   |
+21 | from contracts.workflow.planner.scanner import ScannerFinding
+22 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+23 | from system.storage.artifact_store import ArtifactStore
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+24 | from system.host.sys_policy_enforcer import AuthorizationEngine
+25 | from system.host.build_admission import BuildAdmission, BuildAdmissionError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:24:1
+   |
+22 | from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
+23 | from system.storage.artifact_store import ArtifactStore
+24 | from system.host.sys_policy_enforcer import AuthorizationEngine
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+25 | from system.host.build_admission import BuildAdmission, BuildAdmissionError
+26 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:25:1
+   |
+23 | from system.storage.artifact_store import ArtifactStore
+24 | from system.host.sys_policy_enforcer import AuthorizationEngine
+25 | from system.host.build_admission import BuildAdmission, BuildAdmissionError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+26 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+27 | from system.storage.checkpoint_store import CheckpointStore
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:26:1
+   |
+24 | from system.host.sys_policy_enforcer import AuthorizationEngine
+25 | from system.host.build_admission import BuildAdmission, BuildAdmissionError
+26 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+27 | from system.storage.checkpoint_store import CheckpointStore
+28 | from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:27:1
+   |
+25 | from system.host.build_admission import BuildAdmission, BuildAdmissionError
+26 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+27 | from system.storage.checkpoint_store import CheckpointStore
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+28 | from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+29 | from system.host.effect_executor import EffectExecutor
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:28:1
+   |
+26 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+27 | from system.storage.checkpoint_store import CheckpointStore
+28 | from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 | from system.host.effect_executor import EffectExecutor
+30 | from system.storage.receipt_store import ReceiptStore
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:29:1
+   |
+27 | from system.storage.checkpoint_store import CheckpointStore
+28 | from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+29 | from system.host.effect_executor import EffectExecutor
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 | from system.storage.receipt_store import ReceiptStore
+31 | from system.host.scanner_gateway import ScannerGateway
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:30:1
+   |
+28 | from system.host.sys_controller import STAGE_ORDER, HostController, Stage, TransitionError
+29 | from system.host.effect_executor import EffectExecutor
+30 | from system.storage.receipt_store import ReceiptStore
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+31 | from system.host.scanner_gateway import ScannerGateway
+32 | from tests.fixtures.structural_gap import passing_gap
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:31:1
+   |
+29 | from system.host.effect_executor import EffectExecutor
+30 | from system.storage.receipt_store import ReceiptStore
+31 | from system.host.scanner_gateway import ScannerGateway
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+32 | from tests.fixtures.structural_gap import passing_gap
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_real_workflow.py:32:1
+   |
+30 | from system.storage.receipt_store import ReceiptStore
+31 | from system.host.scanner_gateway import ScannerGateway
+32 | from tests.fixtures.structural_gap import passing_gap
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+33 |
+34 | LOCK_SUBJECT = "package_lock"
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:17:1
+   |
+16 | pytestmark = pytest.mark.e2e
+17 | from pydantic import BaseModel
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+18 |
+19 | from contracts.workflow.planner.specification import BuildSpecification
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:19:1
+   |
+17 | from pydantic import BaseModel
+18 |
+19 | from contracts.workflow.planner.specification import BuildSpecification
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+20 | from contracts.workflow.planner.task_todo import Build
+21 | from contracts.workflow.planner.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:20:1
+   |
+19 | from contracts.workflow.planner.specification import BuildSpecification
+20 | from contracts.workflow.planner.task_todo import Build
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+21 | from contracts.workflow.planner.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
+22 | from contracts.workflow.shared import ArtifactRef
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:21:1
+   |
+19 | from contracts.workflow.planner.specification import BuildSpecification
+20 | from contracts.workflow.planner.task_todo import Build
+21 | from contracts.workflow.planner.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+22 | from contracts.workflow.shared import ArtifactRef
+23 | from system.host.build_admission import BuildAdmission
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:22:1
+   |
+20 | from contracts.workflow.planner.task_todo import Build
+21 | from contracts.workflow.planner.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
+22 | from contracts.workflow.shared import ArtifactRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+23 | from system.host.build_admission import BuildAdmission
+24 | from system.host.build_todos import compile_build
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:23:1
+   |
+21 | from contracts.workflow.planner.work_todo import PlannedAction, WorkBinding, WorkPlan, WorkStatus
+22 | from contracts.workflow.shared import ArtifactRef
+23 | from system.host.build_admission import BuildAdmission
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+24 | from system.host.build_todos import compile_build
+25 | from system.host.effect_executor import EffectExecutionError, EffectExecutor
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:24:1
+   |
+22 | from contracts.workflow.shared import ArtifactRef
+23 | from system.host.build_admission import BuildAdmission
+24 | from system.host.build_todos import compile_build
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+25 | from system.host.effect_executor import EffectExecutionError, EffectExecutor
+26 | from system.host.package_lock import PackageLock
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:25:1
+   |
+23 | from system.host.build_admission import BuildAdmission
+24 | from system.host.build_todos import compile_build
+25 | from system.host.effect_executor import EffectExecutionError, EffectExecutor
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+26 | from system.host.package_lock import PackageLock
+27 | from system.host.sys_controller import HostController
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:26:1
+   |
+24 | from system.host.build_todos import compile_build
+25 | from system.host.effect_executor import EffectExecutionError, EffectExecutor
+26 | from system.host.package_lock import PackageLock
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+27 | from system.host.sys_controller import HostController
+28 | from system.host.work_todo import WorkTodoError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:27:1
+   |
+25 | from system.host.effect_executor import EffectExecutionError, EffectExecutor
+26 | from system.host.package_lock import PackageLock
+27 | from system.host.sys_controller import HostController
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+28 | from system.host.work_todo import WorkTodoError
+29 | from system.storage.artifact_store import DuplicateArtifactError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:28:1
+   |
+26 | from system.host.package_lock import PackageLock
+27 | from system.host.sys_controller import HostController
+28 | from system.host.work_todo import WorkTodoError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+29 | from system.storage.artifact_store import DuplicateArtifactError
+30 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:29:1
+   |
+27 | from system.host.sys_controller import HostController
+28 | from system.host.work_todo import WorkTodoError
+29 | from system.storage.artifact_store import DuplicateArtifactError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+30 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_task_todo_e2e.py:30:1
+   |
+28 | from system.host.work_todo import WorkTodoError
+29 | from system.storage.artifact_store import DuplicateArtifactError
+30 | from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+31 |
+32 | FIXTURE = Path(__file__).resolve().parents[1] / "fixtures" / "task_todo.json"
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:8:1
+   |
+ 7 | pytestmark = pytest.mark.e2e
+ 8 | from pydantic import BaseModel
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 9 |
+10 | from contracts.workflow.common import ArtifactRef
+   |
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\e2e\test_work_todo.py:8:1
+   |
+ 7 |   pytestmark = pytest.mark.e2e
+ 8 | / from pydantic import BaseModel
+ 9 | |
+10 | | from contracts.workflow.common import ArtifactRef
+11 | | from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+12 | | from system.storage.artifact_store import StaleRevisionError
+13 | | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | | from system.host.work_todo import WorkTodoError
+   | |_______________________________________________^
+help: Organize imports
+   |
+11 | from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+12 + from system.host.sys_controller import HostController, Stage, TransitionError
+13 + from system.host.work_todo import WorkTodoError
+14 | from system.storage.artifact_store import StaleRevisionError
+15 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   - from system.host.sys_controller import HostController, Stage, TransitionError
+   - from system.host.work_todo import WorkTodoError
+16 |
+   |
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:10:1
+   |
+ 8 | from pydantic import BaseModel
+ 9 |
+10 | from contracts.workflow.common import ArtifactRef
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+11 | from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+12 | from system.storage.artifact_store import StaleRevisionError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:11:1
+   |
+10 | from contracts.workflow.common import ArtifactRef
+11 | from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 | from system.storage.artifact_store import StaleRevisionError
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:12:1
+   |
+10 | from contracts.workflow.common import ArtifactRef
+11 | from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+12 | from system.storage.artifact_store import StaleRevisionError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:13:1
+   |
+11 | from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+12 | from system.storage.artifact_store import StaleRevisionError
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | from system.host.work_todo import WorkTodoError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:14:1
+   |
+12 | from system.storage.artifact_store import StaleRevisionError
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+15 | from system.host.work_todo import WorkTodoError
+   |
+help: Move module level imports to top of file
+
+E402 Module level import not at top of file
+  --> tests\e2e\test_work_todo.py:15:1
+   |
+13 | from system.storage.canonical_serialization import SERIALIZER_PROFILE
+14 | from system.host.sys_controller import HostController, Stage, TransitionError
+15 | from system.host.work_todo import WorkTodoError
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: Move module level imports to top of file
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\fixtures\planning.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | from agents.skills.planner.contracts.specification import (
+10 | |     BuildSpecification,
+11 | |     CandidateSpecification,
+12 | |     CreateAction,
+13 | |     PlanningRecord,
+14 | | )
+15 | | from agents.shared.base import ArtifactRef
+16 | | from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
+   | |___________________________________________________________________________________^
+help: Organize imports
+   |
+8  |
+9  + from agents.shared.base import ArtifactRef
+10 | from agents.skills.planner.contracts.specification import (
+--------------------------------------------------------------------------------
+15 | )
+   - from agents.shared.base import ArtifactRef
+16 | from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\fixtures\scanner.py:3:1
+   |
+ 1 |   """Synthetic pinned Scanner checks for host gate tests only."""
+ 2 |
+ 3 | / from contracts.workflow.planner.scanner import ScannerEvidence
+ 4 | | from contracts.workflow.system.tool_registry import (
+ 5 | |     SandboxProfile,
+ 6 | |     ToolEffect,
+ 7 | |     ToolInvocation,
+ 8 | |     ToolRegistrySnapshot,
+ 9 | |     ToolSpec,
+10 | | )
+11 | | from system.host.host_gap_analyzer import StructuralGapOutcome
+12 | | from system.host.scanner_check_registry import (
+13 | |     ScannerCheck,
+14 | |     ScannerCheckRegistrySnapshot,
+15 | |     pin_scanner_check_registry,
+16 | | )
+17 | | from system.host.scanner_evidence import persist_scan_result
+18 | | from system.host.sys_controller import HostController
+19 | | from system.host.tool_registry import pin_tool_registry
+20 | | from system.host.workflow_control import HostController
+   | |_______________________________________________________^
+help: Organize imports
+   |
+2  |
+3  + from system.host.workflow_control import HostController
+4  +
+5  | from contracts.workflow.planner.scanner import ScannerEvidence
+--------------------------------------------------------------------------------
+21 | from system.host.tool_registry import pin_tool_registry
+   - from system.host.workflow_control import HostController
+22 |
+   |
+
+F811 Redefinition of unused `HostController` from line 18
+  --> tests\fixtures\scanner.py:20:42
+   |
+16 | )
+17 | from system.host.scanner_evidence import persist_scan_result
+18 | from system.host.sys_controller import HostController
+   |                                        -------------- previous definition of `HostController` here
+19 | from system.host.tool_registry import pin_tool_registry
+20 | from system.host.workflow_control import HostController
+   |                                          ^^^^^^^^^^^^^^ `HostController` redefined here
+help: Remove definition: `HostController`
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\fixtures\structural_gap.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from __future__ import annotations
+ 8 | |
+ 9 | | from pydantic import BaseModel
+10 | |
+11 | | from contracts.workflow.common import ArtifactRef
+12 | | from contracts.workflow.validation.structural import (
+13 | |     CONCERNS,
+14 | |     ConcernCell,
+15 | |     PersistenceDeclaration,
+16 | |     ReferenceNeed,
+17 | |     SourceDeclaration,
+18 | |     TraceStep,
+19 | | )
+20 | | from agent.skills.planner.review.gap_analysis import (
+21 | |     ComparableSystemAnalysis,
+22 | |     GapBacktestCorpus,
+23 | |     KnownCriticalBacktest,
+24 | |     RegistrySnapshotSet,
+25 | |     SourceGroundedAnalysis,
+26 | |     StructuralGapRequest,
+27 | |     WalkingSkeletonObservation,
+28 | |     WorkflowConcernMatrix,
+29 | |     WorkflowContractBundle,
+30 | |     WorkflowExecutionTrace,
+31 | | )
+32 | | from system.host.sys_controller import HostController
+33 | | from system.host.host_gap_analyzer import StructuralGapOutcome
+   | |______________________________________________________________^
+help: Organize imports
+   |
+10 |
+   - from contracts.workflow.common import ArtifactRef
+   - from contracts.workflow.validation.structural import (
+   -     CONCERNS,
+   -     ConcernCell,
+   -     PersistenceDeclaration,
+   -     ReferenceNeed,
+   -     SourceDeclaration,
+   -     TraceStep,
+   - )
+11 | from agent.skills.planner.review.gap_analysis import (
+--------------------------------------------------------------------------------
+22 | )
+23 + from contracts.workflow.common import ArtifactRef
+24 + from contracts.workflow.validation.structural import (
+25 +     CONCERNS,
+26 +     ConcernCell,
+27 +     PersistenceDeclaration,
+28 +     ReferenceNeed,
+29 +     SourceDeclaration,
+30 +     TraceStep,
+31 + )
+32 + from system.host.host_gap_analyzer import StructuralGapOutcome
+33 | from system.host.sys_controller import HostController
+   - from system.host.host_gap_analyzer import StructuralGapOutcome
+34 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\planner\test_decision_trace.py:3:1
+   |
+ 1 |   """Evidence-linked dependency scanner and bounded Runtime repair tests."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | from time import perf_counter_ns
+ 7 | |
+ 8 | | import pytest
+ 9 | | from pydantic import BaseModel
+10 | |
+11 | | from contracts.workflow.common import ArtifactRef
+12 | | from contracts.workflow.planner.specification import (
+13 | |     BuildSpecification,
+14 | |     CandidateSpecification,
+15 | |     CreateAction,
+16 | |     PlanningRecord,
+17 | | )
+18 | | from contracts.workflow.planner.scanner import (
+19 | |     CriterionResult,
+20 | |     CriterionValidity,
+21 | |     ObservationState,
+22 | |     ScannerOutcome,
+23 | |     ScannerResult,
+24 | |     ScannerTraceStep,
+25 | | )
+26 | | from contracts.workflow.validation.planning import (
+27 | |     parse_action_dependency_facts,
+28 | |     scan_action_dependencies,
+29 | | )
+30 | | from system.storage.artifact_store import ArtifactStore
+31 | | from system.host.sys_policy_enforcer import AuthorizationError, Capability
+32 | | from system.host.sys_controller import HostController, TransitionError
+33 | | from system.host.scanner_gateway import ScannerGateway
+   | |______________________________________________________^
+help: Organize imports
+   |
+11 | from contracts.workflow.common import ArtifactRef
+   - from contracts.workflow.planner.specification import (
+   -     BuildSpecification,
+   -     CandidateSpecification,
+   -     CreateAction,
+   -     PlanningRecord,
+   - )
+12 | from contracts.workflow.planner.scanner import (
+--------------------------------------------------------------------------------
+19 | )
+20 + from contracts.workflow.planner.specification import (
+21 +     BuildSpecification,
+22 +     CandidateSpecification,
+23 +     CreateAction,
+24 +     PlanningRecord,
+25 + )
+26 | from contracts.workflow.validation.planning import (
+27 |     parse_action_dependency_facts,
+28 |     scan_action_dependencies,
+29 | )
+   - from system.storage.artifact_store import ArtifactStore
+   - from system.host.sys_policy_enforcer import AuthorizationError, Capability
+30 + from system.host.scanner_gateway import ScannerGateway
+31 | from system.host.sys_controller import HostController, TransitionError
+   - from system.host.scanner_gateway import ScannerGateway
+32 + from system.host.sys_policy_enforcer import AuthorizationError, Capability
+33 + from system.storage.artifact_store import ArtifactStore
+34 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\planner\test_stream_events.py:3:1
+   |
+ 1 |   """Live Scanner event projection and single-Host Runtime invocation tests."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | import json
+ 6 | | from concurrent.futures import ThreadPoolExecutor
+ 7 | | from threading import Event
+ 8 | |
+ 9 | | import pytest
+10 | |
+11 | | import contracts.workflow.validation.planning as planning
+12 | | from contracts.workflow.planner.scanner import ScannerOutcome
+13 | | from system.host.sys_policy_enforcer import Capability
+14 | | from system.host.sys_controller import HostController
+15 | | from tests.planner.test_decision_trace import artifact_ref, make_planning_record, revised_record
+   | |________________________________________________________________________________________________^
+help: Organize imports
+   |
+12 | from contracts.workflow.planner.scanner import ScannerOutcome
+13 + from system.host.sys_controller import HostController
+14 | from system.host.sys_policy_enforcer import Capability
+   - from system.host.sys_controller import HostController
+15 | from tests.planner.test_decision_trace import artifact_ref, make_planning_record, revised_record
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\providers\test_full_provider.py:3:1
+   |
+ 1 |   """Test full provider probes with mock client."""
+ 2 |
+ 3 | / from types import SimpleNamespace
+ 4 | |
+ 5 | | from api_fundamentals.models import StructuredProbeResult
+ 6 | | from api_fundamentals.probes.all import PROBES
+ 7 | | from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+ 8 | | from system.host.providers.openai_compatible import OpenAICompatibleAdapter
+ 9 | |
+10 | | from agent.contracts.provider import ProviderConfig, ProviderProtocol
+11 | | from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter
+   | |_____________________________________________________________________________^
+help: Organize imports
+   |
+4  |
+5  + from agent.contracts.provider import ProviderConfig, ProviderProtocol
+6  + from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter
+7  | from api_fundamentals.models import StructuredProbeResult
+8  | from api_fundamentals.probes.all import PROBES
+9  | from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+10 | from system.host.providers.openai_compatible import OpenAICompatibleAdapter
+   -
+   - from agent.contracts.provider import ProviderConfig, ProviderProtocol
+   - from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter
+11 |
+   |
+
+F811 Redefinition of unused `ProviderConfig` from line 7
+  --> tests\providers\test_full_provider.py:10:38
+   |
+ 5 | from api_fundamentals.models import StructuredProbeResult
+ 6 | from api_fundamentals.probes.all import PROBES
+ 7 | from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+   |                                                -------------- previous definition of `ProviderConfig` here
+ 8 | from system.host.providers.openai_compatible import OpenAICompatibleAdapter
+ 9 |
+10 | from agent.contracts.provider import ProviderConfig, ProviderProtocol
+   |                                      ^^^^^^^^^^^^^^ `ProviderConfig` redefined here
+11 | from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter
+   |
+help: Remove definition: `ProviderConfig`
+
+F811 Redefinition of unused `ProviderProtocol` from line 7
+  --> tests\providers\test_full_provider.py:10:54
+   |
+ 5 | from api_fundamentals.models import StructuredProbeResult
+ 6 | from api_fundamentals.probes.all import PROBES
+ 7 | from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+   |                                                                ---------------- previous definition of `ProviderProtocol` here
+ 8 | from system.host.providers.openai_compatible import OpenAICompatibleAdapter
+ 9 |
+10 | from agent.contracts.provider import ProviderConfig, ProviderProtocol
+   |                                                      ^^^^^^^^^^^^^^^^ `ProviderProtocol` redefined here
+11 | from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter
+   |
+help: Remove definition: `ProviderProtocol`
+
+F811 Redefinition of unused `OpenAICompatibleAdapter` from line 8
+  --> tests\providers\test_full_provider.py:11:55
+   |
+ 6 | from api_fundamentals.probes.all import PROBES
+ 7 | from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+ 8 | from system.host.providers.openai_compatible import OpenAICompatibleAdapter
+   |                                                     ----------------------- previous definition of `OpenAICompatibleAdapter` here
+ 9 |
+10 | from agent.contracts.provider import ProviderConfig, ProviderProtocol
+11 | from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter
+   |                                                       ^^^^^^^^^^^^^^^^^^^^^^^ `OpenAICompatibleAdapter` redefined here
+help: Remove definition: `OpenAICompatibleAdapter`
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests\runtime\test_skill_dispatch.py:3:1
+  |
+1 |   """Host dispatch blocks role substitution before any skill module is loaded."""
+2 |
+3 | / from pathlib import Path
+4 | | from unittest.mock import Mock, patch
+5 | |
+6 | | import pytest
+7 | |
+8 | | from system.host.skill_dispatch import AuditArguments, SkillContext, execute_skill, registered_skills
+9 | | from system.host.workflow_control import TransitionError
+  | |________________________________________________________^
+help: Organize imports
+   |
+6  | import pytest
+7  + from system.host.workflow_control import TransitionError
+8  |
+9  | from system.host.skill_dispatch import AuditArguments, SkillContext, execute_skill, registered_skills
+   - from system.host.workflow_control import TransitionError
+10 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_gap_analysis.py:3:1
+   |
+ 1 |   """Canonical Gap Analysis ownership and missing-capability detection."""
+ 2 |
+ 3 | / from __future__ import annotations
+ 4 | |
+ 5 | | from contracts.workflow.common import DiagnosticStatus
+ 6 | | from agent.skills.planner.review.gap_analysis import (
+ 7 | |     CapabilityConsumer,
+ 8 | |     CapabilityProducer,
+ 9 | |     CapabilityRequirement,
+10 | |     MissingCapabilityAnalyzer,
+11 | |     RepositorySnapshot,
+12 | |     audit_repository,
+13 | | )
+   | |_^
+help: Organize imports
+   |
+4  |
+   - from contracts.workflow.common import DiagnosticStatus
+5  | from agent.skills.planner.review.gap_analysis import (
+--------------------------------------------------------------------------------
+12 | )
+13 + from contracts.workflow.common import DiagnosticStatus
+14 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests\test_market_practices.py:3:1
+   |
+ 1 |   """Test market-practice alignment: default-deny, guardrails, event chain, checkpoint recovery."""
+ 2 |
+ 3 | / from datetime import UTC, datetime
+ 4 | | from pathlib import Path
+ 5 | |
+ 6 | | import pytest
+ 7 | |
+ 8 | | from contracts.workflow.system.guardrails import GuardrailDecision, GuardrailRequest, GuardrailResult
+ 9 | | from contracts.workflow.system.host import Checkpoint
+10 | | from contracts.workflow.system.observability import EventStatus, ExecutionEvent
+11 | | from system.host.sys_policy_enforcer import AuthorizationError, PathAuthorizer, RolePolicy
+12 | | from system.storage.durable_checkpoint_store import SQLiteCheckpointStore
+13 | | from system.storage.event_store import AppendOnlyEventStore
+14 | | from system.host.guardrails import GuardrailBlocked, run_blocking_guardrails
+   | |____________________________________________________________________________^
+15 |
+16 |   HEX = "a" * 64
+   |
+help: Organize imports
+   |
+10 | from contracts.workflow.system.observability import EventStatus, ExecutionEvent
+11 + from system.host.guardrails import GuardrailBlocked, run_blocking_guardrails
+12 | from system.host.sys_policy_enforcer import AuthorizationError, PathAuthorizer, RolePolicy
+13 | from system.storage.durable_checkpoint_store import SQLiteCheckpointStore
+14 | from system.storage.event_store import AppendOnlyEventStore
+   - from system.host.guardrails import GuardrailBlocked, run_blocking_guardrails
+15 |
+   |
+
+Found 187 errors.
+[*] 78 fixable with `--fix` (8 unsafe fixes available with `--fix --unsafe-fixes`).

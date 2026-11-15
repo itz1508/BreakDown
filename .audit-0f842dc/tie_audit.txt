@@ -1,0 +1,6 @@
+TIE-DIFFERS mvp/connector_store.py vs origin/consolidation/baseline-20261110:  mvp/connector_store.py | 530 -------------------------------------------------  1 file changed, 530 deletions(-)
+TIE-DIFFERS mvp/integration_probe.py vs origin/consolidation/baseline-20261110:  mvp/integration_probe.py | 84 ------------------------------------------------  1 file changed, 84 deletions(-)
+TIE-DIFFERS tests/auditor/test_audit_capabilities.py vs origin/breakdown-restructure:  tests/auditor/test_audit_capabilities.py | 163 -------------------------------  1 file changed, 163 deletions(-)
+TIE-DIFFERS tests/contracts/test_producer_closure.py vs origin/consolidation/baseline-20261110:  tests/contracts/test_producer_closure.py | 10 +++++-----  1 file changed, 5 insertions(+), 5 deletions(-)
+TIE-DIFFERS system/host/effect_executor.py vs origin/consolidation/baseline-to-continuing-20261110:  system/host/effect_executor.py | 2 +-  1 file changed, 1 insertion(+), 1 deletion(-)
+TIE-DIFFERS tests/e2e/test_real_workflow.py vs origin/feat/breakdown-package-20261110:  tests/e2e/test_real_workflow.py | 18 ++++++++----------  1 file changed, 8 insertions(+), 10 deletions(-)

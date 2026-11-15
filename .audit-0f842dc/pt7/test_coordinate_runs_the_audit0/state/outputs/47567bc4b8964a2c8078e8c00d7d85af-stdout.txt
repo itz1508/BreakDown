@@ -1,0 +1,1 @@
+{"ok": true, "result": {"findings": [], "capabilities": ["paths"]}, "error": null}

@@ -1,0 +1,14 @@
+Installed 71 packages in 884ms
+agents\skills\shared\storage\canonical_serialization.py:29: error: Returning Any from function declared to return "bytes"  [no-any-return]
+agents\skills\shared\storage\canonical_serialization.py:29: error: Module has no attribute "dumps"  [attr-defined]
+agents\skills\shared\storage\canonical_serialization.py:44: error: Returning Any from function declared to return "bytes"  [no-any-return]
+agents\skills\shared\storage\canonical_serialization.py:44: error: Module has no attribute "dumps"  [attr-defined]
+agents\skills\shared\tools\verify_all.py:16: error: Skipping analyzing "agents.skills.planner.contracts.scanner": module is installed, but missing library stubs or py.typed marker  [import-untyped]
+agents\skills\shared\tools\verify_all.py:16: note: See https://mypy.readthedocs.io/en/stable/running_mypy.html#missing-imports
+agents\skills\shared\contracts\workflow\system\observability.py:15: error: Name "Field" is not defined  [name-defined]
+agents\skills\shared\contracts\workflow\system\observability.py:18: error: Name "Field" is not defined  [name-defined]
+agents\skills\shared\storage\checkpoint_store.py:162: error: "Checkpoint" has no attribute "db_path"  [attr-defined]
+agents\skills\shared\storage\checkpoint_store.py:183: error: "Checkpoint" has no attribute "db_path"  [attr-defined]
+agents\skills\shared\storage\checkpoint_store.py:197: error: "Checkpoint" has no attribute "db_path"  [attr-defined]
+agents\skills\builder\effect_executor.py:130: error: "CheckpointStore" has no attribute "load_checkpoint"  [attr-defined]
+Found 11 errors in 5 files (checked 112 source files)

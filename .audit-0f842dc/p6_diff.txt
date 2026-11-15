@@ -1,0 +1,148 @@
+diff --git a/agents/skills/auditor/contracts/validation.py b/agents/skills/auditor/contracts/validation.py
+index 94f73db..4f0fc31 100644
+--- a/agents/skills/auditor/contracts/validation.py
++++ b/agents/skills/auditor/contracts/validation.py
+@@ -7,8 +7,8 @@ shared/contracts/workflow/validation/audit_discovery.py.
+ 
+ from __future__ import annotations
+ 
+-from agents.skills.auditor.contracts._discovery import AuditDiscoveryPackage
+ from agents.shared.base import ArtifactRef
++from agents.skills.auditor.contracts._discovery import AuditDiscoveryPackage
+ 
+ 
+ def validate_research_lineage(package: AuditDiscoveryPackage, expected_research_ref: ArtifactRef) -> list[str]:
+diff --git a/agents/skills/builder/build_todos.py b/agents/skills/builder/build_todos.py
+index c583734..2b833e1 100644
+--- a/agents/skills/builder/build_todos.py
++++ b/agents/skills/builder/build_todos.py
+@@ -2,6 +2,7 @@
+ 
+ from __future__ import annotations
+ 
++from agents.shared.base import ArtifactRef
+ from agents.skills.planner.contracts.specification import (
+     BuildAction,
+     BuildSpecification,
+@@ -10,7 +11,6 @@ from agents.skills.planner.contracts.specification import (
+     MoveAction,
+     RemoveAction,
+ )
+-from agents.shared.base import ArtifactRef
+ from agents.skills.planner.contracts.task_todo import Build, TaskTodo, paths_overlap
+ from agents.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
+ 
+diff --git a/agents/skills/builder/contracts/schedule.py b/agents/skills/builder/contracts/schedule.py
+index 9fba937..b114fd0 100644
+--- a/agents/skills/builder/contracts/schedule.py
++++ b/agents/skills/builder/contracts/schedule.py
+@@ -4,8 +4,8 @@ from __future__ import annotations
+ 
+ from pydantic import Field, model_validator
+ 
+-from agents.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
+ from agents.shared.base import ArtifactRef, ContractModel, Sha256
++from agents.skills.planner.contracts.task_todo import TaskTodo, paths_overlap
+ from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+ from agents.skills.shared.contracts.workflow.system.tool_registry import safe_relative_path
+ 
+diff --git a/agents/skills/planner/host_gap_analyzer.py b/agents/skills/planner/host_gap_analyzer.py
+index 9145830..6e95085 100644
+--- a/agents/skills/planner/host_gap_analyzer.py
++++ b/agents/skills/planner/host_gap_analyzer.py
+@@ -10,6 +10,7 @@ from __future__ import annotations
+ from collections.abc import Callable
+ from dataclasses import dataclass
+ 
++from agents.shared.base import ArtifactRef, ContractModel, StepStatus
+ from agents.skills.planner.tools.gap_analysis import (
+     ComparableSystemAnalysis,
+     GapAnalyzer,
+@@ -23,7 +24,6 @@ from agents.skills.planner.tools.gap_analysis import (
+     WorkflowContractBundle,
+     WorkflowExecutionTrace,
+ )
+-from agents.shared.base import ArtifactRef, ContractModel, StepStatus
+ from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+ from agents.skills.shared.storage.artifact_store import ArtifactStore
+ from agents.skills.shared.storage.receipt_store import ReceiptStore
+diff --git a/agents/skills/researcher/research_lifecycle.py b/agents/skills/researcher/research_lifecycle.py
+index 607b506..419aa3a 100644
+--- a/agents/skills/researcher/research_lifecycle.py
++++ b/agents/skills/researcher/research_lifecycle.py
+@@ -12,6 +12,7 @@ latest persisted revision is loaded and verified.
+ 
+ from __future__ import annotations
+ 
++from agents.shared.base import EvidenceRef
+ from agents.skills.researcher.contracts.research import (
+     AdmissionDisposition,
+     ExecutionStatus,
+@@ -26,7 +27,6 @@ from agents.skills.researcher.contracts.research import (
+     ReviewDisposition,
+ )
+ from agents.skills.researcher.research_catalog import ResearchCatalog
+-from agents.shared.base import EvidenceRef
+ from agents.skills.shared.storage.artifact_store import (
+     ArtifactStore,
+     StaleRevisionError,
+diff --git a/agents/skills/shared/contracts/workflow/system/coverage.py b/agents/skills/shared/contracts/workflow/system/coverage.py
+index d477a8c..777e844 100644
+--- a/agents/skills/shared/contracts/workflow/system/coverage.py
++++ b/agents/skills/shared/contracts/workflow/system/coverage.py
+@@ -2,8 +2,8 @@
+ 
+ from __future__ import annotations
+ 
+-from agents.skills.planner.contracts.specification import IssueType
+ from agents.shared.base import ContractModel
++from agents.skills.planner.contracts.specification import IssueType
+ 
+ 
+ class PlanningCoverage(ContractModel):
+diff --git a/agents/skills/shared/contracts/workflow/system/host.py b/agents/skills/shared/contracts/workflow/system/host.py
+index 3ad4b5e..4971ba9 100644
+--- a/agents/skills/shared/contracts/workflow/system/host.py
++++ b/agents/skills/shared/contracts/workflow/system/host.py
+@@ -6,7 +6,6 @@ runtime may create and verify.
+ 
+ from __future__ import annotations
+ 
+-from datetime import UTC, datetime
+ from enum import StrEnum
+ 
+ from pydantic import Field
+diff --git a/agents/skills/shared/storage/checkpoint_store.py b/agents/skills/shared/storage/checkpoint_store.py
+index 99273ff..3b57ef1 100644
+--- a/agents/skills/shared/storage/checkpoint_store.py
++++ b/agents/skills/shared/storage/checkpoint_store.py
+@@ -4,8 +4,8 @@ from __future__ import annotations
+ 
+ import json
+ import sqlite3
+-from pathlib import Path
+ from datetime import UTC, datetime
++from pathlib import Path
+ from typing import Any
+ 
+ from pydantic import Field
+diff --git a/agents/skills/shared/tools/verify_all.py b/agents/skills/shared/tools/verify_all.py
+index 2c991e3..109941a 100644
+--- a/agents/skills/shared/tools/verify_all.py
++++ b/agents/skills/shared/tools/verify_all.py
+@@ -13,6 +13,7 @@ import math
+ from collections.abc import Sequence
+ from dataclasses import dataclass
+ 
++from agents.shared.base import DiagnosticStatus
+ from agents.skills.planner.contracts.scanner import (
+     CriterionResult,
+     CriterionValidity,
+@@ -20,7 +21,6 @@ from agents.skills.planner.contracts.scanner import (
+     ScannerOutcome,
+     ScannerResult,
+ )
+-from agents.shared.base import DiagnosticStatus
+ 
+ Scalar = bool | int | float | str
+ 

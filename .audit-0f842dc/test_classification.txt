@@ -1,0 +1,93 @@
+== RETIRE (import retired prefixes) ==
+tests/agent/test_fixturer.py  # imports: ['agent', 'contracts']
+tests/agent/test_pipeline_contract.py  # imports: ['agent']
+tests/agent/test_skill_layout.py  # imports: ['system.host']
+tests/audit/test_audit_capabilities.py  # imports: ['agent']
+tests/audit/test_audit_integration.py  # imports: ['agent', 'mvp']
+tests/auditor/test_audit_integration.py  # imports: ['agent', 'contracts', 'mvp', 'system.host']
+tests/auditor/test_order_and_source_safety.py  # imports: ['agent']
+tests/auditor/test_skill_readonly.py  # imports: ['agent', 'system.host']
+tests/authorization/test_denial.py  # imports: ['system.host']
+tests/builder/test_skill_runner.py  # imports: ['agent', 'contracts', 'system.host']
+tests/coder/test_coding.py  # imports: ['agent']
+tests/contracts/test_audit_discovery.py  # imports: ['contracts']
+tests/contracts/test_build_validation_classification.py  # imports: ['contracts']
+tests/contracts/test_code_design_compatibility.py  # imports: ['contracts']
+tests/contracts/test_common.py  # imports: ['contracts']
+tests/contracts/test_host_gap_analysis.py  # imports: ['contracts', 'system.host']
+tests/contracts/test_memory_promotion.py  # imports: ['contracts', 'system.host']
+tests/contracts/test_plan_template.py  # imports: ['contracts', 'system.host']
+tests/contracts/test_planning.py  # imports: ['contracts']
+tests/contracts/test_planning_coverage.py  # imports: ['contracts', 'system.host']
+tests/contracts/test_producer_closure.py  # imports: ['contracts', 'system.host']
+tests/contracts/test_repository.py  # imports: ['contracts']
+tests/contracts/test_research.py  # imports: ['contracts']
+tests/contracts/test_research_case.py  # imports: ['contracts']
+tests/contracts/test_stage_journal.py  # imports: ['contracts']
+tests/contracts/test_status_vocabulary.py  # imports: ['contracts']
+tests/contracts/test_structural_gaps.py  # imports: ['contracts']
+tests/contracts/test_task_todo_compile.py  # imports: ['contracts', 'system.host']
+tests/contracts/test_tool_registry.py  # imports: ['contracts', 'system.host']
+tests/e2e/test_host_dispatch.py  # imports: ['contracts', 'mvp', 'system.host']
+tests/e2e/test_host_integrity.py  # imports: ['contracts', 'mvp', 'system.host']
+tests/e2e/test_mvp_api.py  # imports: ['mvp']
+tests/e2e/test_mvp_connectors.py  # imports: ['mvp', 'system.host']
+tests/e2e/test_mvp_mcp_research.py  # imports: ['agent', 'contracts', 'mvp', 'system.host']
+tests/e2e/test_mvp_scanner.py  # imports: ['agent', 'contracts', 'mvp', 'system.host']
+tests/e2e/test_mvp_service.py  # imports: ['mvp']
+tests/e2e/test_real_workflow.py  # imports: ['agent', 'contracts', 'system.host']
+tests/e2e/test_task_todo_e2e.py  # imports: ['contracts', 'system.host']
+tests/e2e/test_work_todo.py  # imports: ['contracts', 'system.host']
+tests/planner/test_decision_trace.py  # imports: ['contracts', 'system.host']
+tests/planner/test_exact_digest.py  # imports: ['contracts', 'system.host']
+tests/planner/test_freeze.py  # imports: ['system.host']
+tests/planner/test_skill_runner.py  # imports: ['agent', 'system.host']
+tests/planner/test_stream_events.py  # imports: ['contracts', 'system.host']
+tests/providers/test_capabilities.py  # imports: ['system.host']
+tests/providers/test_echo.py  # imports: ['system.host']
+tests/providers/test_full_provider.py  # imports: ['agent', 'contracts', 'system.host']
+tests/providers/test_provider.py  # imports: ['contracts', 'system.host']
+tests/recovery/test_progress.py  # imports: ['system.host']
+tests/researcher/test_skill_runner.py  # imports: ['agent', 'system.host']
+tests/runtime/test_skill_dispatch.py  # imports: ['system.host']
+tests/scanner/test_decision_trace.py  # imports: ['agent']
+tests/scanner/test_exact_digest.py  # imports: ['agent']
+tests/scanner/test_freeze.py  # imports: ['agent']
+tests/scanner/test_stream_events.py  # imports: ['agent']
+tests/test_approved_scan_tools.py  # imports: ['agent', 'contracts']
+tests/test_config.py  # imports: ['system.host']
+tests/test_contracts.py  # imports: ['contracts']
+tests/test_diagnostic_review.py  # imports: ['agent', 'contracts', 'system.host']
+tests/test_gap_analysis.py  # imports: ['agent', 'contracts']
+tests/test_market_practices.py  # imports: ['contracts', 'system.host']
+tests/test_package_baseline.py  # imports: ['agent', 'mvp', 'system.host']
+tests/test_research_catalog.py  # imports: ['contracts', 'system.host']
+tests/test_runtime.py  # imports: ['contracts']
+tests/test_validation.py  # imports: ['contracts']
+
+== KEEP ==
+tests/agents/test_checkpoint_store.py  # imports: none
+tests/agents/test_observability.py  # imports: none
+tests/artifacts/test_jcs_vectors.py  # imports: none
+tests/artifacts/test_stores.py  # imports: none
+tests/auditor/test_audit_capabilities.py  # imports: none
+tests/boundaries/test_executor_sandbox_layout.py  # imports: none
+tests/boundaries/test_imports.py  # imports: none
+tests/checkpoints/test_cas.py  # imports: none
+tests/e2e/test_modal_deployment_config.py  # imports: none
+tests/e2e/test_research_lifecycle.py  # imports: none
+tests/e2e/test_spec_search.py  # imports: none
+tests/proxy/test_proxy.py  # imports: none
+tests/quality/test_configuration.py  # imports: none
+tests/quality/test_layering.py  # imports: none
+tests/quality/test_skill_definitions.py  # imports: none
+tests/shared/test_models.py  # imports: none
+tests/system/scanner/test_cli.py  # imports: none
+tests/system/scanner/test_index.py  # imports: none
+tests/system/test_system.py  # imports: none
+tests/test_doctor_startup.py  # imports: none
+tests/test_scanner_telemetry.py  # imports: none
+tests/test_workflows.py  # imports: none
+tests/tools/test_base.py  # imports: none
+tests/tools/test_file_tools.py  # imports: none
+tests/tools/test_search.py  # imports: none

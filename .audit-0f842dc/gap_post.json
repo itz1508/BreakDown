@@ -1,0 +1,27 @@
+{
+  "checked_capabilities": [
+    "gap_analysis_owner",
+    "reference_closure",
+    "execution_trace",
+    "concern_matrix",
+    "historical_backtest",
+    "walking_skeleton",
+    "tool_registry",
+    "registered_command_resolver",
+    "sandbox_profile_registry",
+    "scanner_check_registry",
+    "runtime_root_registry",
+    "recovery_readiness",
+    "task_batch_wave",
+    "move_atomicity",
+    "catalog_lineage",
+    "research_catalog_contract",
+    "wave_preimage_pinning"
+  ],
+  "diagnostic_status": "valid",
+  "gaps": [],
+  "limitations": [
+    "static producer/symbol/consumer audit; walking-skeleton execution is a separate host pass"
+  ],
+  "source_id": "worktree:452437671e00d76705c3ac514547667a19a7798c"
+}
