@@ -456,7 +456,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="gap_analysis_owner",
             producers=(
                 CapabilityProducer(
-                    path="agent/gap_analysis.py",
+                    path="agent/analyzer/gap_analysis.py",
                     symbols=("GapAnalyzer", "GapAnalyzer.analyze"),
                 ),
             ),
@@ -468,7 +468,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                 CapabilityProducer(path="agent/contracts/validation/structural.py", symbols=("reference_gaps",)),
             ),
             consumers=(
-                CapabilityConsumer(path="agent/gap_analysis.py", reference="reference_gaps"),
+                CapabilityConsumer(path="agent/analyzer/gap_analysis.py", reference="reference_gaps"),
                 CapabilityConsumer(path="agent/skills/analyzer/analyzing.py", reference="reference_gaps"),
             ),
         ),
@@ -478,7 +478,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                 CapabilityProducer(path="agent/contracts/validation/structural.py", symbols=("trace_gaps",)),
             ),
             consumers=(
-                CapabilityConsumer(path="agent/gap_analysis.py", reference="trace_gaps"),
+                CapabilityConsumer(path="agent/analyzer/gap_analysis.py", reference="trace_gaps"),
                 CapabilityConsumer(path="agent/skills/analyzer/analyzing.py", reference="trace_gaps"),
             ),
         ),
@@ -488,7 +488,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
                 CapabilityProducer(path="agent/contracts/validation/structural.py", symbols=("concern_gaps",)),
             ),
             consumers=(
-                CapabilityConsumer(path="agent/gap_analysis.py", reference="concern_gaps"),
+                CapabilityConsumer(path="agent/analyzer/gap_analysis.py", reference="concern_gaps"),
                 CapabilityConsumer(path="agent/skills/analyzer/analyzing.py", reference="concern_gaps"),
             ),
         ),
@@ -496,7 +496,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="historical_backtest",
             producers=(
                 CapabilityProducer(
-                    path="agent/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)
+                    path="agent/analyzer/gap_analysis.py", symbols=("GapAnalyzer._run_backtests",)
                 ),
             ),
         ),
@@ -533,7 +533,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
         CapabilityRequirement(
             capability_id="registered_command_resolver",
             producers=(
-                CapabilityProducer(path="agent/contracts/tool_registry.py", symbols=("resolve_invocation",)),
+                CapabilityProducer(path="agent/skills/shared/tooling.py", symbols=("resolve_invocation",)),
             ),
             consumers=(
                 CapabilityConsumer(path="agent/contracts/validation/structural.py", reference="resolve_invocation"),
@@ -543,7 +543,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="sandbox_profile_registry",
             producers=(
                 CapabilityProducer(
-                    path="agent/contracts/tool_registry.py",
+                    path="agent/skills/shared/tooling.py",
                     symbols=("SandboxProfile", "ToolRegistrySnapshot"),
                 ),
             ),
@@ -585,7 +585,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="task_batch_wave",
             producers=(
                 CapabilityProducer(
-                    path="agent/contracts/build_schedule.py",
+                    path="agent/skills/builder/tasking.py",
                     symbols=("BuildTask", "BuildBatch", "BuildWave"),
                 ),
             ),
@@ -611,7 +611,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
         CapabilityRequirement(
             capability_id="wave_preimage_pinning",
             producers=(
-                CapabilityProducer(path="agent/contracts/build_schedule.py", symbols=("BuildWave",)),
+                CapabilityProducer(path="agent/skills/builder/tasking.py", symbols=("BuildWave",)),
                 CapabilityProducer(
                     path="agent/runtime/effect_executor.py",
                     symbols=("EffectExecutor.execute_admitted",),

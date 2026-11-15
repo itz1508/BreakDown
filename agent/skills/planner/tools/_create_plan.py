@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from agent.contracts.planning import BuildSpecification, CandidateSpecification
+from agent.skills.planner.types import BuildSpecification, CandidateSpecification
 
 
 def create_plan(

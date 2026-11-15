@@ -1,97 +1,186 @@
-"""Analyzer entrypoint: review code, logical, structure, broken path, mismatch wire, miswire.
+"""Host boundary for canonical Gap Analysis.
 
-Delegates to the gap analysis functions already in _structural.py.
-This is a skill entrypoint wrapper, not new logic.
+Analysis belongs to :mod:`agent.analyzer.gap_analysis`. This module only verifies
+immutable inputs, invokes the trusted walking-skeleton runner, persists the
+result, and issues a completion receipt for a valid result.
 """
 
 from __future__ import annotations
 
-from agent.contracts.validation.structural import (
-    ConcernCell,
-    ReferenceNeed,
-    SourceDeclaration,
-    TraceStep,
-    concern_gaps,
-    reference_gaps,
-    registry_resolution_gaps,
-    trace_gaps,
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+from agent.analyzer.gap_analysis import (
+    ComparableSystemAnalysis,
+    GapAnalyzer,
+    GapBacktestCorpus,
+    RegistrySnapshotSet,
+    SourceGroundedAnalysis,
+    StructuralGapRequest,
+    StructuralGapResult,
+    WalkingSkeletonObservation,
+    WorkflowConcernMatrix,
+    WorkflowContractBundle,
+    WorkflowExecutionTrace,
+)
+from agent.contracts.common import ArtifactRef, ContractModel, StepStatus
+from agent.contracts.host import ReceiptRef
+from agent.skills.shared.storage.storing import ArtifactStore
+from agent.skills.shared.storage.receipting import ReceiptStore
+
+__all__ = (
+    "ANALYZER_CAPABILITIES",
+    "HostGapAnalyzer",
+    "SkeletonRunner",
+    "StructuralGapError",
+    "StructuralGapOutcome",
+    "StructuralGapRequest",
+    "StructuralGapResult",
+    "structural_gap_receipt_subject",
 )
 
 
-def review_code(
-    needs: tuple[ReferenceNeed, ...],
-    sources: tuple[SourceDeclaration, ...],
-) -> list[str]:
-    """Review: every external reference must have an accountable owner and evidence."""
-    return reference_gaps(needs, sources)
+# Analyzer default capabilities: structural integrity layer.
+# These are the checks owned by the Analyzer role.
+# Verification/compliance capabilities (security, integration, state, recovery,
+# verification) belong to the Auditor role.
+ANALYZER_CAPABILITIES: tuple[str, ...] = (
+    "paths",
+    "dependencies",
+    "completeness",
+    "wiring",
+    "frontend",
+)
 
 
-def review_logical(
-    steps: tuple[TraceStep, ...],
-    external: tuple[SourceDeclaration, ...],
-) -> list[str]:
-    """Review: temporal producer-before-consumer closure and effect gates."""
-    return trace_gaps(steps, external)
+class StructuralGapError(RuntimeError):
+    """A required structural input or its evidence cannot be verified."""
 
 
-def review_structure(
-    stages: tuple[str, ...],
-    cells: tuple[ConcernCell, ...],
-) -> list[str]:
-    """Review: coverage matrix is complete only with evidenced owners or reasoned N/A."""
-    return concern_gaps(stages, cells)
+@dataclass(frozen=True)
+class StructuralGapOutcome:
+    result: StructuralGapResult
+    result_ref: ArtifactRef
+    completion_receipt_ref: ReceiptRef | None
 
 
-def detect_broken_path(
-    needs: tuple[ReferenceNeed, ...],
-    sources: tuple[SourceDeclaration, ...],
-) -> list[str]:
-    """Detect: references with no producer (broken path)."""
-    defined = {s.name for s in sources if s.owner and s.evidence_ref}
-    return [f"{n.consumer}: no producer for {n.name}" for n in needs if n.name not in defined]
+SkeletonRunner = Callable[[StructuralGapRequest], WalkingSkeletonObservation]
 
 
-def detect_mismatch_wire(
-    required_registry_ids: tuple[str, ...],
-    sources: tuple[SourceDeclaration, ...],
-) -> list[str]:
-    """Detect: registry entries without effect-time resolver (mismatch wire)."""
-    return registry_resolution_gaps(required_registry_ids, sources)
+def structural_gap_receipt_subject(result: StructuralGapResult, digest: str) -> str:
+    """Bind a host receipt to the exact candidate and analysis result."""
+    return (
+        f"structural_gap_pass:{result.task_id}:{result.run_id}:"
+        f"{result.request_id}:{result.request_revision}:"
+        f"{result.candidate_specification_ref.artifact_digest}:{digest}"
+    )
 
 
-def detect_miswire(
-    steps: tuple[TraceStep, ...],
-    external: tuple[SourceDeclaration, ...],
-) -> list[str]:
-    """Detect: consumer before producer, undeclared outputs, missing gates (miswire)."""
-    errors: list[str] = []
-    available = {item.name for item in external if item.owner and item.evidence_ref}
-    for index, step in enumerate(steps):
-        for missing in sorted(step.needs - available):
-            errors.append(f"{step.step_id}: nothing produces {missing}")
-        if step.effect and not step.gate:
-            errors.append(f"{step.step_id}: effect {step.effect} has no gate")
-        for output in sorted(set(step.ephemeral_outputs) - step.produces):
-            errors.append(f"{step.step_id}: undeclared ephemeral output {output}")
-        available.update(step.produces)
-    return errors
+class HostGapAnalyzer:
+    """Verify and persist canonical Gap Analysis without owning its decisions."""
 
+    def __init__(self, artifacts: ArtifactStore, receipts: ReceiptStore) -> None:
+        self._artifacts = artifacts
+        self._receipts = receipts
+        self._analyzer = GapAnalyzer()
 
-def run(
-    *,
-    needs: tuple[ReferenceNeed, ...] = (),
-    sources: tuple[SourceDeclaration, ...] = (),
-    steps: tuple[TraceStep, ...] = (),
-    stages: tuple[str, ...] = (),
-    cells: tuple[ConcernCell, ...] = (),
-    required_registry_ids: tuple[str, ...] = (),
-) -> dict[str, list[str]]:
-    """Run all review passes and return findings by category."""
-    return {
-        "review_code": review_code(needs, sources),
-        "review_logical": review_logical(steps, sources),
-        "review_structure": review_structure(stages, cells),
-        "detect_broken_path": detect_broken_path(needs, sources),
-        "detect_mismatch_wire": detect_mismatch_wire(required_registry_ids, sources),
-        "detect_miswire": detect_miswire(steps, sources),
-    }
+    def _get(self, ref: ArtifactRef, model: type[ContractModel]) -> ContractModel:
+        try:
+            content = self._artifacts.get_verified(ref.artifact_id, ref.artifact_revision)
+            digest = self._artifacts.get_digest(ref.artifact_id, ref.artifact_revision)
+            if digest != ref.artifact_digest:
+                raise StructuralGapError(f"artifact digest mismatch: {ref.artifact_id}")
+            return model.model_validate_json(content)
+        except StructuralGapError:
+            raise
+        except Exception as exc:
+            raise StructuralGapError(f"cannot validate {ref.artifact_id}: {exc}") from exc
+
+    def _verify(self, ref: ArtifactRef) -> None:
+        if self._artifacts.get_digest(ref.artifact_id, ref.artifact_revision) != ref.artifact_digest:
+            raise StructuralGapError(f"missing or mismatched artifact: {ref.artifact_id}")
+        self._artifacts.get_verified(ref.artifact_id, ref.artifact_revision)
+
+    def evaluate(
+        self,
+        request: StructuralGapRequest,
+        *,
+        walking_skeleton_runner: SkeletonRunner | None = None,
+    ) -> StructuralGapOutcome:
+        """Load exact inputs, delegate analysis, and persist the result."""
+        self._verify(request.candidate_specification_ref)
+        workflow = self._get(request.workflow_contract_bundle_ref, WorkflowContractBundle)
+        registry = self._get(request.registry_snapshot_set_ref, RegistrySnapshotSet)
+        trace = self._get(request.workflow_trace_ref, WorkflowExecutionTrace)
+        matrix = self._get(request.concern_matrix_ref, WorkflowConcernMatrix)
+        corpus = self._get(request.backtest_corpus_ref, GapBacktestCorpus)
+        grounded = self._get(request.source_grounded_analysis_ref, SourceGroundedAnalysis)
+        comparable = self._get(request.comparable_system_analysis_ref, ComparableSystemAnalysis)
+        assert isinstance(workflow, WorkflowContractBundle)
+        assert isinstance(registry, RegistrySnapshotSet)
+        assert isinstance(trace, WorkflowExecutionTrace)
+        assert isinstance(matrix, WorkflowConcernMatrix)
+        assert isinstance(corpus, GapBacktestCorpus)
+        assert isinstance(grounded, SourceGroundedAnalysis)
+        assert isinstance(comparable, ComparableSystemAnalysis)
+
+        for case in corpus.historical_cases:
+            self._verify(case.case_evidence_ref)
+        self._verify(grounded.source_snapshot_ref)
+        for ref in (*grounded.evidence_refs, *comparable.evidence_refs):
+            self._verify(ref)
+
+        skeleton = self._run_skeleton(request, walking_skeleton_runner)
+        result = self._analyzer.analyze(
+            request,
+            workflow,
+            registry,
+            trace,
+            matrix,
+            corpus,
+            grounded,
+            comparable,
+            skeleton,
+        )
+        return self._persist(result)
+
+    def _run_skeleton(
+        self,
+        request: StructuralGapRequest,
+        runner: SkeletonRunner | None,
+    ) -> WalkingSkeletonObservation | None:
+        if runner is None:
+            return None
+        try:
+            observation = runner(request)
+        except Exception as exc:
+            return WalkingSkeletonObservation(completed=False, error=f"execution failed: {exc}")
+        if observation.evidence_ref is not None:
+            self._verify(observation.evidence_ref)
+        return observation
+
+    def _persist(self, result: StructuralGapResult) -> StructuralGapOutcome:
+        result_id = (
+            f"structural-gap-{result.task_id}-{result.run_id}-{result.candidate_specification_ref.artifact_digest}"
+        )
+        digest = self._artifacts.put_immutable(result, result_id, 1, "structural_analysis_result", "1.0")
+        result_ref = ArtifactRef(
+            artifact_id=result_id,
+            artifact_revision=1,
+            artifact_digest=digest,
+            contract_id="structural_analysis_result",
+            contract_version="1.0",
+            serializer_profile="rfc8785-jcs-sha256-v1",
+        )
+        if result.execution_status is not StepStatus.COMPLETED or result.findings:
+            return StructuralGapOutcome(result=result, result_ref=result_ref, completion_receipt_ref=None)
+
+        receipt_id = f"gap-pass-{result_id}"
+        _, receipt_digest = self._receipts.issue_verified(
+            receipt_id,
+            "host",
+            structural_gap_receipt_subject(result, digest),
+        )
+        receipt = ReceiptRef(receipt_id=receipt_id, receipt_digest=receipt_digest, issuer_id="host")
+        return StructuralGapOutcome(result=result, result_ref=result_ref, completion_receipt_ref=receipt)

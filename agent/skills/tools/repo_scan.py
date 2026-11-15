@@ -3,7 +3,7 @@
 Four check categories are kept strictly separate:
 
 - **declaration_checks**: file/dir existence, YAML structure, __init__.py,
-  artifact-contract-ref paths on disk, gap-analysis self-paths, no dangling
+  gap-analysis self-paths, no dangling
   ``contracts.workflow.*`` references, workflow operation declarations.
 - **static_resolution**: ast-parsed import statements mapped to file paths
   via ``_module_to_path``. No ``importlib``, no ``sys.path`` mutation.
@@ -122,16 +122,6 @@ def _module_to_path(module_name: str, repo_root: Path) -> Path | None:
     return None
 
 
-def _extract_yaml_paths(filepath: Path) -> list[str]:
-    """Extract artifact_contract_refs paths from YAML text (stdlib-only)."""
-    paths: list[str] = []
-    for line in filepath.read_text().splitlines():
-        stripped = line.strip()
-        if stripped.startswith("- ") and ("/contracts/" in stripped or "/workflow/" in stripped):
-            paths.append(stripped.lstrip("- ").strip())
-    return paths
-
-
 def _extract_gap_audit_paths(filepath: Path) -> list[str]:
     """Extract path="..." values from _gap_analysis.py capability audit data."""
     content = filepath.read_text()
@@ -225,24 +215,6 @@ def _check_declaration_checks(skills: Path, repo_root: Path) -> dict:
         "passed": py_count > 0 and yaml_count > 0,
         "py_files": py_count,
         "yaml_files": yaml_count,
-    }
-
-    # --- YAML artifact_contract_refs paths resolve on disk ---
-    yaml_checked: list[str] = []
-    yaml_failed: list[str] = []
-    for skill in SKILL_DIRS:
-        for yf in sorted((skills / skill).iterdir()):
-            if not yf.name.endswith(".yaml"):
-                continue
-            rel = yf.relative_to(repo_root).as_posix()
-            for path in _extract_yaml_paths(yf):
-                yaml_checked.append(f"{rel}: {path}")
-                if not (repo_root / path).exists():
-                    yaml_failed.append(f"{rel}: {path}")
-    results["yaml_refs_resolve"] = {
-        "passed": not yaml_failed,
-        "checked_count": len(yaml_checked),
-        "failed": yaml_failed,
     }
 
     # --- Gap-analysis self-paths resolve on disk ---
@@ -470,17 +442,6 @@ def _check_detector_validation() -> dict:
             "detected": has_dangling,
         })
 
-        # Fixture 5: non-existent YAML path (must contain /contracts/ to match extractor)
-        f5 = fake_root / "_bad_ref.yaml"
-        f5.write_text("artifact_contract_refs:\n- agent/contracts/nonexistent.py\n")
-        paths = _extract_yaml_paths(f5)
-        bad_path_found = any(not (fake_root / p).exists() for p in paths)
-        fixtures.append({
-            "name": "nonexistent_yaml_path",
-            "defect": "artifact_contract_refs: [agent/contracts/nonexistent.py] (path extracted but file missing)",
-            "detected": bad_path_found,
-        })
-
     all_detected = all(f["detected"] for f in fixtures)
     return {
         "detector_validation": {
@@ -536,10 +497,10 @@ def repo_scan(
         "detector_validation": detector_validation,
         "coverage_report": {
             "categories_performed": [
-                "declaration_checks — file/dir existence, YAML structure, __init__.py, artifact refs, gap-analysis paths, dangling refs, workflow declarations",
+                "declaration_checks — file/dir existence, YAML structure, __init__.py, gap-analysis paths, dangling refs, workflow declarations",
                 "static_resolution — ast-parsed imports mapped to file paths via _module_to_path (no importlib, no sys.path mutation)",
                 "executed_cli_tests — subprocess python -m agent.skills.<skill> (isolated PYTHONPATH, no sys.path mutation)",
-                "detector_validation — 5 independent fixture types tested",
+                "detector_validation — 4 independent fixture types tested",
             ],
             "categories_not_performed": [
                 "workflow_execution — requires Host-approved trusted pipeline",

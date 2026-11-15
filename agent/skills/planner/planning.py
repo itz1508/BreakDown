@@ -5,9 +5,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from contracts.workflow.planner.scanner import ScannerResult
-    from contracts.workflow.system.host import HostDispatchEnvelope
-    from system.host.skill_dispatch import PlanningArguments, SkillContext
+    # ScannerResult is host-owned; skill-side uses Any until host provides it.
+    from typing import Any as ScannerResult
+
+    from agent.contracts.host import HostDispatchEnvelope
 
 
 class PlanningPipelineNotActive(RuntimeError):
