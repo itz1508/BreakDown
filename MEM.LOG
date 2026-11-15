@@ -57,3 +57,12 @@ Read first each session; newest entries at the top. Stable lessons migrate to
   act-mode instruction to start the system/scanner build is that
   explicit instruction for the build; all other frozen items (guard
   subpath list correction, evidence separation review) remain frozen.
+- 2026-11-14 — Queue storage location (user ruling): the queue requires
+  durable storage and it lives in system/storage/ -- never in agents/.
+  Moved from agents/shared/queue + agents/shared/events +
+  agents/system/_storage.py into system/storage/ (task_todo, exec_todo,
+  event, _ref/sys_ref, queue_store/Storage). agents/system re-exports
+  Storage/sys_ref/sys_storage for compatibility. The guard ban on
+  system/storage/ is removed per this ruling; the other guard entries
+  remain frozen. This supersedes the pivot record phrasing "agents/shared
+  models" for the queue records only; agents/shared/io is untouched.

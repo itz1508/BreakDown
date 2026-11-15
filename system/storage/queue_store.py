@@ -1,8 +1,11 @@
-"""File-backed storage: todos, exec revisions, events and process output.
+"""File-backed queue storage: todos, exec revisions, events and process output.
 
 No database is introduced. Every save is an append: a new numbered file per
 revision, one JSONL file per todo's event log, one text file per captured
 output stream. Reading a todo or exec returns the highest revision.
+
+This is the queue's durable store (user ruling: the queue persists under
+system/storage/, never in agents/). The queue models live in this package.
 """
 
 from __future__ import annotations
@@ -11,10 +14,10 @@ import json
 from pathlib import Path
 from typing import Any
 
-from agents.shared.events.event import Event
-from agents.shared.queue.exec_todo import ExecTodo
-from agents.shared.queue.task_todo import TaskTodo
-from agents.system._ref import sys_ref
+from system.storage._ref import sys_ref
+from system.storage.event import Event
+from system.storage.exec_todo import ExecTodo
+from system.storage.task_todo import TaskTodo
 
 _DEFAULT_ROOT = ".oneshot-state"
 

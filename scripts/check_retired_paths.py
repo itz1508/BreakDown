@@ -13,7 +13,6 @@ RETIRED_PREFIXES = (
     "deployment/modal/sandbox_v3/",
     "agent/",
     "system/host/",
-    "system/storage/",
     "system/bootstrap/",
     "system/settings/",
     "system/runtime/",

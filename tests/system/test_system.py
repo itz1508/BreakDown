@@ -6,7 +6,6 @@ import json
 
 import pytest
 
-from agents.shared.queue import create_todo
 from agents.system import (
     UnknownSkillActionError,
     call_ref,
@@ -15,7 +14,7 @@ from agents.system import (
     sys_runtime,
     sys_storage,
 )
-from agents.system._storage import Storage
+from system.storage import Storage, create_todo
 
 
 def test_sys_ref_known_kinds_and_rejection() -> None:
@@ -50,7 +49,7 @@ def test_storage_round_trip_and_revisions(tmp_path) -> None:
 
 
 def test_storage_events_are_append_ordered(tmp_path) -> None:
-    from agents.shared.events import create_event
+    from system.storage import create_event
 
     storage = sys_storage(tmp_path)
     todo = create_todo(skill="auditor", action="discovery", payload={})

@@ -79,3 +79,10 @@ Not done / differs from intent:
   mypy reduced to the single frozen verify_all.py orphan. Untouched:
   host_gap_analyzer.py (frozen evidence-review candidate),
   shared/host/, shared/storage/, queue location ruling (pending).
+- 2026-11-14 — Queue storage relocation: system/storage/ now owns the
+  queue (TaskTodo, ExecTodo, Event models + file-backed append-only
+  Storage + sys_ref). Old homes deleted: agents/shared/queue,
+  agents/shared/events, agents/system/_storage.py, agents/system/_ref.py.
+  Guard: system/storage/ ban removed by user ruling. Evidence: full
+  suite all-pass, ruff check+format clean, guard accepts 224 tracked
+  paths, mypy reduced to the single frozen verify_all.py orphan.

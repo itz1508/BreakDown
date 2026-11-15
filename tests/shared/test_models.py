@@ -8,8 +8,7 @@ import pytest
 from pydantic import ValidationError
 
 from agents.shared.io import Request, error_response, ok_response
-from agents.shared.queue import TaskTodo, create_exec_todo, create_todo, finish_exec_todo
-from agents.shared.queue.exec_todo import ExecStatus
+from system.storage import ExecStatus, TaskTodo, create_exec_todo, create_todo, finish_exec_todo
 
 
 def test_create_todo_sets_identity_and_revision_one() -> None:

@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-from agents.shared.events.event import create_event
-from agents.shared.queue.exec_todo import ExecTodo
-from agents.shared.queue.task_todo import TaskTodo
 from agents.system._delegating import delegating
-from agents.system._storage import Storage
+from system.storage import ExecTodo, Storage, TaskTodo, create_event
 
 
 async def coordinate(

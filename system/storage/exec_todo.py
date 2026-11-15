@@ -9,7 +9,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from agents.shared.queue.task_todo import TaskTodo
+from system.storage.task_todo import TaskTodo
 
 
 def _utcnow() -> datetime:
