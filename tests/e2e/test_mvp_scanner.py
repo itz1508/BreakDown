@@ -1,13 +1,13 @@
-import pytest
-
-pytestmark = pytest.mark.e2e
-
 """HTTP, SSE replay and CLI all consume the existing HostController Scanner."""
 
 from __future__ import annotations
 
 import json
 import sqlite3
+
+import pytest
+
+pytestmark = pytest.mark.e2e
 
 from fastapi.testclient import TestClient
 from mvp.service import MVPService
