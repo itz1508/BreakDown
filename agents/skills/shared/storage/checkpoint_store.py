@@ -127,33 +127,6 @@ class CheckpointStore:
         finally:
             conn.close()
 
-
-class Checkpoint(ContractModel):
-    """Full checkpoint model with artifact, delegation, and operation refs.
-
-    Owned by this store: the checkpoint model is a storage identity and
-    its only consumer was this module (relocated verbatim from
-    ``agents/skills/shared/contracts/workflow/system/host.py``).
-    """
-
-    checkpoint_id: str = Field(min_length=1)
-    checkpoint_revision: int = Field(ge=1)
-    expected_previous_revision: int = Field(ge=0, default=0)
-    checkpoint_digest: Sha256
-    task_id: str = Field(min_length=1)
-    run_id: str = Field(min_length=1)
-    stage: str = Field(min_length=1)
-    phase: str = Field(min_length=1)
-    stage_revision: int = Field(ge=1)
-    repository_identity_ref: str | None = None
-    artifact_refs: tuple[ArtifactRef, ...] = ()
-    delegation_refs: tuple[str, ...] = ()
-    provider_session_refs: tuple[str, ...] = ()
-    completed_operation_ids: tuple[str, ...] = ()
-    uncertain_operation_refs: tuple[str, ...] = ()
-    resume_point: str | None = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-
     def load_checkpoint(self, task_id: str) -> tuple[int, dict[str, Any], str] | None:
         """Load the latest checkpoint for a task.
 
@@ -203,3 +176,30 @@ class Checkpoint(ContractModel):
             conn.commit()
         finally:
             conn.close()
+
+
+class Checkpoint(ContractModel):
+    """Full checkpoint model with artifact, delegation, and operation refs.
+
+    Owned by this store: the checkpoint model is a storage identity and
+    its only consumer was this module (relocated verbatim from
+    ``agents/skills/shared/contracts/workflow/system/host.py``).
+    """
+
+    checkpoint_id: str = Field(min_length=1)
+    checkpoint_revision: int = Field(ge=1)
+    expected_previous_revision: int = Field(ge=0, default=0)
+    checkpoint_digest: Sha256
+    task_id: str = Field(min_length=1)
+    run_id: str = Field(min_length=1)
+    stage: str = Field(min_length=1)
+    phase: str = Field(min_length=1)
+    stage_revision: int = Field(ge=1)
+    repository_identity_ref: str | None = None
+    artifact_refs: tuple[ArtifactRef, ...] = ()
+    delegation_refs: tuple[str, ...] = ()
+    provider_session_refs: tuple[str, ...] = ()
+    completed_operation_ids: tuple[str, ...] = ()
+    uncertain_operation_refs: tuple[str, ...] = ()
+    resume_point: str | None = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
