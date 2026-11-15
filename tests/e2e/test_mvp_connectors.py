@@ -12,7 +12,7 @@ pytest.importorskip("httpx")
 from fastapi.testclient import TestClient
 
 import mvp.api
-from agent.runtime.providers.base import ProviderError
+from system.host.providers.base import ProviderError
 from mvp.service import MVPService
 
 

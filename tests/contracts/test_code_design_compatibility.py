@@ -1,8 +1,8 @@
 """New CodeDesign naming preserves persisted CodeIntent wire compatibility."""
 
-from agent.contracts.audit_discovery import AuditDiscoveryPackage, CodeDesign, CodeIntent
-from agent.contracts.code_design import CodeDesignReview
-from agent.contracts.planning import CodeIntentReview, PlanningRecord
+from contracts.workflow.auditor._discovery import AuditDiscoveryPackage, CodeDesign, CodeIntent
+from contracts.workflow.auditor.code_design import CodeDesignReview
+from contracts.workflow.planner.specification import CodeIntentReview, PlanningRecord
 
 
 def test_code_design_alias_preserves_discriminated_union() -> None:

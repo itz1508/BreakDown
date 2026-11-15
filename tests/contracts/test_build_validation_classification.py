@@ -3,13 +3,13 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.build_validation import (
+from contracts.workflow.verifier.build_validation import (
     CriterionResult,
     E2EResult,
     ObservedCriterionResult,
     ValidationIssueInput,
 )
-from agent.contracts.common import DiagnosticStatus
+from contracts.workflow.common import DiagnosticStatus
 
 ISSUE_TYPES = (
     "compatibility",

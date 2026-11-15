@@ -2,16 +2,16 @@
 
 import pytest
 
-from agent.runtime.providers.base import (
+from system.host.providers.base import (
     CapabilityDescriptor,
     ProviderError,
     ProviderRequest,
     ProviderResult,
     UnsupportedProviderError,
 )
-from agent.runtime.providers.echo import EchoProvider
-from agent.runtime.providers.meta import MetaProvider
-from agent.runtime.providers.registry import ProviderRegistry
+from system.host.providers.echo import EchoProvider
+from system.host.providers.meta import MetaProvider
+from system.host.providers.registry import ProviderRegistry
 
 
 class TestEchoProvider:

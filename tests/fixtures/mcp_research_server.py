@@ -6,8 +6,8 @@ import json
 
 from mcp.server.mcpserver import MCPServer
 
-from agent.contracts.research import Requirement, ResearchRecord
-from agent.runtime.canonical_serialization import SERIALIZER_PROFILE, digest_model
+from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
 from mvp.mcp_research import research_artifact_id
 
 server = MCPServer("oneshot-research-test")

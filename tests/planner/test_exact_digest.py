@@ -1,10 +1,10 @@
 """Scanner exact digest tests — SCN01-SCN10."""
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.research import Requirement, ResearchRecord
-from agent.contracts.scanner import ScannerCapabilityID, ScannerOutcome, ScannerRequest
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.scanner_gateway import ScannerGateway
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from contracts.workflow.planner.scanner import ScannerCapabilityID, ScannerOutcome, ScannerRequest
+from system.storage.artifact_store import ArtifactStore
+from system.host.scanner_gateway import ScannerGateway
 
 
 def make_ref(aid="cand-001", rev=1, digest=None):
@@ -125,7 +125,7 @@ class TestScannerGateway:
 
     def test_scan_finding_shape(self):
         """SCN10: Scanner finding has required fields."""
-        from agent.contracts.scanner import ScannerFinding
+        from contracts.workflow.planner.scanner import ScannerFinding
 
         finding = ScannerFinding(
             finding_id="find-001",

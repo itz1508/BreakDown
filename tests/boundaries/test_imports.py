@@ -19,19 +19,19 @@ class TestImportBoundaries:
         return imports
 
     RUNTIME_MODULES = {
-        "agent.runtime.artifact_store",
-        "agent.runtime.receipt_store",
-        "agent.runtime.checkpoint_store",
-        "agent.runtime.authorization",
-        "agent.runtime.controller",
-        "agent.runtime.effect_executor",
-        "agent.runtime.specification_freezer",
-        "agent.runtime.package_lock",
-        "agent.runtime.build_admission",
-        "agent.runtime.scanner_gateway",
-        "agent.runtime.recovery",
-        "agent.runtime.event_store",
-        "agent.runtime.loaders",
+        "system.storage.artifact_store",
+        "system.storage.receipt_store",
+        "system.storage.checkpoint_store",
+        "system.host.policy_enforce",
+        "system.host.workflow_control",
+        "system.host.effect_executor",
+        "system.host.specification_freezer",
+        "system.host.package_lock",
+        "system.host.build_admission",
+        "system.host.scanner_gateway",
+        "system.host.recovery",
+        "system.storage.event_store",
+        "system.host.loaders",
     }
 
     def test_contracts_no_runtime_imports(self):
@@ -48,7 +48,7 @@ class TestImportBoundaries:
 
     def test_validation_no_io_imports(self):
         """B01b: Validation modules do not import IO modules."""
-        validation_dir = pathlib.Path("agent/contracts/validation")
+        validation_dir = pathlib.Path("contracts/workflow/validation")
         io_modules = {"sqlite3", "os", "pathlib", "shutil", "subprocess", "socket"}
         for py_file in validation_dir.rglob("*.py"):
             if py_file.name == "__init__.py":

@@ -4,21 +4,21 @@ from pathlib import Path
 
 import pytest
 
-from agent.contracts.build import BuildActionStatus
-from agent.contracts.build_schedule import BuildBatch, BuildTask, BuildWave, VerifiedWaveResult
-from agent.contracts.common import ArtifactRef
-from agent.contracts.host import ReceiptRef
-from agent.contracts.research import ResearchIntent
-from agent.contracts.task_todo import TaskTodo
-from agent.runtime.research_catalog import ResearchCatalog
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.authorization import AuthorizationEngine
-from agent.runtime.build_admission import BuildAdmission
-from agent.runtime.canonical_serialization import SERIALIZER_PROFILE, digest_raw
-from agent.runtime.checkpoint_store import CheckpointStore
-from agent.runtime.effect_executor import EffectExecutor
-from agent.runtime.receipt_store import ReceiptStore
-from agent.runtime.runtime_root_registry import RuntimeRootRegistry
+from contracts.workflow.builder.build import BuildActionStatus
+from contracts.workflow.builder.schedule import BuildBatch, BuildTask, BuildWave, VerifiedWaveResult
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.system.host import ReceiptRef
+from contracts.workflow.researcher.research import ResearchIntent
+from contracts.workflow.planner.task_todo import TaskTodo
+from system.host.research_catalog import ResearchCatalog
+from system.storage.artifact_store import ArtifactStore
+from system.host.policy_enforce import AuthorizationEngine
+from system.host.build_admission import BuildAdmission
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from system.storage.checkpoint_store import CheckpointStore
+from system.host.effect_executor import EffectExecutor
+from system.storage.receipt_store import ReceiptStore
+from system.storage.runtime_root_registry import RuntimeRootRegistry
 
 
 def move_wave(source_digest: str) -> BuildWave:

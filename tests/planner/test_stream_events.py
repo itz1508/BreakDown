@@ -8,10 +8,10 @@ from threading import Event
 
 import pytest
 
-import agent.contracts.validation.planning as planning
-from agent.contracts.scanner import ScannerOutcome
-from agent.runtime.authorization import Capability
-from agent.runtime.controller import HostController
+import contracts.workflow.validation.planning as planning
+from contracts.workflow.planner.scanner import ScannerOutcome
+from system.host.policy_enforce import Capability
+from system.host.workflow_control import HostController
 from tests.planner.test_decision_trace import artifact_ref, make_planning_record, revised_record
 
 
@@ -177,8 +177,8 @@ def test_check_events_are_persisted_while_detector_is_still_executing(tmp_path, 
 def test_graph_uniqueness_cycle_and_unknown_evidence_are_independent(tmp_path):
     from pydantic import BaseModel
 
-    from agent.contracts.scanner import CriterionResult, CriterionValidity
-    from agent.runtime.scanner_gateway import ScannerGateway
+    from contracts.workflow.planner.scanner import CriterionResult, CriterionValidity
+    from system.host.scanner_gateway import ScannerGateway
 
     class Graph(BaseModel):
         actions: list[dict[str, object]]
@@ -209,7 +209,7 @@ def test_graph_uniqueness_cycle_and_unknown_evidence_are_independent(tmp_path):
 
 
 def test_event_persistence_failure_blocks_scan_and_listener_failure_does_not(tmp_path, monkeypatch):
-    from agent.runtime.scanner_gateway import ScannerGatewayError
+    from system.host.scanner_gateway import ScannerGatewayError
 
     host = HostController(tmp_path)
     record = make_planning_record()
@@ -249,7 +249,7 @@ def test_event_persistence_failure_blocks_scan_and_listener_failure_does_not(tmp
 def test_unexecuted_supported_capability_is_not_marked_checked(tmp_path):
     from pydantic import BaseModel
 
-    from agent.runtime.scanner_gateway import ScannerGateway
+    from system.host.scanner_gateway import ScannerGateway
 
     class Graph(BaseModel):
         actions: list[dict[str, object]]

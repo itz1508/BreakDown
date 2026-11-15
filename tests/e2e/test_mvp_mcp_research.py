@@ -9,9 +9,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from agent.contracts.research import Requirement, ResearchRecord
-from agent.runtime.canonical_serialization import SERIALIZER_PROFILE, digest_model
-from agent.runtime.providers.base import ProviderError, ProviderRequest
+from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_model
+from system.host.providers.base import ProviderError, ProviderRequest
 from mvp.mcp_research import (
     MCPResearchAdapter,
     _tool_json,
@@ -72,7 +72,7 @@ def request(task_id: str) -> ProviderRequest:
 
 
 def test_adapter_registers_class_without_shadowing_echo():
-    from agent.runtime.providers.registry import ProviderRegistry
+    from system.host.providers.registry import ProviderRegistry
 
     registry = ProviderRegistry()
     register_mcp_research(registry)
@@ -344,7 +344,7 @@ def test_edit_rejected_during_research_and_not_persisted(tmp_path, monkeypatch):
 
 
 def test_recovery_event_reports_inner_failure_class(tmp_path, monkeypatch):
-    from agent.contracts.work_todo import WorkStatus
+    from contracts.workflow.planner.work_todo import WorkStatus
 
     service = MVPService(tmp_path)
     task_id = service.create("Inspect sources")["task_id"]
@@ -374,7 +374,7 @@ def test_host_evidence_paths_are_forwarded_to_real_mcp_request(tmp_path, monkeyp
     service = MVPService(tmp_path)
     task_id = service.create("Inspect repository source")["task_id"]
     monkeypatch.setenv(
-        "ONESHOT_RESEARCH_WORKSPACE_PATHS_JSON", _json.dumps(["README.md", "agent/contracts/research.py"])
+        "ONESHOT_RESEARCH_WORKSPACE_PATHS_JSON", _json.dumps(["README.md", "contracts/workflow/researcher/research.py"])
     )
     monkeypatch.setenv("MCP_WORKSPACE_ROOT", str(tmp_path))
     monkeypatch.setenv("MCP_TRUSTED_ANCESTRY", "true")
@@ -386,7 +386,7 @@ def test_host_evidence_paths_are_forwarded_to_real_mcp_request(tmp_path, monkeyp
 
     monkeypatch.setattr("mvp.mcp_research._invoke_tool", invoke)
     assert execute_research(service, task_id)["status"] == "completed"
-    assert captured == [{"workspace_paths": ["README.md", "agent/contracts/research.py"], "snapshots": []}]
+    assert captured == [{"workspace_paths": ["README.md", "contracts/workflow/researcher/research.py"], "snapshots": []}]
 
 
 @pytest.mark.parametrize(
@@ -428,7 +428,7 @@ def test_host_evidence_requires_trusted_workspace_root(tmp_path, monkeypatch):
 
 def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch):
     """The existing host must allocate, verify, and persist the Research return route."""
-    from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult
+    from contracts.workflow.system.host import HostDispatchEnvelope, HostDispatchResult
 
     service = MVPService(tmp_path)
     task = service.create("Inspect authorized repository evidence")
@@ -460,9 +460,9 @@ def test_live_research_host_dispatch_and_return_persisted(tmp_path, monkeypatch)
 
 
 def test_dispatch_rejects_wrong_workflow_role_before_upstream_call(tmp_path, monkeypatch):
-    from agent.contracts.common import ArtifactRef
-    from agent.runtime.canonical_serialization import SERIALIZER_PROFILE
-    from agent.runtime.controller import TransitionError
+    from contracts.workflow.common import ArtifactRef
+    from system.storage.canonical_serialization import SERIALIZER_PROFILE
+    from system.host.workflow_control import TransitionError
 
     service = MVPService(tmp_path)
     task = service.create("Inspect authorized repository evidence")

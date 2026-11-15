@@ -3,8 +3,8 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.planning import (
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.specification import (
     BuildPhase,
     BuildSpecification,
     CandidateSpecification,
@@ -23,7 +23,7 @@ from agent.contracts.planning import (
     RemoveAction,
     RequirementCoverage,
 )
-from agent.contracts.validation.planning import (
+from contracts.workflow.validation.planning import (
     validate_action_graph,
     validate_decisions,
     validate_paths,

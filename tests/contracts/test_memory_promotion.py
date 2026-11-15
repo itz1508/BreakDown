@@ -3,29 +3,29 @@
 import pytest
 from pydantic import BaseModel
 
-from agent.contracts.build import BuildActionExecution, BuildActionStatus, BuildRecord
-from agent.contracts.build_memory import KnowledgeKind, VerifiedBuildKnowledge
-from agent.contracts.build_validation import (
+from contracts.workflow.builder.build import BuildActionExecution, BuildActionStatus, BuildRecord
+from contracts.context.build_memory import KnowledgeKind, VerifiedBuildKnowledge
+from contracts.workflow.verifier.build_validation import (
     BuildValidationRecord,
     CriterionResult,
     E2EResult,
     ObservedCriterionResult,
     ValidationIssueInput,
 )
-from agent.contracts.common import ArtifactRef, DiagnosticStatus
-from agent.contracts.host import (
+from contracts.workflow.common import ArtifactRef, DiagnosticStatus
+from contracts.workflow.system.host import (
     BuildAdmissionReceipt,
     PackageLockReceipt,
     ReceiptRef,
     admission_receipt_subject,
 )
-from agent.contracts.plan_template import PlanTemplate
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.canonical_serialization import SERIALIZER_PROFILE
-from agent.runtime.memory_promotion import HostMemoryManager, MemoryPromotionError
-from agent.runtime.plan_templates import PlanTemplateService
-from agent.runtime.receipt_store import ReceiptStore
-from agent.runtime.stage_journal import StageJournalService
+from contracts.workflow.planner.template import PlanTemplate
+from system.storage.artifact_store import ArtifactStore
+from system.storage.canonical_serialization import SERIALIZER_PROFILE
+from system.host.memory_promotion import HostMemoryManager, MemoryPromotionError
+from system.host.plan_templates import PlanTemplateService
+from system.storage.receipt_store import ReceiptStore
+from system.storage.stage_journal import StageJournalService
 
 
 class Evidence(BaseModel):

@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.validation.structural import (
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.validation.structural import (
     CONCERNS,
     ConcernCell,
     PersistenceDeclaration,
@@ -29,8 +29,8 @@ from agent.skills.planner.checks.gap_analysis import (
     WorkflowContractBundle,
     WorkflowExecutionTrace,
 )
-from agent.runtime.controller import HostController
-from agent.runtime.host_gap_analyzer import StructuralGapOutcome
+from system.host.workflow_control import HostController
+from system.host.host_gap_analyzer import StructuralGapOutcome
 
 
 class FixturePayload(BaseModel):

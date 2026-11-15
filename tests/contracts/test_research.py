@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.research import (
+from contracts.workflow.researcher.research import (
     AcceptanceCriterion,
     AuthorizationStatus,
     CriteriaStatus,
@@ -13,7 +13,7 @@ from agent.contracts.research import (
     ResearchClaim,
     ResearchRecord,
 )
-from agent.contracts.validation.research import (
+from contracts.workflow.validation.research import (
     validate_criterion_binding,
     validate_research_ids,
 )

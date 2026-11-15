@@ -4,7 +4,7 @@ import hashlib
 
 from pydantic import BaseModel
 
-from agent.runtime.canonical_serialization import (
+from system.storage.canonical_serialization import (
     SERIALIZER_PROFILE,
     canonical_bytes,
     canonical_bytes_from_dict,

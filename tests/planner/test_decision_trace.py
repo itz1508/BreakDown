@@ -8,14 +8,14 @@ from time import perf_counter_ns
 import pytest
 from pydantic import BaseModel
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.planning import (
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.specification import (
     BuildSpecification,
     CandidateSpecification,
     CreateAction,
     PlanningRecord,
 )
-from agent.contracts.scanner import (
+from contracts.workflow.planner.scanner import (
     CriterionResult,
     CriterionValidity,
     ObservationState,
@@ -23,14 +23,14 @@ from agent.contracts.scanner import (
     ScannerResult,
     ScannerTraceStep,
 )
-from agent.contracts.validation.planning import (
+from contracts.workflow.validation.planning import (
     parse_action_dependency_facts,
     scan_action_dependencies,
 )
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.authorization import AuthorizationError, Capability
-from agent.runtime.controller import HostController, TransitionError
-from agent.runtime.scanner_gateway import ScannerGateway
+from system.storage.artifact_store import ArtifactStore
+from system.host.policy_enforce import AuthorizationError, Capability
+from system.host.workflow_control import HostController, TransitionError
+from system.host.scanner_gateway import ScannerGateway
 
 
 class CandidatePayload(BaseModel):
@@ -299,7 +299,7 @@ def test_unavailable_telemetry_exporter_does_not_block_persistence_or_expose_pay
     import sys
     from types import SimpleNamespace
 
-    import agent.runtime.scanner_telemetry as telemetry
+    import system.host.scanner_telemetry as telemetry
 
     captured = []
 
@@ -336,7 +336,7 @@ def test_gap_receipt_remains_mandatory(tmp_path):
 
 
 def test_disabled_logfire_never_blocks_persistence(tmp_path, monkeypatch):
-    import agent.runtime.scanner_telemetry as telemetry
+    import system.host.scanner_telemetry as telemetry
 
     monkeypatch.setattr(telemetry, "_enabled", False)
     controller, _, _, scan_ref = make_scanned_controller(tmp_path, monkeypatch)

@@ -1,7 +1,7 @@
 """Test echo provider generate."""
 
-from agent.runtime.providers.base import ProviderRequest
-from agent.runtime.providers.echo import EchoProvider
+from system.host.providers.base import ProviderRequest
+from system.host.providers.echo import EchoProvider
 
 
 def test_echo_generate():

@@ -5,12 +5,12 @@ from __future__ import annotations
 import pytest
 from pydantic import BaseModel
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
-from agent.runtime.artifact_store import StaleRevisionError
-from agent.runtime.canonical_serialization import SERIALIZER_PROFILE
-from agent.runtime.controller import HostController, Stage, TransitionError
-from agent.runtime.work_todo import WorkTodoError
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.work_todo import PlannedAction, TodoList, WorkBinding, WorkPlan, WorkStatus
+from system.storage.artifact_store import StaleRevisionError
+from system.storage.canonical_serialization import SERIALIZER_PROFILE
+from system.host.workflow_control import HostController, Stage, TransitionError
+from system.host.work_todo import WorkTodoError
 
 
 class WorkEvidence(BaseModel):
@@ -153,7 +153,7 @@ def test_work_plan_validation_and_replay_fail_closed(tmp_path) -> None:
     again, ref = controller.work_todos.start(scope, action="Gather", expected_result="Evidence")
     assert again.actions[0].status is WorkStatus.RUNNING
     assert ref.artifact_revision == 2
-    from agent.runtime.artifact_store import DuplicateArtifactError
+    from system.storage.artifact_store import DuplicateArtifactError
 
     with pytest.raises(DuplicateArtifactError):
         controller.work_todos.start(scope, action="Changed objective", expected_result="Evidence")

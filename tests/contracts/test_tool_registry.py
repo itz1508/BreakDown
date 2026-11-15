@@ -5,9 +5,9 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.common import ArtifactRef
-from agent.contracts.planning import BuildSpecification, CreateAction
-from agent.contracts.tool_registry import (
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.planner.specification import BuildSpecification, CreateAction
+from contracts.workflow.system.tool_registry import (
     ParamKind,
     SandboxProfile,
     ToolEffect,
@@ -17,12 +17,12 @@ from agent.contracts.tool_registry import (
     ToolSpec,
     resolve_invocation,
 )
-from agent.contracts.validation.structural import tool_invocation_gaps
-from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.build_admission import BuildAdmission, BuildAdmissionError
-from agent.runtime.package_lock import PackageLock
-from agent.runtime.receipt_store import ReceiptStore
-from agent.runtime.tool_registry import (
+from contracts.workflow.validation.structural import tool_invocation_gaps
+from system.storage.artifact_store import ArtifactStore
+from system.host.build_admission import BuildAdmission, BuildAdmissionError
+from system.host.package_lock import PackageLock
+from system.storage.receipt_store import ReceiptStore
+from system.host.tool_registry import (
     ToolRegistryError,
     load_pinned_tool_registry,
     pin_tool_registry,
@@ -217,7 +217,7 @@ def test_build_admission_derives_tools_from_locked_spec(tmp_path) -> None:
 
 
 def test_preflight_refuses_missing_registered_executable(tmp_path) -> None:
-    from agent.runtime.tool_registry import verify_executable
+    from system.host.tool_registry import verify_executable
 
     cmd = resolve_invocation(catalog(), invocation(), "build", frozenset())
     executable = tmp_path / "uv"

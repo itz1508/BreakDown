@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from agent.runtime.streaming import StreamEventType
+from system.host.streaming import StreamEventType
 from api_fundamentals.models import StructuredProbeResult
 
 Probe = Callable[[Any, dict[str, Any]], dict[str, Any]]

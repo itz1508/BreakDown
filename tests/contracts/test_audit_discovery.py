@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.audit_discovery import (
+from contracts.workflow.auditor._discovery import (
     AssessmentStatus,
     AuditDiscoveryPackage,
     ExistingGapIntent,
@@ -13,8 +13,8 @@ from agent.contracts.audit_discovery import (
     RepositoryIdentity,
     RequirementAssessment,
 )
-from agent.contracts.common import ArtifactRef
-from agent.contracts.validation.audit_discovery import (
+from contracts.workflow.common import ArtifactRef
+from contracts.workflow.validation.audit_discovery import (
     validate_code_intents,
     validate_repository_identity_pair,
     validate_requirement_assessments,

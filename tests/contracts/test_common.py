@@ -3,7 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from agent.contracts.common import (
+from contracts.workflow.common import (
     ArtifactRef,
     ContractModel,
     DiagnosticStatus,
