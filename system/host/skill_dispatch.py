@@ -18,7 +18,7 @@ from system.host.effect_executor import EffectExecutor
 from system.host.sys_controller import HostController, TransitionError
 
 if TYPE_CHECKING:
-    from mvp.service import MVPService
+    from app.service import MVPService
 
 
 _ROLE_MODULES = {

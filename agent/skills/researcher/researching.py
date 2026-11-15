@@ -12,6 +12,10 @@ def run(context: SkillContext, envelope: HostDispatchEnvelope, arguments: Resear
         raise ValueError("Research service is not configured")
     if context.research_service.host.state_root.resolve() != context.host.state_root.resolve():
         raise ValueError("Research service and dispatch host use different state roots")
-    from mvp.research_host import execute_research
+<<<<<<<< HEAD:agent/skills/researcher/research.py
+    return context.research_service.execute_research(envelope.task_id)
+========
+    from system.host.research_execution import execute_research
 
     return execute_research(context.research_service, envelope.task_id)
+>>>>>>>> origin/feat/breakdown-package-20261110:agent/skills/researcher/researching.py

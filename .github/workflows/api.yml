@@ -1,28 +1,28 @@
-name: MVP integration
+name: API integration
 on:
   push:
     branches: [main]
     paths:
-      - 'mvp/**'
+      - 'app/**'
       - 'web/**'
       - 'tests/e2e/test_mvp_*.py'
       - 'pyproject.toml'
       - 'uv.lock'
-      - '.github/workflows/mvp.yml'
+      - '.github/workflows/api.yml'
   pull_request:
-    branches: [main, feat/mvp-fastapi-react-slice]
+    branches: [main, feat/breakdown-package-20261110]
     paths:
-      - 'mvp/**'
+      - 'app/**'
       - 'web/**'
       - 'tests/e2e/test_mvp_*.py'
-      - '.github/workflows/mvp.yml'
+      - '.github/workflows/api.yml'
 jobs:
   backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: astral-sh/setup-uv@8d55fbecc275b1c35dbe060458839f8d30439ccf # v3
-      - run: uv sync --locked --extra meta --extra mvp
+      - run: uv sync --locked --extra meta --extra api
       - run: uv run --no-sync pytest tests/e2e/test_mvp_*.py -q
   frontend:
     runs-on: ubuntu-latest

@@ -50,7 +50,7 @@ def test_symlink_source_blocked_and_other_findings_retained(tmp_path: Path) -> N
     web = tmp_path / "web" / "src"
     mvp = tmp_path / "mvp"
     web.mkdir(parents=True)
-    mvp.mkdir()
+    app.mkdir()
     (web / "main.jsx").write_text("fetch('/api/unknown')\n", encoding="utf-8")
     (mvp / "api.py").symlink_to(outside)
     result = scan(tmp_path, capabilities=("wiring", "paths"))
