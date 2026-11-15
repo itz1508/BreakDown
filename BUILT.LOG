@@ -56,3 +56,15 @@ Not done / differs from intent:
   are recorded in the Five Contract Scenarios doc as Package 5/9 requirements.
 - Plans (decomposition phases B1/B2/C, capabilities) remain proposals pending
   approval; no dissolution code executed yet.
+- 2026-11-14 — system/scanner engine (commit 0ba13c9): rebuilt as fresh
+  implementation per approved scanner plan v2. Paths: system/scanner/
+  {__init__,__main__,_types,_index,_debug,_preflight,_predict}.py,
+  system/__init__.py, tests/system/scanner/{test_index,test_cli}.py
+  (16 tests). Evidence: scanner tests 16/16, full suite all-pass,
+  ruff check+format clean, guard accepts 216 tracked paths, mypy clean
+  except two known errors in orphaned verify_all.py and
+  contracts/workflow/validation/planning.py (import the deleted scanner
+  contract; disposition frozen under the hard boundary). Also in this
+  commit: MEM.LOG hard-boundary record, planner __main__/planning.py
+  gap fixes from 5bd9c72. Unfinished: guard-list ruling, evidence-
+  separation review, wheel/deptry pass — all pending user instruction.
