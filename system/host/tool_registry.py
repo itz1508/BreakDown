@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 from pathlib import Path
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.tool_registry import (
     ResolvedCommand,
     ToolRegistrySnapshot,

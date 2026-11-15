@@ -4,6 +4,8 @@ from types import SimpleNamespace
 
 from api_fundamentals.models import StructuredProbeResult
 from api_fundamentals.probes.all import PROBES
+from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+from system.host.providers.openai_compatible import OpenAICompatibleAdapter
 
 from agent.contracts.provider import ProviderConfig, ProviderProtocol
 from agent.runtime.providers.openai_compatible import OpenAICompatibleAdapter

@@ -5,12 +5,11 @@ from __future__ import annotations
 import asyncio
 import gzip
 from functools import wraps
-
-import uvicorn
 from pathlib import Path
 
 import httpx
 import pytest
+import uvicorn
 from pydantic import ValidationError
 
 from examples.reverse_proxy.app import Endpoint, ProxyConfig, create_app, load_config
@@ -18,9 +17,11 @@ from examples.reverse_proxy.app import Endpoint, ProxyConfig, create_app, load_c
 
 def run_async(fn):
     """Execute coroutine tests without requiring a separate pytest plugin."""
+
     @wraps(fn)
     def wrapped(*args, **kwargs):
         return asyncio.run(fn(*args, **kwargs))
+
     return wrapped
 
 
@@ -75,7 +76,7 @@ async def test_round_robin_hierarchical_and_tenant_isolation(config: ProxyConfig
     assert results == ["a1", "a3", "a2", "a3", "a1"]
     assert beta == "b1"
     assert next_alpha == "a3"
-    assert observed == results + [beta, next_alpha]
+    assert observed == [*results, beta, next_alpha]
     await backend.aclose()
 
 
@@ -197,9 +198,16 @@ async def test_backend_down_is_bad_gateway(config: ProxyConfig) -> None:
     await backend.aclose()
 
 
-@pytest.mark.parametrize("bad", [
-    "http://host.invalid/path", "file:///etc/passwd", "https://user:pass@example.com", "http://x/?y=z", "http://x/#frag"
-])
+@pytest.mark.parametrize(
+    "bad",
+    [
+        "http://host.invalid/path",
+        "file:///etc/passwd",
+        "https://user:pass@example.com",
+        "http://x/?y=z",
+        "http://x/#frag",
+    ],
+)
 def test_disallow_unsafe_upstream_urls(bad: str) -> None:
     with pytest.raises(ValidationError):
         Endpoint(name="bad", origin=bad)
@@ -325,7 +333,9 @@ async def test_connected_http_server_to_backend() -> None:
         body = b"backend-http-e2e"
         writer.write(
             b"HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: "
-            + str(len(body)).encode("ascii") + b"\r\nConnection: close\r\n\r\n" + body
+            + str(len(body)).encode("ascii")
+            + b"\r\nConnection: close\r\n\r\n"
+            + body
         )
         await writer.drain()
         writer.close()
@@ -333,13 +343,19 @@ async def test_connected_http_server_to_backend() -> None:
 
     backend = await asyncio.start_server(backend_handler, "127.0.0.1", 0)
     port = backend.sockets[0].getsockname()[1]
-    config = ProxyConfig.model_validate({
-        "tenants": [{
-            "name": "alpha", "hosts": ["alpha.example"], "groups": [{
-                "name": "primary", "backends": [{"name": "origin-1", "origin": f"http://127.0.0.1:{port}"}]
-            }]
-        }]
-    })
+    config = ProxyConfig.model_validate(
+        {
+            "tenants": [
+                {
+                    "name": "alpha",
+                    "hosts": ["alpha.example"],
+                    "groups": [
+                        {"name": "primary", "backends": [{"name": "origin-1", "origin": f"http://127.0.0.1:{port}"}]}
+                    ],
+                }
+            ]
+        }
+    )
     server = uvicorn.Server(uvicorn.Config(create_app(config), host="127.0.0.1", port=0, log_level="critical"))
     run = asyncio.create_task(server.serve())
     try:

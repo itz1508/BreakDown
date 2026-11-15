@@ -6,7 +6,7 @@ from enum import StrEnum
 
 from pydantic import Field
 
-from contracts.workflow.common import ContractModel, Sha256
+from contracts.workflow.shared import ContractModel, Sha256
 
 
 class InterruptStatus(StrEnum):

@@ -3,9 +3,9 @@
 import pytest
 from pydantic import BaseModel
 
+from system.host.specification_freezer import SpecificationFreezer
 from system.storage.artifact_store import ArtifactStore
 from system.storage.receipt_store import ReceiptStore
-from system.host.specification_freezer import SpecificationFreezer
 
 
 class SpecDataModel(BaseModel):

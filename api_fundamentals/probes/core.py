@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from system.host.streaming import StreamEventType
 from api_fundamentals.models import StructuredProbeResult
+from system.host.streaming import StreamEventType
 
 TOOL = {
     "name": "add",

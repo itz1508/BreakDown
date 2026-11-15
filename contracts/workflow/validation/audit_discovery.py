@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from contracts.workflow.auditor._discovery import AuditDiscoveryPackage
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 
 
 def validate_research_lineage(package: AuditDiscoveryPackage, expected_research_ref: ArtifactRef) -> list[str]:
@@ -39,9 +39,8 @@ def validate_code_intents(package: AuditDiscoveryPackage) -> list[str]:
                 errors.append(f"existing gap intent {intent.intent_id} has no findings")
             if not intent.verified_paths:
                 errors.append(f"existing gap intent {intent.intent_id} has no verified paths")
-        elif intent.intent_origin == "new_feature":
-            if not intent.destination_responsibility:
-                errors.append(f"new feature intent {intent.intent_id} missing destination responsibility")
+        elif intent.intent_origin == "new_feature" and not intent.destination_responsibility:
+            errors.append(f"new feature intent {intent.intent_id} missing destination responsibility")
     return errors
 
 

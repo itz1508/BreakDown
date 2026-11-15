@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 from contracts.workflow.system.host import ReceiptRef
 
 

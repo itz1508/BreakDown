@@ -12,10 +12,10 @@ from pathlib import Path
 from typing import TYPE_CHECKING, TypeAlias
 
 from contracts.workflow.builder.schedule import BuildWave
-from contracts.workflow.system.host import BuildAdmissionReceipt, HostDispatchEnvelope
 from contracts.workflow.planner.scanner import ScannerRunInput
-from system.host.sys_controller import HostController, TransitionError
+from contracts.workflow.system.host import BuildAdmissionReceipt, HostDispatchEnvelope
 from system.host.effect_executor import EffectExecutor
+from system.host.sys_controller import HostController, TransitionError
 
 if TYPE_CHECKING:
     from mvp.service import MVPService
@@ -27,6 +27,14 @@ _ROLE_MODULES = {
     ("planning", "planner"): "agent.skills.planner.planning",
     ("build", "builder"): "agent.skills.builder.building",
 }
+
+
+def role_for_stage(stage: str) -> str:
+    """Return exactly one registered executable role for a Host stage."""
+    matches = [role for registered_stage, role in _ROLE_MODULES if registered_stage == stage]
+    if len(matches) != 1:
+        raise KeyError(stage)
+    return matches[0]
 
 
 @dataclass(frozen=True)

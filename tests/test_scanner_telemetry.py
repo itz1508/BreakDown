@@ -1,4 +1,5 @@
 """Isolated regression tests for the existing Host scanner telemetry API."""
+
 import importlib.util
 import sys
 import types
@@ -45,19 +46,23 @@ class Span:
 def make_logfire(calls, *, fail_exit=False):
     m = types.ModuleType("logfire")
     m.configure = lambda **kwargs: calls.append(("configure", kwargs))
+
     def span(name, **attrs):
         calls.append(("span", name, attrs))
         return Span(calls, fail_exit=fail_exit)
+
     m.span = span
     return m
 
 
 def make_otel(calls):
     trace = types.ModuleType("opentelemetry.trace")
+
     class Tracer:
         def start_as_current_span(self, name, **kwargs):
             calls.append(("otel.span", name, kwargs))
             return Span(calls)
+
     trace.get_tracer = lambda *args: Tracer()
     otel = types.ModuleType("opentelemetry")
     otel.trace = trace
@@ -68,9 +73,7 @@ def test_no_key_local_logfire_never_attempts_hosted_export(monkeypatch):
     calls = []
     mod = load(monkeypatch, logfire=make_logfire(calls))
     assert mod.telemetry_backend() == "logfire"
-    assert calls == [("configure", {
-        "send_to_logfire": False, "console": False, "service_name": "breakdown-scanner"
-    })]
+    assert calls == [("configure", {"send_to_logfire": False, "console": False, "service_name": "breakdown-scanner"})]
     with mod.scanner_span("t", "r", "a"):
         pass
     assert ("span", "scanner.run", {"task_id": "t", "run_id": "r", "artifact_id": "a"}) in calls
@@ -92,10 +95,15 @@ def test_fallback_to_existing_opentelemetry_without_new_exporter(monkeypatch):
     assert mod.telemetry_backend() == "opentelemetry"
     with mod.scanner_span("task-1", "run-1", "art-1"):
         pass
-    assert calls[0] == ("otel.span", "scanner.run", {
-        "attributes": {"task_id": "task-1", "run_id": "run-1", "artifact_id": "art-1"},
-        "record_exception": False, "set_status_on_exception": False,
-    })
+    assert calls[0] == (
+        "otel.span",
+        "scanner.run",
+        {
+            "attributes": {"task_id": "task-1", "run_id": "run-1", "artifact_id": "art-1"},
+            "record_exception": False,
+            "set_status_on_exception": False,
+        },
+    )
     assert calls[-2:] == ["enter", "exit"]
 
 
@@ -111,9 +119,8 @@ def test_disabled_never_emits_spans(monkeypatch):
 def test_exporter_exit_failure_never_masks_work(monkeypatch):
     calls = []
     mod = load(monkeypatch, logfire=make_logfire(calls, fail_exit=True))
-    with pytest.raises(ValueError, match="real scanner failure"):
-        with mod.scanner_span("x", "y", "z"):
-            raise ValueError("real scanner failure")
+    with pytest.raises(ValueError, match="real scanner failure"), mod.scanner_span("x", "y", "z"):
+        raise ValueError("real scanner failure")
     assert calls[-1] == "exit"
 
 
@@ -160,8 +167,10 @@ def test_real_opentelemetry_sdk_emits_single_metadata_only_span(monkeypatch):
 def test_logfire_configuration_error_uses_otel_fallback(monkeypatch):
     calls = []
     fake = make_logfire(calls)
+
     def broken(**kwargs):
         raise RuntimeError("unavailable backend")
+
     fake.configure = broken
     mod = load(monkeypatch, logfire=fake, otel=make_otel(calls))
     assert mod.telemetry_backend() == "opentelemetry"
@@ -192,9 +201,8 @@ def test_otel_does_not_capture_failure_message(monkeypatch):
     tracer = provider.get_tracer("breakdown.scanner")
     monkeypatch.setattr(trace, "get_tracer", lambda name: tracer)
     mod = load(monkeypatch, logfire_error=True)
-    with pytest.raises(RuntimeError, match="TOP SECRET VALUE"):
-        with mod.scanner_span("t", "r", "a"):
-            raise RuntimeError("TOP SECRET VALUE")
+    with pytest.raises(RuntimeError, match="TOP SECRET VALUE"), mod.scanner_span("t", "r", "a"):
+        raise RuntimeError("TOP SECRET VALUE")
     spans = exporter.get_finished_spans()
     assert len(spans) == 1
     assert not spans[0].events

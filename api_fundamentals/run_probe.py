@@ -6,10 +6,10 @@ import argparse
 import time
 from pathlib import Path
 
+from api_fundamentals.probes.all import PROBES
 from contracts.workflow.system.provider import CapabilityResult, CapabilityState, ProbeStatus, ProviderProbeRecord
 from system.host.provider_config import load_provider_config, resolve_model
 from system.host.provider_factory import build_provider
-from api_fundamentals.probes.all import PROBES
 
 
 def main() -> int:

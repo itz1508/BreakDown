@@ -1,7 +1,7 @@
 """Modal ASGI wrapper for OneShot's existing FastAPI MVP.
 
-The public deployment provides a source-bundle Audit demo only. Build
-execution remains in a separately authorized Modal Sandbox. A model-backed
+The public deployment provides a source-bundle Audit demo only.
+Build execution is not exposed by this ASGI deployment. A model-backed
 Research deployment needs separate access controls and MCP configuration.
 """
 
@@ -34,8 +34,9 @@ image = (
     .add_local_dir("agent", remote_path=f"{SOURCE_ROOT}/agent")
     .add_local_dir("mvp", remote_path=f"{SOURCE_ROOT}/mvp")
     .add_local_dir("api_fundamentals", remote_path=f"{SOURCE_ROOT}/api_fundamentals")
-    .add_local_dir(".agents", remote_path=f"{SOURCE_ROOT}/.agents")
-    .add_local_dir("settings", remote_path=f"{SOURCE_ROOT}/settings")
+    .add_local_dir("contracts", remote_path=f"{SOURCE_ROOT}/contracts")
+    .add_local_dir("system", remote_path=f"{SOURCE_ROOT}/system")
+    .add_local_dir("config", remote_path=f"{SOURCE_ROOT}/config")
     .add_local_dir(
         "web",
         remote_path=f"{SOURCE_ROOT}/web",

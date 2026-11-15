@@ -120,8 +120,9 @@ def test_public_modal_image_and_concurrency_contract(monkeypatch: Any) -> None:
         ("agent", f"{source}/agent"),
         ("mvp", f"{source}/mvp"),
         ("api_fundamentals", f"{source}/api_fundamentals"),
-        (".agents", f"{source}/.agents"),
-        ("settings", f"{source}/settings"),
+        ("contracts", f"{source}/contracts"),
+        ("system", f"{source}/system"),
+        ("config", f"{source}/config"),
         ("web", f"{source}/web"),
     }
     assert calls["events"] == ["asgi", "concurrent", "function"]

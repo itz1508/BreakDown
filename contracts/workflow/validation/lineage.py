@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contracts.workflow.common import ArtifactRef
+from contracts.workflow.shared import ArtifactRef
 
 
 def validate_artifact_chain(refs: list[ArtifactRef]) -> list[str]:

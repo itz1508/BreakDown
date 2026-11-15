@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pydantic import Field
 
-from contracts.workflow.common import (
+from contracts.workflow.shared import (
     ArtifactRef,
     ContractModel,
     CriterionId,

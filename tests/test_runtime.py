@@ -4,8 +4,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from contracts.workflow.system.host import Checkpoint
 from contracts.workflow.researcher.research import Requirement, ResearchRecord
+from contracts.workflow.system.host import Checkpoint
 from system.storage.artifact_store import ArtifactStore, DuplicateArtifactError
 from system.storage.checkpoint_store import InMemoryCheckpointStore, StaleCheckpointError
 

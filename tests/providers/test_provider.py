@@ -15,7 +15,7 @@ from system.host.provider_config import (
 
 
 def test_load_provider_config():
-    config = load_provider_config(Path(".agents/providers/meta.yaml"))
+    config = load_provider_config(Path("config/providers/meta.yaml"))
     assert config.provider_id == "meta"
     assert config.protocol is ProviderProtocol.OPENAI_COMPATIBLE
 

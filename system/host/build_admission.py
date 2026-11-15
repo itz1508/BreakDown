@@ -2,13 +2,18 @@
 
 from __future__ import annotations
 
-from contracts.workflow.system.host import BuildAdmissionReceipt, PackageLockReceipt, ReceiptRef, admission_receipt_subject
 from contracts.workflow.planner.specification import BuildSpecification, CandidateSpecification, PlanningRecord
+from contracts.workflow.system.host import (
+    BuildAdmissionReceipt,
+    PackageLockReceipt,
+    ReceiptRef,
+    admission_receipt_subject,
+)
 from contracts.workflow.validation.structural import tool_invocation_gaps
+from system.host.tool_registry import load_pinned_tool_registry
 from system.storage.artifact_store import ArtifactStore
 from system.storage.canonical_serialization import digest_raw
 from system.storage.receipt_store import ReceiptStore
-from system.host.tool_registry import load_pinned_tool_registry
 
 
 class BuildAdmissionError(Exception):
