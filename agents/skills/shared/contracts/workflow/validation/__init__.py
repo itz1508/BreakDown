@@ -1,12 +1,13 @@
-"""Pure semantic validators — read-only, no IO, no runtime imports."""
+"""Pure semantic validators — read-only, no IO, no runtime imports.
 
-from agents.skills.shared.contracts.workflow.validation.audit_discovery import (
-    validate_code_intents,
-    validate_evidence_digests,
-    validate_repository_identity_pair,
-    validate_requirement_assessments,
-    validate_research_lineage,
-)
+Role-coupled validators live in their roles:
+- Planning: agents/skills/planner/contracts/validation.py
+- Research: agents/skills/researcher/contracts/validation.py
+- Audit discovery: agents/skills/auditor/contracts/validation.py
+
+Only genuinely cross-role validators remain here.
+"""
+
 from agents.skills.shared.contracts.workflow.validation.cross_stage import (
     normalize_relative_path,
     validate_audit_lineage,
@@ -18,25 +19,11 @@ from agents.skills.shared.contracts.workflow.validation.lineage import (
     validate_receipt_subject,
     validate_revision_invalidation,
 )
-from agents.skills.shared.contracts.workflow.validation.planning import (
-    validate_action_graph,
-    validate_decisions,
-    validate_paths,
-    validate_phase_graph,
-    validate_planning_issues,
-    validate_refactors,
-    validate_reviews,
-    validate_spec_coverage,
-)
 from agents.skills.shared.contracts.workflow.validation.protocols import (
     ArtifactResolver,
     EvidenceResolver,
     ReceiptVerifier,
     RepositoryIdentityReader,
-)
-from agents.skills.shared.contracts.workflow.validation.research import (
-    validate_criterion_binding,
-    validate_research_ids,
 )
 
 __all__ = [
@@ -45,25 +32,10 @@ __all__ = [
     "ReceiptVerifier",
     "RepositoryIdentityReader",
     "normalize_relative_path",
-    "validate_action_graph",
     "validate_artifact_chain",
     "validate_audit_lineage",
     "validate_build_specification",
-    "validate_code_intents",
-    "validate_criterion_binding",
-    "validate_decisions",
-    "validate_evidence_digests",
     "validate_frozen_candidate_equality",
-    "validate_paths",
-    "validate_phase_graph",
-    "validate_planning_issues",
     "validate_receipt_subject",
-    "validate_refactors",
-    "validate_repository_identity_pair",
-    "validate_requirement_assessments",
-    "validate_research_ids",
-    "validate_research_lineage",
-    "validate_reviews",
     "validate_revision_invalidation",
-    "validate_spec_coverage",
 ]
