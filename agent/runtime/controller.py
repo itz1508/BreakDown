@@ -1,29 +1,28 @@
-"""Host controller — single transition authority for all stages.
-
-The HostController owns stage transitions, receipts, checkpointing, and
-skill dispatch. Skills (``agent/skills/*``) are read-only observers and
-planners that never issue receipts or authorize operations. All skill
-execution routes through ``skill_dispatch`` which enforces PRE/POST
-dispatch boundaries.
-"""
+"""Host controller — single transition authority for all stages."""
 
 from __future__ import annotations
 
+import json
+from collections.abc import Callable
+from contextlib import suppress
 from enum import StrEnum
 from hashlib import sha256
-from importlib import import_module
 from pathlib import Path
-from types import ModuleType
+from uuid import uuid4
 
 import yaml
 from pydantic import BaseModel, Field
 
 from agent.contracts.common import ArtifactRef
 from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult, ReceiptRef
-from agent.contracts.scanner import ScannerResult
+from agent.contracts.planning import PlanningRecord
+from agent.contracts.planning_coverage import planning_coverage
+from agent.contracts.scanner import CriterionResult, ScannerOutcome, ScannerResult
+from agent.contracts.validation.planning import validate_action_graph
+from agent.contracts.validation.structural import CONCERNS
 from agent.contracts.work_todo import TodoList, WorkBinding
 from agent.runtime.artifact_store import ArtifactStore
-from agent.runtime.authorization import AuthorizationEngine
+from agent.runtime.authorization import AuthorizationEngine, Capability
 from agent.runtime.canonical_serialization import SERIALIZER_PROFILE
 from agent.runtime.checkpoint_store import CheckpointStore, CompetingWriterError
 from agent.runtime.event_store import EventStore
@@ -38,31 +37,10 @@ from agent.runtime.host_gap_analyzer import (
 from agent.runtime.providers.registry import ProviderRegistry
 from agent.runtime.receipt_store import ReceiptStore
 from agent.runtime.recovery import BoundedRecovery
+from agent.runtime.scanner_check_registry import ScannerCheckRegistry
 from agent.runtime.scanner_gateway import ScannerGateway
-from agent.runtime.specification_freeze import SpecificationFreeze
+from agent.runtime.scanner_telemetry import scanner_span
 from agent.runtime.work_todo import WorkTodoError, WorkTodoManager
-
-# Skill stage → module mapping. Skills are resolved lazily to avoid
-# circular imports and to keep skill loading explicit.
-_SKILL_MODULES: dict[str, str] = {
-    "research": "agent.skills.researcher.run",
-    "audit_discovery": "agent.skills.auditor.run",
-    "planning": "agent.skills.planner.run",
-    "fixture_validation": "agent.skills.planner.run",
-    "build": "agent.skills.builder.run",
-    "build_validation": "agent.skills.builder.run",
-}
-
-
-def _load_skill_module(stage: str) -> ModuleType:
-    """Load a skill run module by stage, raising if unavailable."""
-    module_path = _SKILL_MODULES.get(stage)
-    if module_path is None:
-        raise ValueError(f"no skill registered for stage '{stage}'")
-    try:
-        return import_module(module_path)
-    except ImportError as exc:
-        raise ValueError(f"skill module for stage '{stage}' not loadable: {exc}") from exc
 
 
 class Stage(StrEnum):
@@ -120,6 +98,7 @@ class HostController:
         self.work_todos = WorkTodoManager(self.artifact_store, self.event_store)
         self.checkpoint_store = CheckpointStore(self.state_root)
         self.scanner = ScannerGateway(self.artifact_store)
+        self.scanner_checks: ScannerCheckRegistry | None = None
         self.gap_analyzer = HostGapAnalyzer(self.artifact_store, self.receipt_store)
         self.recovery = BoundedRecovery()
         self.providers = ProviderRegistry()
@@ -129,7 +108,10 @@ class HostController:
             else (str(workspace_root), str(self.state_root))
         )
         self._workspace_root = workspace_root or self.state_root / "workspace"
-        self.specification_freeze = SpecificationFreeze(self.artifact_store, self.receipt_store)
+
+    def configure_scanner_checks(self, registry_ref: ArtifactRef) -> None:
+        """Pin and validate the host-owned read-only scanner check registry."""
+        self.scanner_checks = ScannerCheckRegistry(self.artifact_store, registry_ref)
 
     def advance_stage(
         self,
@@ -298,6 +280,30 @@ class HostController:
             raise TransitionError("structural gap pass belongs to a different candidate")
         return result
 
+    def _publish_scanner_event(
+        self,
+        task_id: str,
+        run_id: str,
+        scan_id: str,
+        event_type: str,
+        payload: dict[str, object],
+        observer: Callable[[dict[str, object]], None] | None = None,
+    ) -> None:
+        """Append first; observers only receive events already persisted by the host."""
+        detail = {"scan_id": scan_id, "run_id": run_id, **payload}
+        sequence = self.event_store.append(task_id, event_type, json.dumps(detail, sort_keys=True))
+        if observer is not None:
+            # Delivery to an optional CLI observer cannot change host decisions.
+            with suppress(Exception):
+                observer(
+                    {
+                        "sequence": sequence,
+                        "type": event_type,
+                        "message": detail["message"],
+                        "detail": detail,
+                    }
+                )
+
     def scan_planning_candidate(
         self,
         task_id: str,
@@ -307,10 +313,204 @@ class HostController:
         capabilities: tuple[str, ...],
         gap_result_ref: ArtifactRef | None,
         gap_receipt_ref: ReceiptRef | None,
+        *,
+        on_event: Callable[[dict[str, object]], None] | None = None,
     ) -> ScannerResult:
-        """Host Scanner dispatch; always reject an unvalidated Planning candidate."""
+        """Host dispatch, append real check events, and persist the authoritative result."""
         self._verify_structural_gap(task_id, run_id, gap_result_ref, gap_receipt_ref, candidate_ref)
-        return self.scanner.scan_exact(candidate_ref, repository_identity, capabilities)
+        scan_id = f"scanner-{uuid4().hex}"
+
+        def publish(event_type: str, payload: dict[str, object]) -> None:
+            self._publish_scanner_event(task_id, run_id, scan_id, event_type, payload, on_event)
+
+        publish(
+            "scanner_started",
+            {
+                "message": "Scanner invocation started",
+                "candidate_id": candidate_ref.artifact_id,
+                "candidate_revision": candidate_ref.artifact_revision,
+                "capabilities": list(capabilities),
+            },
+        )
+        try:
+            with scanner_span(task_id, run_id, candidate_ref.artifact_id):
+                result = self.scanner.scan_exact(candidate_ref, repository_identity, capabilities, on_event=publish)
+            pinned = self.scanner_checks
+            result = ScannerResult.model_validate(
+                {
+                    **result.model_dump(mode="json"),
+                    "request_id": scan_id,
+                    "candidate_ref": candidate_ref.model_dump(mode="json"),
+                    "task_id": task_id,
+                    "run_id": run_id,
+                    "repository_identity": repository_identity,
+                    "requested_capabilities": capabilities,
+                    "registry_ref": pinned.ref.model_dump(mode="json") if pinned else None,
+                    "planning_coverage": (
+                        planning_coverage(
+                            structural_concerns=CONCERNS, scanner_capabilities=result.capabilities_checked
+                        ).model_dump(mode="json")
+                        if pinned
+                        else None
+                    ),
+                }
+            )
+            digest = self.artifact_store.put_immutable(result, scan_id, 1, "scanner_result", "1.1")
+        except Exception:
+            publish("scanner_interrupted", {"message": "Scanner invocation interrupted before result persistence"})
+            raise
+
+        self.event_store.append(task_id, "scanner_recorded", scan_id)
+        publish(
+            "scanner_completed",
+            {
+                "message": f"Scanner result recorded: {result.outcome.value}",
+                "outcome": result.outcome.value,
+                "result_ref": {"artifact_id": scan_id, "artifact_revision": 1, "artifact_digest": digest},
+                "finding_count": len(result.findings),
+                "evidence_request_count": len(result.evidence_requests),
+                "cache_hits": result.cache_hits,
+                "cache_misses": result.cache_misses,
+                "parse_duration_ns": result.parse_duration_ns,
+            },
+        )
+        return result
+
+    def repair_planning_draft(
+        self,
+        task_id: str,
+        run_id: str,
+        current_ref: ArtifactRef,
+        scanner_result_ref: ArtifactRef,
+        proposed_record: PlanningRecord,
+        authorized_action_ids: tuple[str, ...],
+        *,
+        principal: str = "planner",
+    ) -> ArtifactRef:
+        """CAS a bounded dependency repair; reject every other before/after edit."""
+        # Explicit external host grant; a scanner finding is not an authorization.
+        self.authorization.authorize_tool(principal, Capability.WRITE, f"draft-plan:{task_id}")
+        if not authorized_action_ids or len(set(authorized_action_ids)) != len(authorized_action_ids):
+            raise TransitionError("explicit unique authorized action IDs required")
+        if self.artifact_store.latest_revision(current_ref.artifact_id) != current_ref.artifact_revision:
+            raise TransitionError("stale draft plan revision")
+        if self.artifact_store.get_digest(current_ref.artifact_id, current_ref.artifact_revision) != (
+            current_ref.artifact_digest
+        ):
+            raise TransitionError("draft artifact digest mismatch")
+        if current_ref.contract_id != "planning":
+            raise TransitionError("repair requires an existing PlanningRecord")
+        original = PlanningRecord.model_validate_json(
+            self.artifact_store.get_verified(current_ref.artifact_id, current_ref.artifact_revision)
+        )
+        if original.task_id != task_id or original.run_id != run_id:
+            raise TransitionError("draft task/run mismatch")
+        if original.freeze_receipt_ref or original.final_scanner_receipt_ref:
+            raise TransitionError("frozen or finalized plans cannot be repaired")
+
+        if scanner_result_ref.contract_id != "scanner_result" or (
+            self.artifact_store.get_digest(scanner_result_ref.artifact_id, scanner_result_ref.artifact_revision)
+            != scanner_result_ref.artifact_digest
+        ):
+            raise TransitionError("scanner result reference is not verified")
+        recorded_scan = ScannerResult.model_validate_json(
+            self.artifact_store.get_verified(scanner_result_ref.artifact_id, scanner_result_ref.artifact_revision)
+        )
+        if recorded_scan.request_id != scanner_result_ref.artifact_id or (
+            recorded_scan.candidate_ref != current_ref or recorded_scan.outcome is not ScannerOutcome.BLOCKED
+        ):
+            raise TransitionError("scanner findings are not bound to this draft")
+        observed_defects = {
+            step.target_ref.rsplit(":action:", 1)[1]
+            for step in recorded_scan.trace_steps
+            if step.check_id == "dependency_readiness"
+            and step.criterion_result is CriterionResult.NOT_SATISFIED
+            and step.evidence_refs
+            and step.target_ref.startswith(f"{current_ref.artifact_id}@{current_ref.artifact_revision}:action:")
+        }
+        if not set(authorized_action_ids).issubset(observed_defects):
+            raise TransitionError("repair scope is not backed by observed dependency defects")
+        try:
+            proposed_record = PlanningRecord.model_validate(proposed_record.model_dump(mode="json"))
+        except Exception as exc:
+            raise TransitionError("proposed draft plan fails contract validation") from exc
+        if proposed_record.task_id != task_id or proposed_record.run_id != run_id:
+            raise TransitionError("proposed draft task/run mismatch")
+        if proposed_record.stage_revision != original.stage_revision + 1 or (
+            proposed_record.candidate.specification_revision != original.candidate.specification_revision + 1
+        ):
+            raise TransitionError("draft and specification revisions must advance exactly once")
+
+        before = original.model_dump(mode="json")
+        after = proposed_record.model_dump(mode="json")
+        before_actions = before["candidate"]["build_spec"]["actions"]
+        after_actions = after["candidate"]["build_spec"]["actions"]
+        if len(before_actions) != len(after_actions):
+            raise TransitionError("draft action list changed")
+        changed_actions: set[str] = set()
+        for original_action, proposed_action in zip(before_actions, after_actions, strict=True):
+            action_id = original_action["action_id"]
+            if original_action["depends_on"] != proposed_action["depends_on"]:
+                if action_id not in authorized_action_ids:
+                    raise TransitionError("unauthorized dependency change")
+                changed_actions.add(action_id)
+                original_action["depends_on"] = proposed_action["depends_on"]
+        if not changed_actions:
+            raise TransitionError("repair proposal contains no authorized changes")
+        action_ids = {item["action_id"] for item in before_actions}
+        for original_action, proposed_action in zip(
+            original.candidate.build_spec.actions, proposed_record.candidate.build_spec.actions, strict=True
+        ):
+            if original_action.action_id not in changed_actions:
+                continue
+            existing_valid = set(original_action.depends_on) & action_ids
+            if not existing_valid.issubset(set(proposed_action.depends_on)):
+                raise TransitionError("repair removes an existing valid dependency")
+        if validate_action_graph(proposed_record.candidate.build_spec):
+            raise TransitionError("repair introduces an invalid dependency graph")
+        before["stage_revision"] = after["stage_revision"]
+        before["candidate"]["specification_revision"] = after["candidate"]["specification_revision"]
+        if before != after:
+            raise TransitionError("repair changed source, requirements, approvals, or unrelated fields")
+        self._publish_scanner_event(
+            task_id,
+            run_id,
+            recorded_scan.request_id,
+            "scanner_repair_started",
+            {"message": "Authorized dependency repair started", "candidate_id": current_ref.artifact_id},
+        )
+        try:
+            revision, digest = self.artifact_store.put_cas(
+                proposed_record,
+                current_ref.artifact_id,
+                expected_revision=current_ref.artifact_revision,
+                contract_id=current_ref.contract_id,
+                contract_version=current_ref.contract_version,
+            )
+        except Exception:
+            self._publish_scanner_event(
+                task_id,
+                run_id,
+                recorded_scan.request_id,
+                "scanner_repair_interrupted",
+                {"message": "Dependency repair did not persist"},
+            )
+            raise
+        updated_ref = current_ref.model_copy(update={"artifact_revision": revision, "artifact_digest": digest})
+        self.event_store.append(task_id, "draft_plan_repaired", updated_ref.artifact_id)
+        self._publish_scanner_event(
+            task_id,
+            run_id,
+            recorded_scan.request_id,
+            "scanner_repair_completed",
+            {
+                "message": "Authorized dependency repair recorded",
+                "candidate_id": updated_ref.artifact_id,
+                "candidate_revision": revision,
+                "candidate_digest": digest,
+            },
+        )
+        return updated_ref
 
     def run_structural_gap_analysis(
         self,
@@ -713,103 +913,3 @@ class HostController:
             receipt_digest=receipt_digest,
             issuer_id="host",
         )
-
-    def skill_dispatch_capability(self, stage: str) -> bool:
-        """Check whether a skill is registered and loadable for a stage.
-
-        Args:
-            stage: The workflow stage to check.
-
-        Returns:
-            True if a skill module is registered and importable for the stage.
-        """
-        try:
-            _load_skill_module(stage)
-            return True
-        except ValueError:
-            return False
-
-    def skill_dispatch(
-        self,
-        request: HostDispatchEnvelope,
-    ) -> HostDispatchResult:
-        """Dispatch a request to the skill registered for the request's stage.
-
-        Enforces PRE/POST skill dispatch boundaries:
-        - PRE: skill validates and enriches the request (read-only).
-        - POST: skill verifies the result structure (read-only).
-
-        Skills never issue receipts, never authorize operations, and never
-        advance stages. All receipts, authorization, and stage transitions
-        remain host-owned.
-
-        Args:
-            request: Host-allocated dispatch envelope bound to an exact input.
-
-        Returns:
-            HostDispatchResult with the skill's output artifact reference.
-
-        Raises:
-            TransitionError: If the skill module cannot be loaded or
-                PRE/POST dispatch validation fails.
-        """
-        stage = request.stage
-        try:
-            skill_module = _load_skill_module(stage)
-        except ValueError as exc:
-            raise TransitionError(f"skill dispatch failed: {exc}") from exc
-
-        # PRE-dispatch: skill validates and enriches the request
-        try:
-            enriched_request = skill_module.pre_dispatch(request)
-        except Exception as exc:
-            self.event_store.append(
-                request.task_id,
-                "skill_pre_dispatch_failed",
-                f"{stage}:{type(exc).__name__}:{exc}",
-            )
-            raise TransitionError(f"skill PRE-dispatch failed for stage '{stage}': {exc}") from exc
-
-        # The skill produces its output artifact through its own tool
-        # implementations. The host receives the result envelope and
-        # validates it in POST-dispatch. The output_ref must reference
-        # a host-verified artifact stored by the skill through the
-        # ArtifactStore (skills write through host-owned storage, not
-        # their own receipts).
-        output_ref = ArtifactRef(
-            artifact_id=f"skill-output-{request.task_id}-{request.request_id}",
-            artifact_revision=1,
-            artifact_digest="0" * 64,
-            contract_id="skill_output",
-            contract_version="1.0",
-            serializer_profile=SERIALIZER_PROFILE,
-        )
-
-        result = HostDispatchResult(
-            task_id=enriched_request.task_id,
-            run_id=enriched_request.run_id,
-            stage=enriched_request.stage,
-            role=enriched_request.requester_role,
-            request_id=enriched_request.request_id,
-            request_revision=enriched_request.request_revision,
-            respond_to=enriched_request.respond_to,
-            output_ref=output_ref,
-        )
-
-        # POST-dispatch: skill verifies result structure
-        try:
-            verified_result = skill_module.post_dispatch(result)
-        except Exception as exc:
-            self.event_store.append(
-                request.task_id,
-                "skill_post_dispatch_failed",
-                f"{stage}:{type(exc).__name__}:{exc}",
-            )
-            raise TransitionError(f"skill POST-dispatch failed for stage '{stage}': {exc}") from exc
-
-        self.event_store.append(
-            request.task_id,
-            "skill_dispatched",
-            f"{stage}:{enriched_request.requester_role}:{request.request_id}",
-        )
-        return verified_result
