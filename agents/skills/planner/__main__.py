@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import sys
-
 from agents.shared.io import error_response, read_request, write_response
 
 

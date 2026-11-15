@@ -49,3 +49,11 @@ Read first each session; newest entries at the top. Stable lessons migrate to
   not rebuilt; do not re-add them without that review. The guard ban on
   `system/` was narrowed to the specific dissolved subpaths so
   system/scanner/ is allowed; other system/ subpaths remain retired.
+- 2026-11-14 — HARD BOUNDARY (user directive): do not touch anything in
+  storage (system/storage/*, agents/skills/shared/storage/*, any store
+  code, schema, location or format) and do not make decisions about how
+  the system works -- architecture, authorization, evidence, execution
+  model, guard scope. Act only on explicit instruction. The 2026-11-14
+  act-mode instruction to start the system/scanner build is that
+  explicit instruction for the build; all other frozen items (guard
+  subpath list correction, evidence separation review) remain frozen.
