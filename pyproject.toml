@@ -24,7 +24,6 @@ packages = ["agents"]
 
 [project.optional-dependencies]
 meta = ["openai>=1.0"]
-claude = ["claude-agent-sdk"]
 codex = ["openai-codex"]
 mvp = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "mcp>=2,<3"]
 
@@ -68,4 +67,4 @@ extend_exclude = ["deployment/modal", ".transfer-quarantine", ".pytest-", "video
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["modal"]
-DEP002 = ["claude-agent-sdk", "openai-codex", "uvicorn", "fastapi", "modal", "openai", "mcp"]
+DEP002 = ["openai-codex", "uvicorn", "fastapi", "modal", "openai", "mcp", "logfire", "opentelemetry-api"]

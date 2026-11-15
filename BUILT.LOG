@@ -86,3 +86,13 @@ Not done / differs from intent:
   Guard: system/storage/ ban removed by user ruling. Evidence: full
   suite all-pass, ruff check+format clean, guard accepts 224 tracked
   paths, mypy reduced to the single frozen verify_all.py orphan.
+- 2026-11-14 — CI rewrite (this commit): all 10 legacy workflows deleted
+  (referenced retired agent/ paths, deleted benchmarks, dead branches,
+  Modal/MVP demos); one new .github/workflows/ci.yml with two jobs:
+  quality (py3.11+3.12: ruff, format, mypy agents system, deptry, guard,
+  full pytest) and package (wheel build + resource check + artifact).
+  claude-agent-sdk removed from pyproject extras + DEP002; uv lock
+  regenerated (11 lock references gone). deptry DEP002 ignores extended
+  with logfire/opentelemetry-api -- pre-existing failure verified against
+  unmodified baseline; observability deps wired in deployment contexts
+  excluded from deptry scanning, same pattern as modal/openai/mcp.
