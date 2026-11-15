@@ -16,7 +16,7 @@ requires = ["hatchling>=1.25"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["agents"]
+packages = ["agents", "system"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "config/config.yaml" = "config/config.yaml"

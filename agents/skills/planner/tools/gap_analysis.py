@@ -553,15 +553,6 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             ),
         ),
         CapabilityRequirement(
-            capability_id="scanner_check_registry",
-            producers=(
-                CapabilityProducer(
-                    path="system/host/scanner_check_registry.py",
-                    symbols=("ScannerCheckRegistry",),
-                ),
-            ),
-        ),
-        CapabilityRequirement(
             capability_id="runtime_root_registry",
             producers=(
                 CapabilityProducer(

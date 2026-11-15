@@ -1,0 +1,2 @@
+{"data": {}, "event_id": "fc775b9eb1de4628b34958d4f1bf3f5e", "event_type": "todo_created", "exec_id": null, "timestamp": "2026-11-15T17:29:27.492432Z", "todo_id": "a009c40c41a54cf69d24c56f0c21eff8"}
+{"data": {}, "event_id": "ac99071df6ce47ca94b4ba9e6450213e", "event_type": "exec_started", "exec_id": "e1", "timestamp": "2026-11-15T17:29:27.492432Z", "todo_id": "a009c40c41a54cf69d24c56f0c21eff8"}
