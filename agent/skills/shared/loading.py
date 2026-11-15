@@ -300,7 +300,7 @@ def load_role_policy(path: str | Path) -> dict[str, Any]:
 
 def load_app_config(path: str | Path) -> Any:
     """Load an AppConfig from a YAML file."""
-    from contracts.workflow.system.config import AppConfig
+    from agent.contracts.config import AppConfig
 
     return AppConfig.model_validate(load_config(path))
 

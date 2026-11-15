@@ -6,8 +6,8 @@ approve effects, alter an admitted Build plan, or own stage transitions.
 
 from __future__ import annotations
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.work_todo import (
+from agent.contracts.common import ArtifactRef
+from agent.contracts.work_todo import (
     TodoAction,
     TodoList,
     WorkBinding,

@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-from contracts.workflow.common import ArtifactRef
-from agent.skills.planner.tools._structural import FreezeReceipt, ReceiptRef
+from agent.contracts.common import ArtifactRef
+from agent.contracts.host import FreezeReceipt, ReceiptRef
 from agent.skills.shared.storage.storing import ArtifactStore
 from agent.skills.shared.storage.receipting import ReceiptStore
 

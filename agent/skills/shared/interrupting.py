@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from agent.skills.planner.tools._structural import Checkpoint
-from contracts.workflow.system.interrupts import InterruptRecord, InterruptStatus
+from agent.contracts.host import Checkpoint
+from agent.contracts.interrupts import InterruptRecord, InterruptStatus
 
 
 def validate_resume(interrupt: InterruptRecord, checkpoint: Checkpoint) -> None:

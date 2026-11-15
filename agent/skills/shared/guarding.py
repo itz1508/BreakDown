@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from contracts.workflow.system.guardrails import GuardrailDecision, GuardrailRequest, GuardrailResult
+from agent.contracts.guardrails import GuardrailDecision, GuardrailRequest, GuardrailResult
 
 GuardrailCheck = Callable[[GuardrailRequest], GuardrailResult]
 

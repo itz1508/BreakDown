@@ -5,7 +5,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-from agent.skills.planner.tools._structural import Checkpoint
+from agent.contracts.host import Checkpoint
 from agent.skills.shared.storage.serializing import canonical_bytes
 from agent.skills.shared.storage.checkpointing import CheckpointStoreError
 

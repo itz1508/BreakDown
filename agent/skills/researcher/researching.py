@@ -6,14 +6,14 @@ import json
 import os
 from pathlib import Path, PurePosixPath
 
-from agent.skills.auditor.auditing import Finding as AuditCoreFinding
+from agent.contracts.audit import AuditFinding as AuditCoreFinding
 from app.mcp_research import ResearchMCPOutput, mcp_transport_config, research_artifact_id
 from app.service import MVPError, MVPService
-from contracts.workflow.auditor._report import AuditFinding, AuditFindingsRecord
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.work_todo import WorkBinding, WorkStatus
-from contracts.workflow.researcher.research import ResearchRecord
-from agent.skills.planner.tools._structural import HostDispatchEnvelope, HostDispatchResult
+from agent.contracts.audit import AuditFinding, AuditFindingsRecord
+from agent.contracts.common import ArtifactRef
+from agent.contracts.work_todo import WorkBinding, WorkStatus
+from agent.contracts.research import ResearchRecord
+from agent.contracts.host import HostDispatchEnvelope, HostDispatchResult
 from agent.skills.shared.providers.basing import ProviderError, ProviderRequest
 from agent.skills.shared.controlling import Stage
 from agent.skills.shared.enforcing import Capability

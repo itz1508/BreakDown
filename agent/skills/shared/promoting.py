@@ -10,18 +10,18 @@ import re
 
 from pydantic import BaseModel
 
-from contracts.context.build_memory import VerifiedBuildKnowledge
-from contracts.workflow.builder.build import BuildActionStatus, BuildRecord
-from contracts.workflow.common import ArtifactRef, StepStatus
-from contracts.workflow.planner.template import PlanTemplate, TemplateStatus
-from agent.skills.planner.tools._structural import (
+from agent.contracts.build_memory import VerifiedBuildKnowledge
+from agent.contracts.build import BuildActionStatus, BuildRecord
+from agent.contracts.common import ArtifactRef, StepStatus
+from agent.contracts.plan_template import PlanTemplate, TemplateStatus
+from agent.contracts.host import (
     BuildAdmissionReceipt,
     PackageLockReceipt,
     ReceiptRef,
     admission_receipt_subject,
 )
-from contracts.workflow.system.stage_log import StageLogEvent
-from contracts.workflow.verifier.build_validation import BuildValidationRecord, CriterionResult
+from agent.contracts.stage_log import StageLogEvent
+from agent.contracts.build_validation import BuildValidationRecord, CriterionResult
 from agent.skills.planner.templating import PlanTemplateService
 from agent.skills.shared.storage.storing import ArtifactStore
 from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE

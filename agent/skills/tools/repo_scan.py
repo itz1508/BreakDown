@@ -427,7 +427,7 @@ def _check_detector_validation() -> dict:
 
         # Fixture 4: dangling contracts.workflow reference
         f4 = fake_root / "_dangling.py"
-        f4.write_text("from contracts.workflow.auditor import x\n")
+        f4.write_text("from agent.contracts.audit import x\n")
         content = f4.read_text()
         has_dangling = False
         for line in content.splitlines():
@@ -438,7 +438,7 @@ def _check_detector_validation() -> dict:
                 has_dangling = True
         fixtures.append({
             "name": "dangling_contracts_workflow",
-            "defect": "from contracts.workflow.auditor import x",
+            "defect": "from agent.contracts.audit import x",
             "detected": has_dangling,
         })
 

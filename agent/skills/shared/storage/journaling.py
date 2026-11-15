@@ -11,8 +11,8 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
-from agent.skills.planner.tools._structural import ReceiptRef
-from contracts.workflow.system.stage_log import StageLogEvent, StageName
+from agent.contracts.host import ReceiptRef
+from agent.contracts.stage_log import StageLogEvent, StageName
 from agent.skills.shared.storage.receipting import ReceiptStore
 
 STAGES: tuple[StageName, ...] = ("search", "audit", "plan", "build", "mem")

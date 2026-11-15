@@ -79,7 +79,7 @@ class AppendOnlyEventStore:
 
     def append(self, event: object) -> str:
         """Append an ExecutionEvent. Returns its digest. Rejects stale chains."""
-        from contracts.workflow.system.observability import ExecutionEvent
+        from agent.contracts.observability import ExecutionEvent
 
         if not isinstance(event, ExecutionEvent):
             raise TypeError(f"Expected ExecutionEvent, got {type(event).__name__}")

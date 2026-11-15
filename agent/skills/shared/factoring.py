@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from contracts.workflow.system.provider import ProviderConfig, ProviderProtocol
+from agent.contracts.provider import ProviderConfig, ProviderProtocol
 from agent.skills.shared.providers.openai_compatible import OpenAICompatibleAdapter
 
 

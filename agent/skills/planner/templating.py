@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from contracts.workflow.common import ArtifactRef
-from contracts.workflow.planner.template import PlanTemplate, TemplateStatus
+from agent.contracts.common import ArtifactRef
+from agent.contracts.plan_template import PlanTemplate, TemplateStatus
 from agent.skills.shared.storage.storing import ArtifactStore
 from agent.skills.shared.storage.serializing import SERIALIZER_PROFILE, digest_model
 from agent.skills.shared.storage.receipting import ReceiptStore

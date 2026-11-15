@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import os
 import tempfile
-from contextlib import suppress
 from pathlib import Path
 
 
@@ -25,10 +24,12 @@ def write_atomic(path: Path, content: str) -> None:
             output.write(content)
         os.replace(temporary, path)
     finally:
-        # Cleanup failures must never conceal an interrupted operation.
-        # The Host retains the checkpoint for reconciliation.
-        with suppress(OSError):
+        try:
             Path(temporary).unlink(missing_ok=True)
+        except OSError:
+            # The caller retains the operation checkpoint for reconciliation.
+            # Cleanup failures must never conceal an interrupted operation.
+            pass
 
 
 def move_file(source: Path, destination: Path) -> None:
