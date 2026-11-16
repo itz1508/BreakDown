@@ -11,7 +11,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from agents.skills.shared.storage.checkpoint_store import (
+from system.storage.checkpoint_store import (
     Checkpoint,
     CheckpointStore,
 )

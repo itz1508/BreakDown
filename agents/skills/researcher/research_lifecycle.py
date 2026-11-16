@@ -27,12 +27,12 @@ from agents.skills.researcher.contracts.research import (
     ReviewDisposition,
 )
 from agents.skills.researcher.research_catalog import ResearchCatalog
-from agents.skills.shared.storage.artifact_store import (
+from system.storage.artifact_store import (
     ArtifactStore,
     StaleRevisionError,
 )
-from agents.skills.shared.storage.event_store import EventStore
-from agents.skills.shared.storage.receipt_store import ReceiptStore
+from system.storage.event_store import EventStore
+from system.storage.receipt_store import ReceiptStore
 
 
 class ResearchLifecycleError(Exception):

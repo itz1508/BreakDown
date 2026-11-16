@@ -18,10 +18,6 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["agents", "system"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"config/config.yaml" = "config/config.yaml"
-"config/providers/meta.yaml" = "config/providers/meta.yaml"
-
 [project.optional-dependencies]
 meta = ["openai>=1.0"]
 codex = ["openai-codex"]
@@ -64,7 +60,7 @@ markers = ["e2e: end-to-end tests that drive real host stores and CLI entrypoint
 
 [tool.deptry]
 known_first_party = ["agents"]
-extend_exclude = ["deployment/modal", ".transfer-quarantine", ".pytest-", "video/examples", "examples"]
+extend_exclude = [".transfer-quarantine", ".pytest-", "video/examples", "examples"]
 
 [tool.deptry.per_rule_ignores]
 DEP001 = ["modal"]

@@ -27,12 +27,12 @@ from agents.skills.researcher.contracts.research import (
     ResearchRecord,
 )
 from agents.skills.shared.providers.base import ProviderError, ProviderRequest
-from agents.skills.shared.storage.artifact_store import ArtifactStore
-from agents.skills.shared.storage.canonical_serialization import digest_raw
 from agents.skills.spec_search.spec_searching import SpecQuery
 from agents.skills.spec_search.spec_searching import search as spec_search
 from agents.tools.file_tools import ReadSourceTool
 from agents.tools.search import RepositorySearchTool
+from system.storage.artifact_store import ArtifactStore
+from system.storage.canonical_serialization import digest_raw
 
 MAX_STEPS = 4
 MAX_TOOL_CALLS = 6

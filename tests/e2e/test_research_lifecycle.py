@@ -20,9 +20,9 @@ from agents.skills.researcher.contracts.research import (
     ReviewDisposition,
 )
 from agents.skills.researcher.research_lifecycle import ResearchLifecycle, ResearchLifecycleError
-from agents.skills.shared.storage.artifact_store import ArtifactStore
-from agents.skills.shared.storage.event_store import EventStore
-from agents.skills.shared.storage.receipt_store import ReceiptStore
+from system.storage.artifact_store import ArtifactStore
+from system.storage.event_store import EventStore
+from system.storage.receipt_store import ReceiptStore
 
 pytestmark = pytest.mark.e2e
 

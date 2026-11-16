@@ -118,7 +118,7 @@ def test_auditor_owns_both_audit_stages_and_its_three_files() -> None:
 
     assert workflow["ownership"]["auditor"]["stages"] == ["discovery", "repository_audit"]
     assert auditor == {
-        "directory": "agent/skills/auditor/",
+        "directory": "agents/skills/auditor/",
         "contract_file": "audit.yaml",
         "entry_file": "audit.py",
         "implementation_file": "auditing.py",
@@ -140,7 +140,7 @@ def test_each_skill_keeps_its_three_files_inside_its_own_folder() -> None:
     assert set(workflow["skill_scaffolding"]) == set(expected)
     for role, names in expected.items():
         scaffold = workflow["skill_scaffolding"][role]
-        assert scaffold["directory"] == f"agent/skills/{role}/"
+        assert scaffold["directory"] == f"agents/skills/{role}/"
         assert (
             scaffold["contract_file"],
             scaffold["entry_file"],

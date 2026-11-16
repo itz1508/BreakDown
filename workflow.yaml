@@ -388,25 +388,25 @@ stages:
 
 skill_scaffolding:
   auditor:
-    directory: agent/skills/auditor/
+    directory: agents/skills/auditor/
     contract_file: audit.yaml
     entry_file: audit.py
     implementation_file: auditing.py
 
   researcher:
-    directory: agent/skills/researcher/
+    directory: agents/skills/researcher/
     contract_file: research.yaml
     entry_file: research.py
     implementation_file: researching.py
 
   planner:
-    directory: agent/skills/planner/
+    directory: agents/skills/planner/
     contract_file: plan.yaml
     entry_file: plan.py
     implementation_file: planning.py
 
   builder:
-    directory: agent/skills/builder/
+    directory: agents/skills/builder/
     contract_file: build.yaml
     entry_file: build.py
     implementation_file: building.py

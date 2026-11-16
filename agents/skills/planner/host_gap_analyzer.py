@@ -25,8 +25,8 @@ from agents.skills.planner.tools.gap_analysis import (
     WorkflowExecutionTrace,
 )
 from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
-from agents.skills.shared.storage.artifact_store import ArtifactStore
-from agents.skills.shared.storage.receipt_store import ReceiptStore
+from system.storage.artifact_store import ArtifactStore
+from system.storage.receipt_store import ReceiptStore
 
 __all__ = (
     "HostGapAnalyzer",

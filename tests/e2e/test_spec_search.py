@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from agents.skills.shared.storage.canonical_serialization import digest_raw
 from agents.skills.spec_search.spec_searching import SpecQuery, SpecSearchError, search
+from system.storage.canonical_serialization import digest_raw
 
 pytestmark = pytest.mark.e2e
 

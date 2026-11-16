@@ -5,8 +5,8 @@ from __future__ import annotations
 from pydantic import Field, model_validator
 
 from agents.shared.base import ArtifactRef, ContractModel, DiagnosticStatus
-from agents.skills.shared.storage.artifact_store import ArtifactStore
-from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
+from system.storage.artifact_store import ArtifactStore
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, digest_raw
 
 
 class RecoveryReadiness(ContractModel):

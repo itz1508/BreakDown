@@ -3,6 +3,10 @@
 Read first each session; newest entries at the top. Stable lessons migrate to
 `LEARNING.LOG`; volatile specifics stay in their referenced documents.
 
+- 2026-11-16 — Removal preference (user directive): file removals are final.
+  Do not create backup copies or recovery records of removed files, and do not
+  propose commit messages for removals. Delete, verify, and move on.
+
 - 2026-11-11 — Providers untouched: never touched any provider code/config yet.
   Do not reference provider folders, adapters, or API-key reading in AGENTS.md.
 - 2026-11-11 — AGENTS.md volatility rule: no hard-coded protocol/endpoint/model

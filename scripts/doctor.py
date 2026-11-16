@@ -25,7 +25,7 @@ def preflight(root: Path) -> str | None:
     check("python", "passed" if sys.version_info >= (3, 11) else "blocked", platform.python_version())
     if sys.version_info < (3, 11):  # noqa: UP036 - doctor checks unsupported interpreters
         return None
-    for name in ("pyproject.toml", "uv.lock", "config/config.yaml"):
+    for name in ("pyproject.toml", "uv.lock"):
         if not (root / name).is_file():
             check("project_file", "blocked", f"Missing {name}")
             return None
@@ -39,22 +39,11 @@ def runtime_diagnostics(root: Path) -> int:
     """Run only after dependency sync, under the uv-managed project interpreter."""
     if str(root) not in sys.path:
         sys.path.insert(0, str(root))
-    try:
-        from agents.skills.shared.host.loaders import load_app_config, load_selected_provider
-
-        app = load_app_config(root / "config/config.yaml")
-        provider = load_selected_provider(app, root)
-    except (ImportError, OSError, ValueError, RuntimeError) as exc:
-        check("runtime_config", "blocked", f"{type(exc).__name__}: {exc}")
-        return 1
 
     check("pydantic", "passed" if importlib.util.find_spec("pydantic") else "blocked", "import")
-    check("provider_sdk", "passed" if importlib.util.find_spec(provider.sdk) else "blocked", provider.sdk)
-    check("provider_credentials", "passed" if os.getenv(provider.api_key_env) else "not_run", provider.api_key_env)
-    state = os.getenv(app.state.root_env)
-    if not state:
-        check("state_root", "blocked", app.state.root_env)
-        return 1
+    check("yaml", "passed" if importlib.util.find_spec("yaml") else "blocked", "import")
+
+    state = os.getenv("ONESHOT_STATE_ROOT", ".oneshot-state")
     target = Path(state)
     try:
         target.mkdir(parents=True, exist_ok=True)

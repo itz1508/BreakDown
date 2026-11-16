@@ -10,8 +10,8 @@ from agents.skills.shared.contracts.workflow.system.tool_registry import (
     ResolvedCommand,
     ToolRegistrySnapshot,
 )
-from agents.skills.shared.storage.artifact_store import ArtifactStore
-from agents.skills.shared.storage.canonical_serialization import SERIALIZER_PROFILE, canonical_bytes, digest_raw
+from system.storage.artifact_store import ArtifactStore
+from system.storage.canonical_serialization import SERIALIZER_PROFILE, canonical_bytes, digest_raw
 
 
 class ToolRegistryError(ValueError):

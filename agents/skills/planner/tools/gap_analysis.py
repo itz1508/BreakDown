@@ -577,7 +577,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             capability_id="runtime_root_registry",
             producers=(
                 CapabilityProducer(
-                    path="agents/skills/shared/storage/runtime_root_registry.py",
+                    path="system/storage/runtime_root_registry.py",
                     symbols=("RuntimeRootRegistry",),
                 ),
             ),
@@ -592,7 +592,7 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             ),
             consumers=(
                 CapabilityConsumer(
-                    path="agents/skills/builder/build_admission.py",
+                    path="agents/skills/builder/building.py",
                     reference="recovery_readiness_ref",
                 ),
             ),
@@ -644,13 +644,13 @@ def structural_capability_requirements() -> tuple[CapabilityRequirement, ...]:
             producers=(
                 CapabilityProducer(path="agents/skills/builder/contracts/schedule.py", symbols=("BuildWave",)),
                 CapabilityProducer(
-                    path="agents/skills/builder/effect_executor.py",
-                    symbols=("EffectExecutor.execute_admitted",),
+                    path="agents/skills/builder/building.py",
+                    symbols=("execute_admitted",),
                 ),
             ),
             consumers=(
                 CapabilityConsumer(
-                    path="agents/skills/builder/effect_executor.py",
+                    path="agents/skills/builder/building.py",
                     reference="expected_source_digest",
                 ),
             ),

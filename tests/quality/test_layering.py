@@ -19,17 +19,15 @@ class TestImportBoundaries:
         return imports
 
     RUNTIME_MODULES = {
-        "agents.skills.shared.storage.artifact_store",
-        "agents.skills.shared.storage.receipt_store",
-        "agents.skills.shared.storage.checkpoint_store",
+        "system.storage.artifact_store",
+        "system.storage.receipt_store",
+        "system.storage.checkpoint_store",
+        "system.storage.event_store",
+        "agents.shared.storage.working_store",
         "agents.skills.shared.host.sys_policy_enforcer",
         "agents.skills.shared.host.sys_controller",
-        "agents.skills.builder.effect_executor",
-        "agents.skills.builder.package_lock",
-        "agents.skills.builder.build_admission",
         "agents.skills.planner.scanner_gateway",
         "agents.skills.shared.host.recovery",
-        "agents.skills.shared.storage.event_store",
         "agents.skills.shared.host.loaders",
     }
 

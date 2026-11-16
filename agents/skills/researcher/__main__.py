@@ -7,7 +7,7 @@ from pathlib import Path
 from agents.shared.io import error_response, ok_response, read_request, write_response
 from agents.skills.researcher.researching import ResearchContext, ResearchRequest, execute
 from agents.skills.shared.providers.base import ProviderError
-from agents.skills.shared.storage.artifact_store import ArtifactStore
+from system.storage.artifact_store import ArtifactStore
 
 
 def main() -> int:

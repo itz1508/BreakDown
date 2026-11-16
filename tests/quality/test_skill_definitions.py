@@ -8,12 +8,12 @@ import pytest
 import yaml
 
 SKILLS = {
-    "auditor": ("audit.yaml", "auditing.py"),
-    "researcher": ("research.yaml", "researching.py"),
-    "coder": ("code.yaml", "coding.py"),
-    "planner": ("plan.yaml", "planning.py"),
-    "builder": ("build.yaml", "building.py"),
-    "spec_search": ("spec_search.yaml", "spec_searching.py"),
+    "auditor": ("audit.yaml", "audit.py", "auditing.py"),
+    "researcher": ("research.yaml", "research.py", "researching.py"),
+    "coder": ("code.yaml", "code.py", "coding.py"),
+    "planner": ("plan.yaml", "plan.py", "planning.py"),
+    "builder": ("build.yaml", "build.py", "building.py"),
+    "spec_search": ("spec_search.yaml", "spec_search.py", "spec_searching.py"),
 }
 
 
@@ -75,9 +75,10 @@ def test_role_definitions_are_owned_and_closed() -> None:
     assert not Path("contracts/workflow/pipeline.yaml").exists()
     assert not Path("agents/skills/pipeline_contract.py").exists()
     assert not Path(".agents/contracts/workflow.yaml").exists()
-    for role, (yaml_name, implementation) in SKILLS.items():
+    for role, (yaml_name, entry_file, implementation) in SKILLS.items():
         root = Path("agents/skills") / role
         assert (root / "SKILL.md").is_file()
+        assert (root / entry_file).is_file()
         assert (root / implementation).is_file()
         definition = load_definition((root / yaml_name).read_text(encoding="utf-8"), role=role)
         assert definition["pipeline_id"].startswith(role + ".")

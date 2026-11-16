@@ -13,8 +13,8 @@ from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from agents.skills.shared.storage.canonical_serialization import digest_raw
 from agents.skills.shared.tools.fs_walk import iter_source_files
+from system.storage.canonical_serialization import digest_raw
 
 DEFAULT_SUFFIXES: tuple[str, ...] = (".py", ".md", ".yaml", ".yml", ".toml", ".json")
 
