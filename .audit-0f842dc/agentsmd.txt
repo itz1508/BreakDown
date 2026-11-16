@@ -1,1 +1,0 @@
-The current `main` tree still contains older `agent/contracts/` and `agent/runtime/` areas and role folders with existin

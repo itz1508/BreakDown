@@ -66,3 +66,74 @@ Read first each session; newest entries at the top. Stable lessons migrate to
   system/storage/ is removed per this ruling; the other guard entries
   remain frozen. This supersedes the pivot record phrasing "agents/shared
   models" for the queue records only; agents/shared/io is untouched.
+
+
+### Shared components — `agents/shared/`
+
+Store reusable components consumed by multiple roles:
+- `base.py`: canonical shared primitives and model configuration.
+- `io.py`: common input/output handling.
+- `tools/`: cross-role tool implementations.
+- `templates/`: reusable processing instructions.
+- `references/`: supporting guidance and examples.
+
+Keep role-exclusive behavior inside its role. Do not store generated results,
+credentials, local databases or cloud artifacts here.
+
+### Cloud storage — `agents/storage/`
+
+Store cloud-storage integration code: upload, download and artifact-reference
+handling. Actual artifacts remain in the configured cloud store.
+
+### Local persistence — `system/storage/`
+
+Store implementations for local:
+- Artifacts and their exact revisions/digests.
+- Checkpoints and resumable execution state.
+- Task/attempt records, where already used.
+- Events, decisions and receipt records, where required.
+- Canonical serialization and integrity checks.
+
+Runtime data belongs in the configured state directory—not among source files.
+Reuse existing stores and preserve their formats; this list does not require
+creating every listed component.
+
+### System inspection — `system/scanner/`
+
+Keep read-only inspection capabilities for:
+- File inventory, content hashes and unreadable/excluded paths.
+- Python syntax and resolvable static imports.
+- Entrypoint, configuration and package-resource references.
+- Duplicate implementation candidates and ownership inconsistencies.
+- Expected versus observed source/artifact drift.
+- Preflight checks supported by actual evidence.
+
+Declare the scan target, baseline, checks performed and coverage limits.
+Distinguish confirmed defects, review candidates and unknowns.
+
+Reuse existing scanners. Do not invent a missing capability, apply repairs,
+grant approval or claim runtime correctness from static findings.
+
+### Context management — `system/context_management/context_windows.py`
+
+Manage request context using the selected endpoint’s supported capabilities.
+Preserve original intent, current assignment, confirmations, artifact references
+and unresolved tool-call/result pairs.
+
+Reuse existing token accounting and context handling. Persist required evidence
+before reducing context; do not silently discard necessary source material.
+
+Provider-specific options must be verified before use. Do not copy example API
+fields into an incompatible endpoint.
+
+### Tool processing — `agents/shared/tools/_use.py`
+
+Reuse or connect existing tool execution and result handling:
+- Validate the requested name and arguments against the tool definition.
+- Execute only available, permitted client-side tools.
+- Return actual output or an explicit error matched to the original call ID.
+- Preserve required message order and continue the existing model loop.
+- Do not execute provider-managed server tools locally.
+- Never fabricate results or tool-call IDs.
+
+Do not duplicate the existing loop, registration or execution implementation.

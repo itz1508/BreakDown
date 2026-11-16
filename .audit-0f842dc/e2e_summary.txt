@@ -1,8 +1,0 @@
-FAILED tests/e2e/test_mvp_mcp_research.py::test_live_research_host_dispatch_and_return_persisted
-FAILED tests/e2e/test_mvp_mcp_research.py::test_dispatch_rejects_wrong_workflow_role_before_upstream_call
-FAILED tests/e2e/test_mvp_mcp_research.py::test_cli_run_executes_existing_host_research
-FAILED tests/e2e/test_mvp_mcp_research.py::test_cli_run_unknown_task_fails_without_creating_fake_work
-FAILED tests/e2e/test_mvp_mcp_research.py::test_cli_run_blocks_missing_upstream_provider
-FAILED tests/e2e/test_real_workflow.py::TestScenarios::test_s1_normal_completion
-FAILED tests/e2e/test_real_workflow.py::TestScenarios::test_cli_verify_incomplete_returns_nonzero
-FAILED tests/e2e/test_task_todo_e2e.py::test_task_todo_to_verified_program - ...
