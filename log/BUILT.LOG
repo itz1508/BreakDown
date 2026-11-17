@@ -1,0 +1,214 @@
+# BUILT.LOG
+
+Delivered intent record. Append-only; corrections preserve history.
+
+Entry format (2026-11-16 onward): one JSON record per build —
+  { record_type: "built", build_id: "BLD-####" (sequential),
+    created_at: actual clock ISO-8601, title,
+    expected: {file_count, folder_count},
+    output: {files[], folders[]},
+    validation: {status, expected_file_count, actual_file_count,
+                 missing_files[], unexpected_files[], evidence[]} }
+Declare expected counts, list exact output paths, then validate them against
+the filesystem — never assume. Actions without file outputs (merges, prunes,
+repairs) belong in validation.evidence. Earlier entries are preserved prose
+history.
+
+## 2026-11-12 — Role-fit restructure (user-directed layout)
+
+User intent delivered: "the clean repo no longer has contract and system host;
+find and fit contract/runtime material per skill/<role>; each role gets
+output/ for artifacts."
+
+- Implementation: 96-file `git mv` redistribution (blob multiset verified
+  identical pre/post), import-statement rewrite (130 files / 384 lines),
+  path-string and workflow/doc/config updates, boundary tests re-pinned to the
+  new layout, retired-path policy extended to `contracts/` and `system/`.
+- Evidence: compileall exit 0; import smoke test OK; full pytest run with zero
+  failures (see CHANGE.LOG 2026-11-12 for caveats); `ruff check .` clean.
+- Unfinished/known: `ruff format --check` failures pre-date this change;
+  GitHub push of branch `consolidation-v2` still pending user's interactive
+  GitHub authentication.
+
+## 2026-11-11 — Package 1 baseline + structure corrections + mvp-consumer migration (A0)
+
+Requirement IDs / intent:
+- Package 1 (baseline) deliverables; user-directed structure decisions
+  (roles own runtime+contract, dispatch dissolved into runtime, system/
+  retained as slim infra layer, capabilities pending approval).
+
+Actually implemented:
+- `agent/skills/{coder,planner,builder,researcher}/__main__.py`: thin role
+  entries (coder = read-only capability CLI; researcher/planner/builder =
+  fail-closed dispatch reporters). Verified by execution.
+- `system/host/file_operations.py`: `write_atomic` byte-exactness fix
+  (`newline=""`) — build effects no longer translate newlines on Windows.
+- `agent/skills/planner/review/gap_analysis.py`: `_resolve_revision` rejects
+  option-like git revisions (argument-injection hardening).
+- A0 mvp-consumer migration: `test_host_dispatch.py` repointed to
+  HostController-native harness; `test_host_integrity.py` reduced to its four
+  pure-host receipt/transition tests; `test_scanner_entrypoints.py` created
+  (repointed CLI scanner test); seven MVP-product test/fixture files removed
+  (test_mvp_api, test_mvp_service, test_mvp_connectors, test_mvp_mcp_research,
+  test_mvp_scanner, test_audit_integration, fixtures/mcp_research_server).
+- Guidance: `AGENTS.md` full rewrite (structure, Meta host section, plan-first
+  role rule, stdlib rules); `D:\breakdown-v1\DECOMPOSITION_PLAN.md` maintained
+  (dispatch dissolution, SDK findings, stdlib folds, system/ restructure).
+
+Evidence:
+- pytest collection rc=0 (0 errors); focused tests rc=0 (16/16 pass, with
+  --basetemp workaround for a pre-existing Windows temp-dir permission issue);
+  guard rc=0 (286 tracked paths accepted); auditor rescan owned findings 0
+  (was 71: 60 mvp-import, 9 command-execution review, 2 comment false
+  positives). Full-suite result recorded in D:\breakdown-v1\full_suite.txt.
+
+Not done / differs from intent:
+- Research-execution recovery semantics (S5) previously covered by
+  mvp.research_host are not yet re-implemented in the supported tree — they
+  are recorded in the Five Contract Scenarios doc as Package 5/9 requirements.
+- Plans (decomposition phases B1/B2/C, capabilities) remain proposals pending
+  approval; no dissolution code executed yet.
+- 2026-11-14 — system/scanner engine (commit 0ba13c9): rebuilt as fresh
+  implementation per approved scanner plan v2. Paths: system/scanner/
+  {__init__,__main__,_types,_index,_debug,_preflight,_predict}.py,
+  system/__init__.py, tests/system/scanner/{test_index,test_cli}.py
+  (16 tests). Evidence: scanner tests 16/16, full suite all-pass,
+  ruff check+format clean, guard accepts 216 tracked paths, mypy clean
+  except two known errors in orphaned verify_all.py and
+  contracts/workflow/validation/planning.py (import the deleted scanner
+  contract; disposition frozen under the hard boundary). Also in this
+  commit: MEM.LOG hard-boundary record, planner __main__/planning.py
+  gap fixes from 5bd9c72. Unfinished: guard-list ruling, evidence-
+  separation review, wheel/deptry pass — all pending user instruction.
+- 2026-11-14 — role-validator relocation (commit 350872a): planning,
+  research and audit-discovery validators moved out of
+  shared/contracts/workflow/validation/ into their owning roles
+  (planner/contracts/validation.py, researcher/contracts/validation.py,
+  auditor/contracts/validation.py); shared __init__ rewritten to
+  cross-role only; scanner-coupled traced detector not moved (retired
+  stack); benchmark_decision_trace.py and evaluate_gap_sklearn.py
+  deleted. Evidence: full suite all-pass, ruff clean, guard 226 paths,
+  mypy reduced to the single frozen verify_all.py orphan. Untouched:
+  host_gap_analyzer.py (frozen evidence-review candidate),
+  shared/host/, shared/storage/, queue location ruling (pending).
+- 2026-11-14 — Queue storage relocation: system/storage/ now owns the
+  queue (TaskTodo, ExecTodo, Event models + file-backed append-only
+  Storage + sys_ref). Old homes deleted: agents/shared/queue,
+  agents/shared/events, agents/system/_storage.py, agents/system/_ref.py.
+  Guard: system/storage/ ban removed by user ruling. Evidence: full
+  suite all-pass, ruff check+format clean, guard accepts 224 tracked
+  paths, mypy reduced to the single frozen verify_all.py orphan.
+- 2026-11-14 — CI rewrite (this commit): all 10 legacy workflows deleted
+  (referenced retired agent/ paths, deleted benchmarks, dead branches,
+  Modal/MVP demos); one new .github/workflows/ci.yml with two jobs:
+  quality (py3.11+3.12: ruff, format, mypy agents system, deptry, guard,
+  full pytest) and package (wheel build + resource check + artifact).
+  claude-agent-sdk removed from pyproject extras + DEP002; uv lock
+  regenerated (11 lock references gone). deptry DEP002 ignores extended
+  with logfire/opentelemetry-api -- pre-existing failure verified against
+  unmodified baseline; observability deps wired in deployment contexts
+  excluded from deptry scanning, same pattern as modal/openai/mcp.
+
+{
+  "record_type": "built",
+  "build_id": "BLD-0001",
+  "created_at": "2026-11-16T13:57:39-08:00",
+  "title": "Credential purge, mainline merge support, branch/worktree pruning, ACL repair, records rebuild",
+  "expected": {
+    "file_count": 6,
+    "folder_count": 0
+  },
+  "output": {
+    "files": [
+      ".env.modal",
+      ".gitignore",
+      "MEM.LOG",
+      "LEARNING.LOG",
+      "BUILT.LOG",
+      "D:/archive-builder-file-ops.patch"
+    ],
+    "folders": []
+  },
+  "validation": {
+    "status": "valid",
+    "expected_file_count": 6,
+    "actual_file_count": 6,
+    "missing_files": [],
+    "unexpected_files": [],
+    "evidence": [
+      "Outputs verified present via Test-Path at record time (archive = 481844 bytes). First pass reported D:/archive-builder-file-ops.patch missing due to a Join-Path bug in the verification script; re-verified with the direct path before recording.",
+      "Deletions verified absent: chat_interface.py, test_requests.py, agents/skills/modal_proxy_skill.py, oneshot-pre-transfer.patch.",
+      "Secrets: zero key matches via pickaxe across all history/index/HEAD + 251-file sweep; 160 refs/cline checkpoint refs and globalStorage checkpoints purged (update-ref -d, reflog expire, gc --prune=now); git fsck --unreachable empty. Endpoint re-verified live (HTTP 200).",
+      "Gate: pytest 180/180 (via --basetemp workaround) + ruff clean before commit.",
+      "Committed user restructure WIP as a7928bb and fast-forward merged+pushed to main (merge-base --is-ancestor exit 0); closes the 2026-11-12 pending-push item.",
+      "Paths inside a7928bb (user-built, committed by this session): agents/shared/storage/ (relocated); new agents/skills/{auditor/audit.py, builder/build.py, planner/plan.py, researcher/research.py}; 10 modified skill modules; 8 modified tests; AGENTS.md, MEM.LOG, pyproject.toml, workflow.yaml, scripts/doctor.py; retired agents/skills/shared/storage/, config/, deployment/modal/.",
+      "Pruned: 15 stale remote branches (ancestor-verified first) + local consolidation/builder-file-operations-01 + 2 worktrees; dirty worktree archived (325 diffs, secret-scanned clean) before removal; fetch --prune done.",
+      "Environment: ACL-locked .pytest-tmp and .pytest_cache reclaimed (admin takeown, non-elevated finish); default pytest addopts re-verified 180/180; .gitignore hardened to .pytest-tmp*/.",
+      "Pending user action: rotate the exposed Modal token pair. Branch protection on main remains optional (no CI workflows exist to gate on)."
+    ]
+  }
+}
+
+{
+  "record_type": "built",
+  "build_id": "BLD-0002",
+  "created_at": "2026-11-16T19:13:58-08:00",
+  "title": "Relocate shared components: agents/skills/shared/ dissolved into agents/shared/",
+  "expected": {
+    "file_count": 28,
+    "folder_count": 4
+  },
+  "output": {
+    "files": [
+      "agents/shared/contracts/__init__.py",
+      "agents/shared/contracts/workflow/__init__.py",
+      "agents/shared/contracts/workflow/system/__init__.py",
+      "agents/shared/contracts/workflow/system/config.py",
+      "agents/shared/contracts/workflow/system/coverage.py",
+      "agents/shared/contracts/workflow/system/host.py",
+      "agents/shared/contracts/workflow/system/observability.py",
+      "agents/shared/contracts/workflow/system/provider.py",
+      "agents/shared/contracts/workflow/system/tool_registry.py",
+      "agents/shared/contracts/workflow/validation/__init__.py",
+      "agents/shared/contracts/workflow/validation/cross_stage.py",
+      "agents/shared/contracts/workflow/validation/lineage.py",
+      "agents/shared/contracts/workflow/validation/protocols.py",
+      "agents/shared/contracts/workflow/validation/structural.py",
+      "agents/shared/host/__init__.py",
+      "agents/shared/host/file_operations.py",
+      "agents/shared/host/loaders.py",
+      "agents/shared/host/recovery.py",
+      "agents/shared/host/recovery_readiness.py",
+      "agents/shared/host/sys_path.py",
+      "agents/shared/host/sys_policy_enforcer.py",
+      "agents/shared/host/tool_registry.py",
+      "agents/shared/providers/__init__.py",
+      "agents/shared/providers/base.py",
+      "agents/shared/providers/provider_config.py",
+      "agents/shared/tools/__init__.py",
+      "agents/shared/tools/fs_walk.py",
+      "agents/shared/tools/sys_scan.py"
+    ],
+    "folders": [
+      "agents/shared/contracts/",
+      "agents/shared/host/",
+      "agents/shared/providers/",
+      "agents/shared/tools/"
+    ]
+  },
+  "validation": {
+    "status": "valid",
+    "expected_file_count": 28,
+    "actual_file_count": 28,
+    "missing_files": [],
+    "unexpected_files": [],
+    "evidence": [
+      "All 28 moved files verified present at new paths via post-move tree inventory (git mv exit 0 for each subtree).",
+      "agents/skills/shared/ absent: Test-Path = False; deleted empty root __init__.py plus pyc-only orphan dirs (contracts/workflow/verifier, providers/providers).",
+      "46 reference replacements across 26 consumer files (13 external import sites, gap_analysis path declarations, test_layering pins + module names, agents/tools docstring, 2 auditor docs); residual grep clean except 2 deliberately-historical docstrings and the new guard entry.",
+      "scripts/check_retired_paths.py RETIRED_PREFIXES now blocks agents/skills/shared/ restoration.",
+      "Gate: ruff 7 import-order findings auto-fixed then All checks passed; pytest 180/180 exit 0 both before and after import sorting.",
+      "CHG-0005; MEM.LOG 'Dissolve agents/skills/shared into agents/shared' decision."
+    ]
+  }
+}

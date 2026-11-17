@@ -7,7 +7,7 @@ from enum import StrEnum
 from pydantic import Field
 
 from agents.shared.base import ArtifactRef, ContractModel, Sha256, StepResult
-from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agents.shared.contracts.workflow.system.host import ReceiptRef
 
 
 class BuildActionStatus(StrEnum):

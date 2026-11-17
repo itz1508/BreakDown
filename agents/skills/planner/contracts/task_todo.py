@@ -11,7 +11,7 @@ from agents.shared.base import (
     Sha256,
     StepStatus,
 )
-from agents.skills.shared.contracts.workflow.system.tool_registry import ToolInvocation, safe_relative_path
+from agents.shared.contracts.workflow.system.tool_registry import ToolInvocation, safe_relative_path
 
 
 def paths_overlap(left: str, right: str) -> bool:

@@ -26,14 +26,14 @@ def load_config(path: str | Path) -> dict[str, Any]:
 
 def load_app_config(path: str | Path) -> Any:
     """Load an AppConfig from a YAML file."""
-    from agents.skills.shared.contracts.workflow.system.config import AppConfig
+    from agents.shared.contracts.workflow.system.config import AppConfig
 
     return AppConfig.model_validate(load_config(path))
 
 
 def load_selected_provider(app: Any, root: str | Path) -> Any:
     """Load the ProviderConfig selected by the AppConfig."""
-    from agents.skills.shared.providers.provider_config import load_provider_config
+    from agents.shared.providers.provider_config import load_provider_config
 
     root = Path(root)
     provider_path = root / app.provider.profile

@@ -3,9 +3,73 @@
 Read first each session; newest entries at the top. Stable lessons migrate to
 `LEARNING.LOG`; volatile specifics stay in their referenced documents.
 
-- 2026-11-16 — Removal preference (user directive): file removals are final.
-  Do not create backup copies or recovery records of removed files, and do not
-  propose commit messages for removals. Delete, verify, and move on.
+Entry format (2026-11-16 onward): one section per decision —
+  ## <Topic>
+  **User decision:** the owner's ruling, recorded as given
+  **Agent suggestion:** what the agent proposed
+  **Conclusion:** the effective rule going forward
+  **Source:** CHG-#### / BLD-#### / LRN-#### cross-references
+Pre-format bullet entries below the new sections are preserved history.
+
+## Dissolve agents/skills/shared into agents/shared
+
+**User decision:** `agents/skills/shared/**` is a sustantiate issue — move everything up into top-level `agents/shared/`, remove all emptied folders. Success = `agents/skills/shared` gone, files relocated successfully, paths updated.
+
+**Agent suggestion:** `git mv` the four subtrees (contracts/host/providers/tools) wholesale; mechanical import-prefix rewrite over an explicit file list (historical docstrings excluded); re-pin boundary tests; add the old root to the retired-path guard; gate with ruff + full pytest before commit.
+
+**Conclusion:** `agents/skills/shared/` removed. 28 modules now live under `agents/shared/{contracts,host,providers,tools}`; 46 reference replacements across 26 files; guard and AGENTS.md layout updated; gate green (ruff clean, pytest 180/180 twice).
+
+**Source:** CHG-0005 · BLD-0002
+
+## AGENTS.md layout records all folders
+
+**User decision:** The File Locations layout in AGENTS.md must record **all** folders of the actual tree (no abbreviation like `<role>/`), and keep expanding as the build grows.
+
+**Agent suggestion:** Verify the real tree first (directory inventory + content check of non-obvious folders), then write descriptions from evidence; mark empty leftovers explicitly.
+
+**Conclusion:** Layout lists every folder with an evidence-based description. Six empty leftover test dirs (tests/{agent,builder,coder,fixtures,researcher,runtime}) are marked as removal candidates, pending user ruling.
+
+**Source:** CHG-0003 · this session's tree inventory
+
+## Records relocated to log/
+
+**User decision:** All project records move into `log/`: INDEX.md, CHANGE.LOG, BUILT.LOG, LEARNING.LOG, MEM.LOG.
+
+**Agent suggestion:** Move tracked logs with `git mv` (preserves rename detection), then update every reference in AGENTS.md and INDEX.md in the same delivery.
+
+**Conclusion:** Records live under `log/`; AGENTS.md stays at root. References updated; history preserved through git renames.
+
+**Source:** CHG-0004
+
+## System host removal
+
+**User decision:** `system/host/` will be removed; after removal, update the AGENTS.md folder structure too.
+
+**Agent suggestion:** Verify before deleting: the directory held zero files and zero tracked content (empty shell + caches); its only references are retirement guards (`scripts/check_retired_paths.py`, `tests/quality/test_layering.py`) and one stale producer declaration (`agents/skills/planner/tools/gap_analysis.py`).
+
+**Conclusion:** `system/host/` deleted from the tree. `system/` now contains only `scanner/` and `storage/`. AGENTS.md File Locations mirrors the real tree and must be expanded as the build grows.
+
+**Source:** CHG-0003 · BLD-0001
+
+## Storage Ownership
+
+**User decision:** `system/storage/` owns persistence; `system/host/` owns orchestration.
+
+**Agent suggestion:** Keep storage operations separate from workflow coordination.
+
+**Conclusion:** Host delegates persistence to storage. No duplicated storage ownership.
+
+**Source:** CHG-0002 · BLD-0001
+
+## Removal finality
+
+**User decision:** "when remove no need record or commit message."
+
+**Agent suggestion:** Backup copies of removed files and commit-message proposals for removals.
+
+**Conclusion:** File removals are final — no backup copies or recovery records, no commit-message proposals for removals. Delete, verify, move on. Backups only on explicit request.
+
+**Source:** BLD-0001
 
 - 2026-11-11 — Providers untouched: never touched any provider code/config yet.
   Do not reference provider folders, adapters, or API-key reading in AGENTS.md.

@@ -6,7 +6,7 @@
 **Input:** Host-persisted audit-discovery dispatch, Runtime workspace root, requested capabilities and bounded scope. Existing persisted role ID `audit_discovery` is preserved.
 
 **Checks (fixed order):** paths, contracts, dependencies, security, completeness, wiring, frontend, integration, state, recovery, verification. The CLI and Host use the same `CAPABILITY_ORDER` and fail closed on unreadable or symlinked sources.
-**Tools (fixed order):** paths, contracts, dependencies, security, completeness, wiring, frontend, integration, state, recovery. The CLI and Host use the same `CAPABILITY_ORDER` and fail closed on unreadable or symlinked sources. Verification comparison belongs to `agent.skills.shared.tools.verify_all`.
+**Tools (fixed order):** paths, contracts, dependencies, security, completeness, wiring, frontend, integration, state, recovery. The CLI and Host use the same `CAPABILITY_ORDER` and fail closed on unreadable or symlinked sources. Verification comparison belongs to `agents.shared.tools.verify_all`.
 
 **CodeDesign preparation:** After repository inspection, requirement assessment and findings—and before Planning, `agent.skills.auditor.code_design.review_questions` supplies evidence questions for existing CodeDesign candidate origins. Audit Discovery records source-grounded candidates and unknowns; it does not choose an implementation design or modify application source.
 

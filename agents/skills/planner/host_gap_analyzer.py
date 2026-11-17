@@ -11,6 +11,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from agents.shared.base import ArtifactRef, ContractModel, StepStatus
+from agents.shared.contracts.workflow.system.host import ReceiptRef
 from agents.skills.planner.tools.gap_analysis import (
     ComparableSystemAnalysis,
     GapAnalyzer,
@@ -24,7 +25,6 @@ from agents.skills.planner.tools.gap_analysis import (
     WorkflowContractBundle,
     WorkflowExecutionTrace,
 )
-from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
 from system.storage.artifact_store import ArtifactStore
 from system.storage.receipt_store import ReceiptStore
 

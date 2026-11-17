@@ -7,7 +7,7 @@ were relocated to the event store (fixed in aa0cdb23750a4e38c63ef4f9c11e75
 
 from __future__ import annotations
 
-from agents.skills.shared.contracts.workflow.system import observability
+from agents.shared.contracts.workflow.system import observability
 
 
 def test_trace_context_instantiates_and_serializes_round_trip() -> None:

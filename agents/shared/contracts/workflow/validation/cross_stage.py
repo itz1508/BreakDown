@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from collections import defaultdict, deque
 
+from agents.shared.contracts.workflow.system.tool_registry import ToolRegistrySnapshot
+from agents.shared.contracts.workflow.validation.structural import tool_invocation_gaps
 from agents.skills.auditor.contracts._discovery import AuditDiscoveryPackage
 from agents.skills.planner.contracts.specification import BuildSpecification
 from agents.skills.researcher.contracts.research import AuthorizationStatus, ResearchRecord
-from agents.skills.shared.contracts.workflow.system.tool_registry import ToolRegistrySnapshot
-from agents.skills.shared.contracts.workflow.validation.structural import tool_invocation_gaps
 
 
 def normalize_relative_path(value: str) -> str:

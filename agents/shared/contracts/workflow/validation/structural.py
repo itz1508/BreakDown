@@ -6,8 +6,8 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Literal
 
+from agents.shared.contracts.workflow.system.tool_registry import ToolRegistrySnapshot, resolve_invocation
 from agents.skills.planner.contracts.specification import BuildSpecification
-from agents.skills.shared.contracts.workflow.system.tool_registry import ToolRegistrySnapshot, resolve_invocation
 
 CONCERNS = frozenset(
     {

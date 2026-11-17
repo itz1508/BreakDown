@@ -19,7 +19,7 @@ from agents.shared.base import (
     Sha256,
     StepResult,
 )
-from agents.skills.shared.contracts.workflow.system.tool_registry import ToolInvocation
+from agents.shared.contracts.workflow.system.tool_registry import ToolInvocation
 
 
 class IntentDisposition(StrEnum):

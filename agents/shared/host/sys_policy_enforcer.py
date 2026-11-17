@@ -11,7 +11,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from agents.skills.shared.host.sys_path import PathSafetyError, resolve_allowed_path
+from agents.shared.host.sys_path import PathSafetyError, resolve_allowed_path
 
 
 class AuthorizationError(Exception):

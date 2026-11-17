@@ -24,16 +24,16 @@ class TestImportBoundaries:
         "system.storage.checkpoint_store",
         "system.storage.event_store",
         "agents.shared.storage.working_store",
-        "agents.skills.shared.host.sys_policy_enforcer",
-        "agents.skills.shared.host.sys_controller",
+        "agents.shared.host.sys_policy_enforcer",
+        "agents.shared.host.sys_controller",
         "agents.skills.planner.scanner_gateway",
-        "agents.skills.shared.host.recovery",
-        "agents.skills.shared.host.loaders",
+        "agents.shared.host.recovery",
+        "agents.shared.host.loaders",
     }
 
     def test_contracts_no_runtime_imports(self):
         """B01: Contract modules do not import runtime modules."""
-        contracts_dir = pathlib.Path("agents/skills/shared/contracts")
+        contracts_dir = pathlib.Path("agents/shared/contracts")
         assert contracts_dir.is_dir(), "contract source root missing"
         files = sorted(path for path in contracts_dir.rglob("*.py") if path.name != "__init__.py")
         assert files, "boundary test cannot pass without scanning contract modules"
@@ -48,7 +48,7 @@ class TestImportBoundaries:
 
     def test_validation_no_io_imports(self):
         """B01b: Validation modules do not import IO modules."""
-        validation_dir = pathlib.Path("agents/skills/shared/contracts/workflow/validation")
+        validation_dir = pathlib.Path("agents/shared/contracts/workflow/validation")
         assert validation_dir.is_dir(), "validation source root missing"
         assert any(validation_dir.rglob("*.py")), "validation boundary must scan source files"
         io_modules = {"sqlite3", "os", "pathlib", "shutil", "subprocess", "socket"}

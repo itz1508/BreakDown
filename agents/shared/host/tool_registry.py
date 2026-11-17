@@ -6,7 +6,7 @@ import hashlib
 from pathlib import Path
 
 from agents.shared.base import ArtifactRef
-from agents.skills.shared.contracts.workflow.system.tool_registry import (
+from agents.shared.contracts.workflow.system.tool_registry import (
     ResolvedCommand,
     ToolRegistrySnapshot,
 )

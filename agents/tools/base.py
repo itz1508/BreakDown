@@ -3,7 +3,7 @@
 Layering: this package defines what a model can call (name, description,
 input schema, execute). Role-owned workflow operations live in
 ``agents/skills/<role>/tools`` and cross-role implementations in
-``agents/skills/shared/tools``; this package declares and runs the model's
+``agents/shared/tools``; this package declares and runs the model's
 tool surface. Tools are root-scoped: filesystem and search tools refuse to
 operate outside their configured root.
 

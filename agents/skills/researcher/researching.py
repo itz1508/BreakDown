@@ -14,6 +14,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Literal, Protocol
 
+from agents.shared.providers.base import ProviderError, ProviderRequest
 from agents.skills.auditor.tools.core import safe_read_bytes
 from agents.skills.researcher.contracts.research import (
     EvidenceStatus,
@@ -26,7 +27,6 @@ from agents.skills.researcher.contracts.research import (
     ResearchPlan,
     ResearchRecord,
 )
-from agents.skills.shared.providers.base import ProviderError, ProviderRequest
 from agents.skills.spec_search.spec_searching import SpecQuery
 from agents.skills.spec_search.spec_searching import search as spec_search
 from agents.tools.file_tools import ReadSourceTool

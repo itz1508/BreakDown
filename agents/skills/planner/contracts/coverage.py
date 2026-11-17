@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from agents.shared.contracts.workflow.system.coverage import PlanningCoverage
+from agents.shared.contracts.workflow.validation.structural import CONCERNS
 from agents.skills.planner.contracts.specification import IssueType
-from agents.skills.shared.contracts.workflow.system.coverage import PlanningCoverage
-from agents.skills.shared.contracts.workflow.validation.structural import CONCERNS
 
 ISSUE_CATEGORIES: tuple[IssueType, ...] = (
     "compatibility",

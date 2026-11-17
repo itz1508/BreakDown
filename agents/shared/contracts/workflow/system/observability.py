@@ -1,7 +1,7 @@
 """Observability contracts — trace context.
 
 EventStatus and ExecutionEvent are owned by the event store
-(``agents/skills/shared/storage/event_store.py``), their only consumer.
+(``agents/shared/storage/event_store.py``), their only consumer.
 """
 
 from __future__ import annotations

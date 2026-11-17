@@ -44,7 +44,7 @@ web/test-results/
 
 .transfer-quarantine/
 .pytest-app-move-full/
-.pytest-tmp/
+.pytest-tmp*/
 
 .tmp_pytest/
 .tmp_pytest2/

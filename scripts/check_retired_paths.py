@@ -12,6 +12,7 @@ RETIRED_PREFIXES = (
     ".agents/",
     "deployment/modal/sandbox_v3/",
     "agent/",
+    "agents/skills/shared/",
     "system/host/",
     "system/bootstrap/",
     "system/settings/",

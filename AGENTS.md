@@ -19,11 +19,11 @@ existing records:
 <details>
 <summary>Records to read</summary>
 
-- `BUILT.LOG`
-- `LEARNED.LOG`
-- `MEM.LOG`
-- `PLAN_TO_BUILD.LOG`
-- `ARCHITECTURE.LOG` and `SKILLS.LOG`, if used.
+- `log/INDEX.md` (record index: responsibilities, formats, lifecycle)
+- `log/MEM.LOG`
+- `log/LEARNING.LOG`
+- `log/CHANGE.LOG`
+- `log/BUILT.LOG`
 
 </details>
 
@@ -183,35 +183,93 @@ project; they do not override scope, ownership or authorization.
 
 ## File Locations
 
-Inspect the actual tree and approved mapping before creating or moving files.
+Inspect the actual tree before creating or moving files. This layout mirrors the
+real tree and MUST be expanded as the build grows: when a build adds or removes
+directories, update this section in the same delivery. The actual tree always
+takes precedence over this map.
 
 <details>
-<summary>Layout</summary>
+<summary>Layout (verified 2026-11-16 — all folders recorded; expand as the build grows)</summary>
 
 ```text
 agents/
-├── breakdown.yaml                  # Canonical workflow, when implemented
-└── skills/
-    ├── shared/
-    │   ├── tools/                  # Cross-role operations
-    │   ├── templates/              # Reusable processing instructions
-    │   └── references/
-    └── <role>/
-        ├── __init__.py             # Where adopted packaging requires it
-        ├── <entrypoint>.py
-        ├── SKILL.md
-        ├── tools/
-        ├── templates/
-        └── references/
+├── breakdown.yaml                      # Canonical workflow definition
+├── catalog/                            # Research catalog material
+│   └── examples/                       #   Worked catalog examples (modal_serverless_github_case.md)
+├── shared/                             # Reusable components consumed by multiple roles
+│   ├── storage/                        #   Shared storage (working_store)
+│   ├── contracts/                      #   Shared contracts
+│   │   └── workflow/
+│   │       ├── system/                 #     System-side workflow contracts (config, coverage, host, observability, provider, tool_registry)
+│   │       └── validation/             #     Cross-stage / lineage / protocol / structural validation contracts
+│   ├── host/                           #   Shared host-side helpers (file ops, loaders, recovery, sys_path, policy enforcer, tool registry)
+│   ├── providers/                      #   Provider abstractions (base, provider_config)
+│   └── tools/                          #   Cross-role operations (fs_walk, sys_scan)
+├── skills/
+│   ├── auditor/                        # Role: audit.py + audit.yaml + SKILL.md
+│   │   ├── contracts/                  #   Role-owned contracts (_discovery, _report)
+│   │   ├── references/                 #   Supporting references
+│   │   └── tools/                      #   Role-owned tools
+│   ├── builder/                        # Role: build.py + build.yaml + SKILL.md
+│   │   └── contracts/                  #   Role-owned contracts (build, schedule)
+│   ├── coder/                          # Role: code.py + code.yaml + SKILL.md
+│   ├── planner/                        # Role: plan.py + plan.yaml + SKILL.md
+│   │   ├── contracts/                  #   Role-owned contracts (incl. validation.py)
+│   │   └── tools/                      #   Gap-analysis tooling
+│   ├── researcher/                     # Role: research.py + research.yaml + SKILL.md
+│   │   └── contracts/                  #   Role-owned contracts (research, validation)
+│   └── spec_search/                    # Role: spec_search.py + spec_search.yaml + SKILL.md
+├── system/                             # Execution layer: coordinate → delegating → call_ref → sys_runtime
+└── tools/                              # Model-facing tool declarations (base, file_tools, search, server, think)
 
 system/
-└── storage/                        # Existing persistence implementation
+├── scanner/                            # Read-only static analysis engine (index, preflight, predict, debug)
+└── storage/                            # Persistence: queue (task_todo, exec_todo, event), canonical serialization, runtime roots
+
+docs/                                   # Workflow documentation (workflow.gif/.html) + envbuilder how-to
+examples/                               # Standalone example clients (databricks MCP list-tools, modal GLM client)
+└── reverse_proxy/                      #   Reverse-proxy demo app + design review
+log/                                    # Project records: INDEX.md + CHANGE/BUILT/LEARNING/MEM logs
+scripts/                                # Repo utilities: doctor, retired-path guard, stage-vocabulary migration, modal live probe, conftest bootstrap
+tests/                                  # Pytest tree mirroring source areas
+├── agent/                              #   EMPTY leftover (retired agent/ generation) — removal candidate
+├── agents/                             #   Tests for repaired agents/* modules (checkpoint store, observability)
+├── artifacts/                          #   Artifact store tests (JCS vectors)
+├── auditor/                            #   Auditor role tests
+├── authorization/                      #   Authorization behavior tests
+├── boundaries/                         #   Import/layout boundary tests
+├── builder/                            #   EMPTY leftover — removal candidate
+├── checkpoints/                        #   Checkpoint tests
+├── coder/                              #   EMPTY leftover — removal candidate
+├── contracts/                          #   Contract tests
+├── e2e/                                #   End-to-end lifecycle tests (research lifecycle, spec_search)
+├── fixtures/                           #   EMPTY (fixtures retired) — removal candidate
+├── planner/                            #   Planner tests
+├── providers/                          #   Provider tests
+├── proxy/                              #   Proxy configuration tests
+├── quality/                            #   Quality gates (configuration, layering, skill definitions)
+├── recovery/                           #   Recovery tests
+├── researcher/                         #   EMPTY leftover — removal candidate
+├── runtime/                            #   EMPTY leftover — removal candidate
+├── scanner/                            #   Scanner tests
+├── shared/                             #   Shared model tests
+├── system/                             #   System-layer tests
+│   └── scanner/                        #     Scanner engine CLI/index tests
+└── tools/                              #   agents/tools tests
+web/                                    # Vite + React frontend
+├── src/                                #   App source (main.jsx, styles.css)
+├── public/                             #   Static pages (demo.html, live.html)
+├── demo/                               #   Demo capture tooling
+├── tests/                              #   Playwright specs (audit, connectors, demo, research, scanner)
+└── tests-modal/                        #   Modal live specs
+
+Root files: workflow.yaml (registered workflow contract) · AGENTS.md · pyproject.toml · uv.lock ·
+requirements.txt · README.md · .python-version · .env.modal (gitignored credential store)
 ```
 
 </details>
 
-This is a navigation template, not permission to migrate or generate missing folders.
-The actual approved mapping takes precedence.
+This is a navigation map, not permission to migrate or generate missing folders.
 
 Preserve registered entrypoint names. Keep one canonical implementation and update
 all affected consumers when moving it. Create optional folders only when needed.
@@ -338,46 +396,46 @@ Finish by comparing delivered work with the assignment's Purpose and original re
 State what changed, what actually ran, what remains unresolved and any decision needed.
 Do not claim successful outcomes beyond the evidence.
 
-## Project Records (If any)
+## Project Records
 
-Use the canonical root records below. Do not create duplicate task systems or logs.
+All project records live in `log/`. `log/INDEX.md` is the canonical record
+index: responsibilities, formats, and the lifecycle LEARNING → CHANGE → BUILT
+→ MEM. Each log's own charter (its header) defines the record schema and ID
+scheme; do not restate schemas here or in other files. Records are append-only:
+preserve history, append corrections and superseding entries, never invent
+historical entries. Do not create duplicate task systems or logs.
+
+### CHANGE.LOG
+
+Architecture and design changes: design intent, OLD path → FIXED path, and
+before/after design state. JSON records, `CHG-####`. Git commits show raw
+diffs; CHANGE.LOG records the intended structural change behind them.
 
 ### BUILT.LOG
 
-Record the user intent actually delivered, capability implemented, relevant paths,
-supporting evidence and unfinished work. Keep recommendations separate from delivered
-results. A successful command alone is not a delivered capability.
+Delivered intent: actual files and folders built or modified, declared
+expected counts, and validation of outputs against the filesystem — never
+assumed. JSON records, `BLD-####`. Keep recommendations separate from
+delivered results. A successful command alone is not a delivered capability.
 
-### PLAN_TO_BUILD.LOG
+### LEARNING.LOG
 
-Temporarily retain ideas and future build intentions from discussion:
-what the user wants to build, why, and the relevant discussion context.
-
-This is not TODO, an execution queue or implementation authorization.
-When task management is available, reconcile and migrate useful records there,
-then retire duplicate tracking.
-
-### LEARNED.LOG
-
-Record concise, evidence-backed reusable lessons and references to the canonical
-skill or guidance improved. Preserve applicability and limitations.
-Do not accumulate reminders instead of fixing recurring behavior.
+Step-by-step processing experience — successful and unsuccessful: context,
+steps, outcome, discovery, reusable rule. JSON records, `LRN-####`. Record
+concise, evidence-backed lessons; do not accumulate reminders instead of
+fixing recurring behavior.
 
 ### MEM.LOG
 
-Retain durable project facts, conventions, preferences and decisions with provenance.
-Memory is context—not current permission. Recheck stale or conflicting information.
+User decisions, agent suggestions, and conclusions; durable project facts,
+conventions and preferences with provenance. Markdown decision sections,
+newest first. Memory is context — not current permission; recheck stale or
+conflicting information. MEM promotion requires deliberate selection; stable
+lessons migrate to LEARNING.LOG.
 
-### ARCHITECTURE.LOG and SKILLS.LOG (if any)
-
-Use only where adopted by the project:
-- `ARCHITECTURE.LOG`: decisions, rationale, affected paths and superseded decisions.
-- `SKILLS.LOG`: skill purpose, canonical path, activation conditions and test evidence.
-
-Reference existing diagrams rather than creating a duplicate diagram ledger.
-
-Append corrections and superseding entries. Keep secrets out.
-Git commits and PRs record source changes; do not create a duplicate `CHANGE.LOG`.
+Cross-reference related records (`Source`, `related_records`, `evidence`).
+Validate record claims against the filesystem or git before writing them.
+Keep secrets out of all records.
 
 ## Turn Corrections Into Tested Skills
 

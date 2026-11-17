@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Protocol
 
 from agents.shared.base import ArtifactRef
-from agents.skills.shared.contracts.workflow.system.host import ReceiptRef
+from agents.shared.contracts.workflow.system.host import ReceiptRef
 
 
 class ArtifactResolver(Protocol):

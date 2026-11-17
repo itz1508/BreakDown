@@ -14,7 +14,7 @@ Inspect source and contracts, implementation completeness, imports and paths, AP
 
 Within the static Audit capability: paths → contracts → dependencies → security → completeness → wiring → frontend → integration → state → recovery → verification. Explicit subsets retain that relative order. A symlinked/out-of-root source cannot be read by a scanner; an incomplete requested check blocks the disposition.
 Within the static Audit capability: paths → contracts → dependencies → security → completeness → wiring → frontend → integration → state → recovery. Explicit subsets retain that relative order. A symlinked/out-of-root source cannot be read by a scanner; an incomplete requested check blocks the disposition.
-Verification trace comparison belongs to `agent.skills.shared.tools.verify_all`.
+Verification trace comparison belongs to `agents.shared.tools.verify_all`.
 
 The full Audit Discovery workflow has a separate Host-owned order: load accepted Research and repository instructions; capture source entry identity; inspect actual source; assess accepted requirements; record findings; prepare evidence-grounded CodeDesign and unknowns; capture source exit identity; submit the exact bound artifact for Host validation. The static scanner neither creates Research references nor attests source stability or completes this stage. CodeDesign questions are advisory and must follow evidence, not manufacture it.
 

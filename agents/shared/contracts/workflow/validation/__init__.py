@@ -8,18 +8,18 @@ Role-coupled validators live in their roles:
 Only genuinely cross-role validators remain here.
 """
 
-from agents.skills.shared.contracts.workflow.validation.cross_stage import (
+from agents.shared.contracts.workflow.validation.cross_stage import (
     normalize_relative_path,
     validate_audit_lineage,
     validate_build_specification,
 )
-from agents.skills.shared.contracts.workflow.validation.lineage import (
+from agents.shared.contracts.workflow.validation.lineage import (
     validate_artifact_chain,
     validate_frozen_candidate_equality,
     validate_receipt_subject,
     validate_revision_invalidation,
 )
-from agents.skills.shared.contracts.workflow.validation.protocols import (
+from agents.shared.contracts.workflow.validation.protocols import (
     ArtifactResolver,
     EvidenceResolver,
     ReceiptVerifier,

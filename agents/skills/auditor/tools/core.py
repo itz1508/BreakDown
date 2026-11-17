@@ -7,7 +7,7 @@ from collections.abc import Callable, Iterable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from agents.skills.shared.tools.fs_walk import iter_source_files
+from agents.shared.tools.fs_walk import iter_source_files
 
 
 @dataclass(frozen=True)

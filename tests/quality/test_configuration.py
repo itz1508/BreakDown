@@ -12,8 +12,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from agents.skills.shared.contracts.workflow.system.provider import ProviderProtocol
-from agents.skills.shared.providers.provider_config import (
+from agents.shared.contracts.workflow.system.provider import ProviderProtocol
+from agents.shared.providers.provider_config import (
     ProviderConfigurationError,
     load_provider_config,
     resolve_api_key,
