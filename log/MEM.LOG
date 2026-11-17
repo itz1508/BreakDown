@@ -11,6 +11,16 @@ Entry format (2026-11-16 onward): one section per decision —
   **Source:** CHG-#### / BLD-#### / LRN-#### cross-references
 Pre-format bullet entries below the new sections are preserved history.
 
+## Execution layer detached to system/ — io envelope retired as standalone module
+
+**User decision:** Delete `agents/shared/io.py`; detach `agents/system/**` and relocate into `breakdown/system` (repo-root `system/` package).
+
+**Agent suggestion:** Evidence first: `system/tools/` (earlier wording) rejected as destination because it is retired+guarded. The io envelope (Request/Response + 4 functions) folded into `system/_runtime.py` (the layer's "process I/O" charter) and re-exported from `system/__init__.py` — no io-named file remains, all 7 importers keep working.
+
+**Conclusion:** Execution layer lives at `system/{_call,_coordinate,_delegating,_runtime}.py`; `system/__init__.py` is the merged facade; `agents/system/` and `agents/shared/io.py` gone; `agents/system/` added to the retired-path guard. Supersedes the 2026-11-14 pivot entry on LOCATION only — the coordinate → delegating → call_ref → sys_runtime flow itself is unchanged.
+
+**Source:** CHG-0006 · BLD-0003 · MEM.LOG 2026-11-14 pivot entry (location superseded)
+
 ## Dissolve agents/skills/shared into agents/shared
 
 **User decision:** `agents/skills/shared/**` is a sustantiate issue — move everything up into top-level `agents/shared/`, remove all emptied folders. Success = `agents/skills/shared` gone, files relocated successfully, paths updated.

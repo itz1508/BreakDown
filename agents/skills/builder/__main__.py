@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from agents.shared.io import error_response, ok_response, read_request, write_response
+from system import error_response, ok_response, read_request, write_response
 
 
 def main() -> int:

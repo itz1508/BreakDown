@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from agents.system import (
+from system import (
     UnknownSkillActionError,
     call_ref,
     coordinate,
@@ -90,7 +90,7 @@ def test_sys_runtime_enforces_timeout(tmp_path) -> None:
 
 
 def test_storage_output_refs_round_trip(tmp_path) -> None:
-    from agents.system import sys_ref
+    from system import sys_ref
 
     storage = Storage(tmp_path)
     ref = storage.save_output("e1", "stdout", "captured output")

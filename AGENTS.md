@@ -219,10 +219,10 @@ agents/
 │   ├── researcher/                     # Role: research.py + research.yaml + SKILL.md
 │   │   └── contracts/                  #   Role-owned contracts (research, validation)
 │   └── spec_search/                    # Role: spec_search.py + spec_search.yaml + SKILL.md
-├── system/                             # Execution layer: coordinate → delegating → call_ref → sys_runtime
 └── tools/                              # Model-facing tool declarations (base, file_tools, search, server, think)
 
 system/
+├── _call.py · _coordinate.py · _delegating.py · _runtime.py  # Execution layer: coordinate → delegating → call_ref → sys_runtime (+ stdin/stdout JSON envelope in _runtime)
 ├── scanner/                            # Read-only static analysis engine (index, preflight, predict, debug)
 └── storage/                            # Persistence: queue (task_todo, exec_todo, event), canonical serialization, runtime roots
 

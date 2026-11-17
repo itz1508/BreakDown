@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from agents.system._delegating import delegating
+from system._delegating import delegating
 from system.storage import ExecTodo, Storage, TaskTodo, create_event
 
 

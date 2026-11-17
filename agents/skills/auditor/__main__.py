@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from agents.shared.io import error_response, ok_response, read_request, write_response
 from agents.skills.auditor.auditing import run
+from system import error_response, ok_response, read_request, write_response
 
 
 def main() -> int:

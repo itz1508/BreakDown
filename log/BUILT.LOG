@@ -212,3 +212,38 @@ Not done / differs from intent:
     ]
   }
 }
+
+{
+  "record_type": "built",
+  "build_id": "BLD-0003",
+  "created_at": "2026-11-16T19:39:28-08:00",
+  "title": "Detach execution layer into system/; fold io envelope into system/_runtime.py",
+  "expected": {
+    "file_count": 4,
+    "folder_count": 0
+  },
+  "output": {
+    "files": [
+      "system/_call.py",
+      "system/_coordinate.py",
+      "system/_delegating.py",
+      "system/_runtime.py"
+    ],
+    "folders": []
+  },
+  "validation": {
+    "status": "valid",
+    "expected_file_count": 4,
+    "actual_file_count": 4,
+    "missing_files": [],
+    "unexpected_files": [],
+    "evidence": [
+      "All 4 modules verified at new paths (git mv exit 0 each); agents/system/ and agents/shared/io.py verified absent (Test-Path False).",
+      "system/__init__.py merged facade re-exports coordinate/delegating/call_ref/sys_runtime/RuntimeResult/UnknownSkillActionError plus envelope Request/Response/read_request/write_response/ok_response/error_response and Storage/sys_ref/sys_storage.",
+      "12 import replacements across 9 consumer files (2 moved modules, tests/system/test_system.py, 5 role entrypoints, tests/shared/test_models.py); residual grep clean except guard entry + provenance comment.",
+      "scripts/check_retired_paths.py RETIRED_PREFIXES now blocks agents/system/ restoration.",
+      "Gate: ruff 3 import-order findings auto-fixed then All checks passed; pytest 180/180 exit 0 before and after sorting.",
+      "CHG-0006; MEM.LOG 'Execution layer detached to system/' decision (supersedes 2026-11-14 pivot location)."
+    ]
+  }
+}

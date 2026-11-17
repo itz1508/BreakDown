@@ -14,7 +14,7 @@ _DESIGN_ADAPTER = TypeAdapter(CodeDesign)
 
 
 def main() -> int:
-    from agents.shared.io import error_response, ok_response, read_request, write_response
+    from system import error_response, ok_response, read_request, write_response
 
     try:
         request = read_request()

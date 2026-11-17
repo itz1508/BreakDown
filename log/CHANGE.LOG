@@ -459,3 +459,28 @@ stays in past commits; a fresh clone still downloads it. Rewrite optional later.
   "evidence": ["git mv exit 0 for all four subtrees; Test-Path agents/skills/shared = False", "46 replacements across 26 files; residual grep shows only 2 historical docstrings + the guard entry", "ruff: 7 import-order findings auto-fixed, then All checks passed", "pytest 180/180 exit 0 before and after import sorting", "MEM.LOG 'Dissolve agents/skills/shared' decision", "BLD-0002"]
 }
 
+
+{
+  "record_type": "change",
+  "change_id": "CHG-0006",
+  "title": "Detach execution layer from agents/system into system/; retire agents/shared/io.py by folding it into system/_runtime.py",
+  "category": "architecture",
+  "reason": "User ruling: delete the shared io module; relocate agents/system/** to the repo-root system/ package. system/tools/ (earlier wording) was rejected as destination because it is a retired + guarded path.",
+  "path_changes": [
+    {"old_path": "agents/system/_call.py", "fixed_path": "system/_call.py", "change_type": "move", "status": "applied"},
+    {"old_path": "agents/system/_coordinate.py", "fixed_path": "system/_coordinate.py", "change_type": "move", "status": "applied"},
+    {"old_path": "agents/system/_delegating.py", "fixed_path": "system/_delegating.py", "change_type": "move", "status": "applied"},
+    {"old_path": "agents/system/_runtime.py", "fixed_path": "system/_runtime.py", "change_type": "move", "status": "applied"},
+    {"old_path": "agents/system/__init__.py (facade)", "fixed_path": "system/__init__.py (merged facade, envelope re-exports added)", "change_type": "merge", "status": "applied"},
+    {"old_path": "agents/shared/io.py (Request/Response envelope)", "fixed_path": "system/_runtime.py (folded, with provenance comment)", "change_type": "delete+fold", "status": "applied"},
+    {"old_path": "scripts/check_retired_paths.py RETIRED_PREFIXES", "fixed_path": "+ 'agents/system/' entry", "change_type": "modify", "status": "applied"},
+    {"old_path": "9 consumer files (2 moved modules, tests/system/test_system.py, 5 role __main__.py entrypoints, tests/shared/test_models.py)", "fixed_path": "same paths, imports rewritten agents.system / agents.shared.io -> system (12 replacements)", "change_type": "modify", "status": "applied"},
+    {"old_path": "AGENTS.md File Locations (agents/system line)", "fixed_path": "AGENTS.md File Locations (execution modules listed under system/)", "change_type": "modify", "status": "applied"}
+  ],
+  "design_changes": [
+    {"before": "Execution layer in agents/system/; subprocess JSON envelope in agents/shared/io.py, imported by all role entrypoints and the delegating layer.", "after": "system/ owns the execution layer (_call, _coordinate, _delegating, _runtime) and the envelope inside _runtime; agents/ no longer hosts system machinery; the coordinate -> delegating -> call_ref -> sys_runtime flow is unchanged; system/'s only agents coupling left is subprocess module-name strings in _call.py."}
+  ],
+  "status": "verified",
+  "evidence": ["git mv exit 0 for all four modules; Test-Path agents/system = False; agents/shared/io.py = False", "residual grep: only the guard entry and the provenance comment in _runtime.py", "ruff: 3 import-order findings auto-fixed, then All checks passed", "pytest 180/180 exit 0 before and after import sorting", "MEM.LOG 'Execution layer detached to system/' decision", "BLD-0003"]
+}
+

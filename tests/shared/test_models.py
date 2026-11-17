@@ -7,7 +7,7 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from agents.shared.io import Request, error_response, ok_response
+from system import Request, error_response, ok_response
 from system.storage import ExecStatus, TaskTodo, create_exec_todo, create_todo, finish_exec_todo
 
 
