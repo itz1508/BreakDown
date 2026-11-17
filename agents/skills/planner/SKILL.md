@@ -1,20 +1,28 @@
-# Planner — candidate planning and evidence review
+# Planner — gap resolution, specification and approval preparation
 
-**Mini-pipeline:** `plan.yaml#main` traces requirements, inspects patterns,
-drafts a candidate before scanning, records findings, and calls
-`agent.skills.planner.fixtures.prepare` for unverified fixture drafts. No
-approval or freeze operation is defined.
+**Workflow ownership:** `planning`. Planner executes PP3,
+`planner_processing_plan`, created by Auditor at the end of
+`audit_post_research`.
 
-**Python API:** `agent.skills.planner.planning.run` retains the exact
-Host-bound Scanner behavior. `planning.create(request, context)` is a
-reserved fail-closed entrypoint pending trusted operation integration.
+**Ordered substeps:**
+1. `create_gap_processing_design`
+2. `gap_resolution`
+3. `scan_verify_chaos` — Planner paper-exercise/self-review, not independent verification
+4. `create_task_todo`
+5. `checkpoint_freeze_state` — Runtime-owned
+6. `freeze_and_hash`
+7. `preflight_check`
+8. `decision_point_user_confirmation` — Runtime routes the explicit user decision
+9. `confirm_plan` — Runtime binds the approved revision and source checkpoint, then PP4 is created
 
-**Review:** `review/gap_analysis.py` is the canonical implementation.
-The previous `checks/gap_analysis.py` module was removed after consumers
-were migrated to `review/gap_analysis.py`.
+**Canonical TaskTodo:** `requirement_spec.implementation_steps` is the sole
+canonical task list. Do not create a parallel `builder_processing_steps`,
+`phase_steps`, wave schedule or second task artifact. Each task describes its
+target, expected outcome and acceptance checks.
 
-**Fixtures:** `agent.skills.planner.fixtures.prepare` only copies declared
-fixture specifications into drafts; it does not test, certify or approve them.
+**Open questions:** Resolve them from available evidence or preserve them in
+`open_questions`; do not silently fill unknowns with guesses.
 
-**Boundary:** Planner owns candidate design, not authorization, trusted
-receipts, Host transitions, sandbox execution, or independent acceptance.
+**Current implementation boundary:** The current `planning.create()` entrypoint
+is fail-closed and reports that no trusted planning executor is installed.
+The v6 planning sequence is declarative until that integration exists.

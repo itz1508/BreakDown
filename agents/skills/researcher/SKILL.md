@@ -1,43 +1,23 @@
-﻿# Researcher â€” sourced evidence investigation
+# Researcher — sourced evidence investigation
 
-**Mini-pipeline:** `research.yaml` declares the `review`, `retrieve` and `main`
-segments. Every step stays `status: unbound` because execution is Host-dispatched,
-never self-started.
+**Workflow ownership:** `research`. Researcher executes PP2,
+`researcher_processing_plan`, created by Auditor at the end of
+`audit_pre_research`.
 
-**Entry points.**
+**Inputs:** PP2, the intent summary, scaffolding inventory, file specifications,
+research items, initial source checkpoint, research report and explicit
+`gate_1` confirmation.
 
-- `research.py` / `__main__.py`: fail-closed CLI that reports the registered
-  dispatch route and exits 2.
-- `researching.run(context, envelope, arguments)`: the Host-dispatched operation.
-  If a `ResearchExecutionService` is injected it delegates to it; otherwise it runs
-  the bounded search below.
-- `researching.search(...)`: bounded model/tool loop over the tools that exist here.
+**Outputs:** Source-linked research findings, research plan, generated fixtures
+when supported by evidence, technical references, resolved questions and
+unresolved questions. Preserve citations and source provenance.
 
-**Tools available today, both read-only.**
+**Research format:** Keep citation-bearing research as plain output. Do not
+force it into a JSON-only structured response that cannot preserve citations.
+Separate repository retrieval from external research; report unavailable tools
+as limitations instead of simulating them.
 
-- `search_repository(terms, scope, max_results)` â†’ `agent.skills.spec_search`
-  (literal matching, ranked, digest-bound snippets).
-- `read_source(path, start_line, max_lines)` â†’ `agent.skills.auditor.tools.core.safe_read_bytes`
-  (repository-root and symlink checked, byte-bounded).
-
-**Not available from this package:** web search, web fetch, browser automation,
-sandboxed code execution and any MCP server. None of them is simulated. A question
-that needs them produces an explicit limitation, not a fabricated result, and
-repository lookup is never described as web research.
-
-**Result states.** `completed`, `truncated` (`finish_reason=length`), `pending`
-(step limit with tools still requested), `exhausted` (tool-call limit), `failed`
-(provider unavailable or unusable answer). An empty search is a tool status, never
-a success.
-
-**Artifacts (existing models, existing store).** `research-audit:*` and
-`research-code:*` are `research_record` artifacts; `research-fixture:*` is a
-`fixture_specification` and is produced only when evidence exists. Each returned
-reference carries the digest of the stored bytes, and identical evidence yields an
-identical artifact identity.
-
-**Boundary.** No stage transitions, approvals, trusted receipts, source writes or
-web claims. A model statement without a digest observed by a tool call is recorded
-as an unknown, never as evidence. Rules of conduct come from `AGENTS.md` and are
-not restated here.
-
+**Current implementation boundary:** The existing Researcher has bounded
+read-only repository search and safe source-read tools. The PP2 workflow handoff
+is declarative; this document does not claim external web research, stage
+transition or fixture execution is currently installed.

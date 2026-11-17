@@ -1,19 +1,39 @@
-# Preparation only; no effect, admission, or authorization is enabled.
+# Target Builder sequence; declarations do not grant execution authority.
 kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: builder.build
 owner: builder
-artifact_contract_refs: [agents/skills/builder/contracts/build.py]
+workflow_stages: [builder]
+processing_plan: PP4
+execution_order: sequential
+artifact_contract_refs:
+  - agents/skills/builder/contracts/build.py
 segments:
-- id: prepare
-  steps:
-  - id: receive_candidate_reference
-    operation_id: builder.receive_candidate
-    status: unbound
-  - id: prepare_external_handoff
-    depends_on: [receive_candidate_reference]
-    operation_id: builder.prepare_handoff
-    status: unbound
+  - id: execute
+    steps:
+      - id: verify_hash
+        operation_id: builder.verify_hash
+        status: unbound
+      - id: enter_sandbox
+        depends_on: [verify_hash]
+        operation_id: builder.enter_sandbox
+        status: unbound
+      - id: execute_tasks
+        depends_on: [enter_sandbox]
+        operation_id: builder.execute_tasks_sequentially
+        status: unbound
+      - id: synchronize_results
+        depends_on: [execute_tasks]
+        operation_id: builder.synchronize_results
+        status: unbound
+      - id: exit_sandbox
+        depends_on: [synchronize_results]
+        operation_id: builder.exit_sandbox
+        status: unbound
 policy:
   executes_effects: false
   issues_approval: false
+  per_task_correction_cap: 2
+  max_attempts: 1
+  canonical_task_list: requirement_spec.implementation_steps
+  partial_results_are_not_synchronized: true

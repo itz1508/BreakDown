@@ -1,188 +1,262 @@
-"""Tests for the single workflow definition and its two user approval stops."""
+"""Static contract tests for the canonical v6 workflow definition and schemas."""
 
+from __future__ import annotations
+
+import json
 from pathlib import Path
+from typing import Any
 
 import yaml
 
-WORKFLOW_FILE = Path("workflow.yaml")
+WORKFLOW_FILE = Path("agents/breakdown.yaml")
+PLANS_SCHEMA_FILE = Path("agents/skills/shared/contracts/workflow/processing_plans.schema.json")
+REQUIREMENT_SCHEMA_FILE = Path("agents/skills/planner/contracts/requirement_spec.schema.json")
 
 EXPECTED_STAGES = (
-    "user_request",
-    "intent_summary",
-    "search_confirmation",
-    "catalog_discovery",
-    "discovery",
+    "audit_pre_research",
+    "gate_1",
     "research",
-    "repository_audit",
+    "audit_post_research",
     "planning",
-    "build_approval",
     "builder",
-    "preflight",
-    "sandbox_execution",
-    "independent_validation",
-    "completion_and_retention",
+    "completion",
 )
 
+EXPECTED_PLAN_OWNERS = {
+    "PP1": ("input_processing_plan", "runtime", "auditor", "audit_pre_research"),
+    "PP2": ("researcher_processing_plan", "auditor", "researcher", "research"),
+    "PP3": ("planner_processing_plan", "auditor", "planner", "planning"),
+    "PP4": ("builder_processing_plan", "planner", "builder", "builder"),
+}
 
-def load_workflow() -> dict:
-    assert WORKFLOW_FILE.is_file(), "workflow.yaml must exist at the repository root"
+
+def load_workflow() -> dict[str, Any]:
+    assert WORKFLOW_FILE.is_file(), "agents/breakdown.yaml is the canonical workflow"
     data = yaml.safe_load(WORKFLOW_FILE.read_text(encoding="utf-8"))
     assert isinstance(data, dict)
     return data
 
 
-def stages_by_id(workflow: dict) -> dict[str, dict]:
-    stages = workflow["stages"]
-    return {stage["id"]: stage for stage in stages}
+def load_json(path: Path) -> dict[str, Any]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert isinstance(data, dict)
+    return data
 
 
-def test_workflow_has_one_ordered_definition() -> None:
+def stages_by_id(workflow: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    return {stage["id"]: stage for stage in workflow["stages"]}
+
+
+def object_schemas(node: Any):
+    if isinstance(node, dict):
+        if node.get("type") == "object":
+            yield node
+        for value in node.values():
+            yield from object_schemas(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from object_schemas(value)
+
+
+def criterion_names(node: Any):
+    if isinstance(node, dict):
+        criterion = node.get("criterion")
+        if isinstance(criterion, str):
+            yield criterion
+        for value in node.values():
+            yield from criterion_names(value)
+    elif isinstance(node, list):
+        for value in node:
+            yield from criterion_names(value)
+
+
+def test_canonical_workflow_is_v6_and_has_seven_stages() -> None:
     workflow = load_workflow()
     stages = workflow["stages"]
 
     assert workflow["workflow_id"] == "oneshot.breakdown"
-    assert workflow["definition_version"] == 3
+    assert workflow["definition_version"] == 6
     assert tuple(stage["id"] for stage in stages) == EXPECTED_STAGES
-    assert [stage["order"] for stage in stages] == list(range(1, len(EXPECTED_STAGES) + 1))
     assert len({stage["id"] for stage in stages}) == len(stages)
+    assert not Path("workflow.yaml").exists()
 
 
-def test_workflow_has_exactly_two_user_approval_stops() -> None:
-    workflow = load_workflow()
-    approval_stages = [stage["id"] for stage in workflow["stages"] if stage.get("approval", {}).get("required") is True]
-
-    assert approval_stages == ["search_confirmation", "build_approval"]
-    assert stages_by_id(workflow)["search_confirmation"]["owner"] == "user"
-    assert stages_by_id(workflow)["build_approval"]["owner"] == "user"
-
-
-def test_search_approval_happens_before_catalog_repository_or_external_search() -> None:
-    workflow = load_workflow()
-    stages = stages_by_id(workflow)
-    gate = stages["search_confirmation"]
-    catalog = stages["catalog_discovery"]
-    discovery = stages["discovery"]
-    research = stages["research"]
-
-    assert gate["approval"]["binds_to"] == ["intent_summary", "search_scope"]
-    assert gate["approval"]["on_approved"] == "catalog_discovery"
-    assert gate["approval"]["on_changes_requested"] == "intent_summary"
-    assert gate["approval"]["on_declined"] == "stop_before_search"
-    assert {"search_approval", "approved_search_scope"} <= set(catalog["requires"])
-    assert "approved_search_scope" in discovery["requires"]
-    assert "approved_search_scope" in research["requires"]
-    assert gate["order"] < min(catalog["order"], discovery["order"], research["order"])
-
-
-def test_build_approval_binds_the_exact_plan_and_source() -> None:
-    workflow = load_workflow()
-    stages = stages_by_id(workflow)
-    gate = stages["build_approval"]
-    required_bindings = {
-        "plan_revision",
-        "plan_package_digest",
-        "assessed_source_checkpoint",
-    }
-
-    assert required_bindings <= set(gate["approval"]["binds_to"])
-    assert gate["approval"]["on_approved"] == "builder"
-    assert gate["approval"]["on_changes_requested"] == "planning"
-    assert gate["approval"]["on_declined"] == "stop_before_build"
-    assert "user_approval" in stages["builder"]["requires"]
-    assert "user_approval" in stages["preflight"]["requires"]
-    assert "user_approval" in stages["sandbox_execution"]["requires"]
-
-
-def test_builder_owns_build_setup_and_execution() -> None:
-    workflow = load_workflow()
-    stages = stages_by_id(workflow)
-    ownership = workflow["ownership"]["builder"]
-
-    assert ownership["stages"] == ["builder", "preflight", "sandbox_execution"]
-    assert {
-        "build_contract",
-        "build_entry_point",
-        "build_implementation",
-        "sandbox_creation",
-        "approved_source_changes",
-        "build_execution",
-    } <= set(ownership["owns"])
-    assert all(stages[name]["owner"] == "builder" for name in ownership["stages"])
-    assert stages["sandbox_execution"]["execution_condition"]["preflight_result"] == "ready"
-
-
-def test_auditor_owns_both_audit_stages_and_its_three_files() -> None:
-    workflow = load_workflow()
-    stages = stages_by_id(workflow)
-    auditor = workflow["skill_scaffolding"]["auditor"]
-
-    assert workflow["ownership"]["auditor"]["stages"] == ["discovery", "repository_audit"]
-    assert auditor == {
-        "directory": "agents/skills/auditor/",
-        "contract_file": "audit.yaml",
-        "entry_file": "audit.py",
-        "implementation_file": "auditing.py",
-    }
-    assert stages["discovery"]["owner"] == "auditor"
-    assert stages["repository_audit"]["owner"] == "auditor"
-    assert workflow["ownership"]["auditor"]["application_source_changes"] is False
-
-
-def test_each_skill_keeps_its_three_files_inside_its_own_folder() -> None:
-    workflow = load_workflow()
-    expected = {
-        "auditor": ("audit.yaml", "audit.py", "auditing.py"),
-        "researcher": ("research.yaml", "research.py", "researching.py"),
-        "planner": ("plan.yaml", "plan.py", "planning.py"),
-        "builder": ("build.yaml", "build.py", "building.py"),
-    }
-
-    assert set(workflow["skill_scaffolding"]) == set(expected)
-    for role, names in expected.items():
-        scaffold = workflow["skill_scaffolding"][role]
-        assert scaffold["directory"] == f"agents/skills/{role}/"
-        assert (
-            scaffold["contract_file"],
-            scaffold["entry_file"],
-            scaffold["implementation_file"],
-        ) == names
-        assert "contracts/" not in scaffold["directory"]
-        assert "host/" not in scaffold["directory"]
-
-
-def test_catalog_is_a_reference_source_not_an_approval_authority() -> None:
-    workflow = load_workflow()
-    catalog = stages_by_id(workflow)["catalog_discovery"]
-
-    assert catalog["owner"] == "workflow"
-    assert "search_approval" in catalog["requires"]
-    assert "Catalog entries are references, not proof." in catalog["rules"]
-    assert "Catalog entries do not create requirements." in catalog["rules"]
-    assert "Catalog results do not approve research or build work." in catalog["rules"]
-
-
-def test_validation_is_independent_from_builder() -> None:
+def test_stage_owners_and_coder_subrole_are_explicit() -> None:
     workflow = load_workflow()
     stages = stages_by_id(workflow)
 
-    assert stages["independent_validation"]["owner"] == "verifier"
-    assert workflow["ownership"]["verifier"]["independence_required"] is True
-    assert stages["independent_validation"]["outcomes"]["valid"]["next"] == "completion_and_retention"
-    assert stages["independent_validation"]["outcomes"]["not_valid"]["next"] == "planning"
-    assert stages["completion_and_retention"]["completion_condition"]["validation_result"] == "valid"
-
-
-def test_workflow_stages_do_not_contain_skill_implementation_details() -> None:
-    workflow = load_workflow()
-    forbidden_stage_fields = {
-        "module",
-        "entry",
-        "contract",
-        "skill",
+    assert workflow["ownership"]["user"]["stages"] == ["gate_1"]
+    assert workflow["ownership"]["auditor"]["stages"] == [
+        "audit_pre_research",
+        "audit_post_research",
+    ]
+    assert workflow["ownership"]["auditor"]["sub_roles"] == ["coder"]
+    assert workflow["ownership"]["researcher"]["stages"] == ["research"]
+    assert workflow["ownership"]["planner"]["stages"] == ["planning"]
+    assert workflow["ownership"]["builder"]["stages"] == ["builder"]
+    assert workflow["ownership"]["runtime"]["stages"] == ["completion"]
+    assert set(workflow["ownership"]) == {
+        "user",
+        "auditor",
+        "researcher",
+        "planner",
+        "builder",
         "runtime",
-        "behavior",
+    }
+    assert stages["audit_post_research"]["sub_roles"] == ["coder"]
+
+
+def test_each_stage_has_failure_timeout_and_budget_routes() -> None:
+    workflow = load_workflow()
+    for stage in workflow["stages"]:
+        transitions = stage["transitions"]
+        assert {"on_failure", "on_timeout", "on_budget_exhausted"} <= set(transitions)
+        for route in transitions.values():
+            if isinstance(route, dict):
+                assert route.get("next") != "blocked"
+
+
+def test_four_processing_plans_have_explicit_creation_and_execution_owners() -> None:
+    workflow = load_workflow()
+    plans = workflow["processing_plans"]["plans"]
+    assert set(plans) == set(EXPECTED_PLAN_OWNERS)
+
+    for plan_id, expected in EXPECTED_PLAN_OWNERS.items():
+        plan = plans[plan_id]
+        assert (
+            plan["name"],
+            plan["created_by"],
+            plan["executed_by"],
+            plan["executed_in"],
+        ) == expected
+
+    stages = stages_by_id(workflow)
+    assert stages["audit_pre_research"]["processing_plan"] == "PP1"
+    assert stages["research"]["processing_plan"] == "PP2"
+    assert stages["planning"]["processing_plan"] == "PP3"
+    assert stages["builder"]["processing_plan"] == "PP4"
+    assert stages["audit_pre_research"]["creates_processing_plan"]["id"] == "PP2"
+    assert stages["audit_post_research"]["creates_processing_plan"]["id"] == "PP3"
+    assert stages["planning"]["substeps"][-1]["creates_processing_plan"]["id"] == "PP4"
+
+
+def test_gate_is_not_a_plan_input_and_cannot_skip_confirmation() -> None:
+    workflow = load_workflow()
+    gate = stages_by_id(workflow)["gate_1"]
+    research = stages_by_id(workflow)["research"]
+
+    assert gate["owner"] == "user"
+    assert gate["decision"]["choices"] == ["confirm", "cancel"]
+    assert gate["decision"]["on_confirm"] == "research"
+    assert gate["decision"]["on_cancel"] == "completion"
+    assert "gate_1_decision" in research["requires"]
+    assert "gate_1_decision" not in workflow["processing_plans"]["plans"]["PP2"]
+
+
+def test_planning_uses_one_canonical_task_list_and_builder_is_sequential() -> None:
+    workflow = load_workflow()
+    planning = stages_by_id(workflow)["planning"]
+    builder = stages_by_id(workflow)["builder"]
+
+    assert workflow["requirement_spec"]["task_list_field"] == "implementation_steps"
+    assert "implementation_steps" in workflow["requirement_spec"]["required_fields"]
+    assert "builder_processing_steps" not in workflow
+    assert "phase_steps" not in workflow
+    assert builder["execution_order"] == "sequential"
+    assert builder["task_execution"]["canonical_source"] == "requirement_spec.implementation_steps"
+    assert builder["task_execution"]["per_task_pattern"] == ["apply", "check", "record"]
+    assert builder["task_execution"]["stop_on_first_not_valid"] is True
+    assert builder["task_execution"]["per_task_correction_cap"] == 2
+    assert builder["task_execution"]["retry"]["max_attempts"] == 1
+    assert planning["revision_rules"]["on_preflight_not_valid"]["retry"]["max_attempts"] == 2
+
+
+def test_builder_correction_cap_is_owned_only_by_builder() -> None:
+    workflow = load_workflow()
+    for stage in workflow["stages"]:
+        if stage["id"] != "builder":
+            assert "per_task_correction_cap" not in json.dumps(stage)
+
+
+def test_obsolete_stages_and_roles_are_absent() -> None:
+    workflow = load_workflow()
+    stages = stages_by_id(workflow)
+    forbidden_stages = {
+        "independent_validation",
+        "intent_summary",
+        "user_review_and_approval",
+        "sandbox_execution",
+        "completion_and_retention",
+        "preflight",
+        "build_approval",
+    }
+    assert not (forbidden_stages & set(stages))
+    assert "verifier" not in workflow["ownership"]
+    assert "fixturer" not in workflow["ownership"]
+
+
+def test_artifacts_have_producers_consumers_or_terminal_ownership() -> None:
+    workflow = load_workflow()
+    produced = {
+        artifact
+        for stage in workflow["stages"]
+        for artifact in stage.get("produces", [])
+    }
+    consumed = {
+        artifact
+        for stage in workflow["stages"]
+        for artifact in stage.get("requires", []) + stage.get("consumes_when_available", [])
+    }
+    entry_artifacts = {"user_request", "input_processing_plan", "terminal_outcome"}
+    terminal_artifacts = set(workflow["terminal_outputs"])
+    assert produced - consumed - terminal_artifacts == set()
+    assert consumed - produced - entry_artifacts == set()
+
+
+def test_requirement_and_processing_plan_schemas_are_closed_objects() -> None:
+    requirement = load_json(REQUIREMENT_SCHEMA_FILE)
+    plans = load_json(PLANS_SCHEMA_FILE)
+
+    for schema in (requirement, plans):
+        objects = list(object_schemas(schema))
+        assert objects
+        assert all(item.get("additionalProperties") is False for item in objects)
+
+    required = set(requirement["required"])
+    assert required == {
+        "project_name",
+        "overview",
+        "technology_stack",
+        "prerequisites",
+        "core_features",
+        "database_schema",
+        "api_endpoints_summary",
+        "open_questions",
+        "implementation_steps",
+        "success_criteria",
+    }
+    record = plans["$defs"]["runtime_plan_record"]
+    assert set(record["required"]) == {"plan_id", "status", "criteria_results"}
+    assert set(record["properties"]["status"]["enum"]) == {
+        "not_run",
+        "completed",
+        "failed",
+        "blocked",
+        "skipped",
+    }
+    assert set(record["properties"]["criteria_results"]["items"]["properties"]["result"]["enum"]) == {
+        "valid",
+        "not_valid",
+        "uncertainty",
     }
 
-    for stage in workflow["stages"]:
-        assert not (forbidden_stage_fields & set(stage)), stage["id"]
-        assert stage["owner"] != "host"
+
+def test_result_vocabularies_and_criterion_names_are_unambiguous() -> None:
+    workflow = load_workflow()
+    names = tuple(criterion_names(workflow))
+    for name in names:
+        assert not name.endswith(("_passed", "_failed", "_valid", "_not_valid"))
+    assert "in_progress" not in json.dumps(workflow)
+    plan_rules = set(workflow["processing_plans"]["rules"])
+    assert "Processing-plan status values are not_run, completed, failed, blocked and skipped." in plan_rules
+    assert "Criteria results use valid, not_valid and uncertainty." in plan_rules

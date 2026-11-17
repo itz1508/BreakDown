@@ -96,3 +96,31 @@ Not done / differs from intent:
   with logfire/opentelemetry-api -- pre-existing failure verified against
   unmodified baseline; observability deps wired in deployment contexts
   excluded from deptry scanning, same pattern as modal/openai/mcp.
+
+
+## 2026-11-16 — BreakDown v6 workflow definition (review branch)
+
+User intent: isolate the v6 declarative workflow changes from `main` while
+another agent is working on that branch.
+
+Delivered on `breakdown-v6`:
+- `agents/breakdown.yaml` moved to v6 with seven stages, explicit ownership,
+  four processing-plan handoffs, artifact flow, error/timeout/budget routes,
+  revision rules, Builder sequential execution limits and Runtime boundaries.
+- Added closed JSON Schemas for the four authored processing plans/runtime
+  records and the requirement specification.
+- Aligned Auditor, Researcher, Planner, Builder and Coder sub-role guidance and
+  role-owned declarative mini-pipelines.
+- Aligned the stage tool map and tool-registry stage vocabulary.
+- Replaced the prior root workflow description and test assumptions with the
+  canonical `agents/breakdown.yaml`; updated README and workflow HTML.
+
+Verified from source inspection: this repository has no `agents/pipeline.py`,
+`agents/_schema.json` or `.assistant_workspace_instructions.md`; none were
+invented. Root `workflow.yaml` was an obsolete competing definition.
+
+Not verified: no repository-local test, lint, type-check or end-to-end command
+has been executed in this environment. The added tests are not run evidence.
+The current planner remains fail-closed; role YAML operations remain unbound;
+the current Builder is not the v6 PP4 executor. v6 is declarative, not an
+operational end-to-end runtime.
