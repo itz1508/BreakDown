@@ -1,13 +1,17 @@
-# Coder â€” CodeDesign evidence questions after Research
+# Coder — Auditor sub-role for post-Research coding preparation
 
-**Role:** A standalone post-Research CodeDesign capability, before Planner. "Coder" here names evidence-driven code-design review; it is **not Builder** and does not write project source.
+**Workflow relationship:** Coder is a sub-role of Auditor, invoked only inside
+`audit_post_research`. It is not an independent workflow actor or stage owner.
 
-**Implementation:** `coding.review_questions(candidate)` is the original pure function from CodeDesign. The function's question ordering, intent-origin keys, and error behavior are unchanged.
+**Responsibility:** Prepare evidence questions and coding inputs from the
+reconciled Research findings and repository evidence. Keep the relationship
+between a request, source evidence and proposed code intent traceable.
 
-**Pipeline:** `code.yaml#main` declares the unbound `code_design.review_questions` operation. Its operation identifier is intentionally unchanged to avoid renaming an existing rule identity as a side effect of package naming.
+**Boundaries:** Coder does not modify application source, choose final
+architecture, issue approval, create Builder authorization, execute tasks,
+or advance a workflow stage. Planning owns design decisions.
 
-**Contract identity:** Keep `agent.skills.auditor.contracts.code_design.CodeDesign`, `AuditDiscoveryPackage.code_intents`, and CodeDesign review wire fields unchanged. Moving typed contracts or exposing a new Host stage requires separate evidence and approval.
-
-**Missing implementation:** Research-to-repository correlation, full candidate production and independent assignment are not provided by the current function.
-
-**Boundary:** No source writes, stage transitions, approval, final architecture selection, trusted receipts or Builder execution.
+**Implementation status:** The current `coding.review_questions(candidate)`
+capability and its unbound `code.yaml` operation remain available as a
+declarative helper. Research-to-repository correlation and full PP3 production
+are not claimed as implemented by this helper.

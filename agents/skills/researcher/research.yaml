@@ -3,44 +3,46 @@ kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: researcher.research
 owner: researcher
-artifact_contract_refs: [agents/skills/researcher/contracts/research.py]
+workflow_stages: [research]
+processing_plan: PP2
+artifact_contract_refs:
+  - agents/skills/researcher/contracts/research.py
 segments:
-- id: review
-  steps:
-  - id: validate_question_and_scope
-    operation_id: researcher.review_search
-    status: unbound
-  - id: prepare_retrieval_request
-    depends_on: [validate_question_and_scope]
-    operation_id: researcher.prepare_query
-    status: unbound
-- id: retrieve
-  steps:
-  - id: retrieve_candidates
-    operation_id: researcher.compound_retrieve
-    status: unbound
-  - id: expand_related_sources
-    depends_on: [retrieve_candidates]
-    operation_id: researcher.expand_sources
-    status: unbound
-  - id: verify_source_lineage
-    depends_on: [expand_related_sources]
-    operation_id: researcher.verify_lineage
-    status: unbound
-- id: main
-  steps:
-  - id: retrieve_evidence
-    operation_id: researcher.retrieve_evidence
-    status: unbound
-    subpipeline_ref: agents/skills/researcher/research.yaml#retrieve
-  - id: investigate_evidence
-    depends_on: [retrieve_evidence]
-    operation_id: researcher.investigate
-    status: unbound
-  - id: record_observations
-    depends_on: [investigate_evidence]
-    operation_id: researcher.record_evidence
-    status: unbound
+  - id: review
+    steps:
+      - id: validate_question_and_scope
+        operation_id: researcher.review_search
+        status: unbound
+      - id: prepare_retrieval_request
+        depends_on: [validate_question_and_scope]
+        operation_id: researcher.prepare_query
+        status: unbound
+  - id: retrieve
+    steps:
+      - id: retrieve_candidates
+        operation_id: researcher.compound_retrieve
+        status: unbound
+      - id: expand_related_sources
+        depends_on: [retrieve_candidates]
+        operation_id: researcher.expand_sources
+        status: unbound
+      - id: verify_source_lineage
+        depends_on: [expand_related_sources]
+        operation_id: researcher.verify_lineage
+        status: unbound
+  - id: main
+    steps:
+      - id: execute_processing_plan
+        operation_id: researcher.execute_PP2
+        status: unbound
+      - id: investigate_evidence
+        depends_on: [execute_processing_plan]
+        operation_id: researcher.investigate
+        status: unbound
+      - id: record_observations
+        depends_on: [investigate_evidence]
+        operation_id: researcher.record_evidence
+        status: unbound
 limits:
   max_depth: 2
   max_candidates: 50
@@ -49,4 +51,6 @@ policy:
   retrieval_requires_external_authorization: true
   relevance_is_not_evidence: true
   source_access: read_only
+  citation_preservation: required
+  force_structured_json_output: false
   can_approve_plan: false

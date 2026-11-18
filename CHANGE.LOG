@@ -346,3 +346,19 @@ GitHub warned of a 52.8 MB file (.tools/databricks-cli/databricks.exe) in the
 pushed history. Tool binaries do not belong in git; removed from tracking (files
 kept on disk), .tools/ added to .gitignore. History not rewritten ? the blob
 stays in past commits; a fresh clone still downloads it. Rewrite optional later.
+
+
+## 2026-11-16 — BreakDown v6 isolated workflow contract
+
+- Updated canonical `agents/breakdown.yaml` to v6 and added the processing-plan
+  and requirement-spec JSON Schemas.
+- Aligned Auditor, Researcher, Coder sub-role, Planner and Builder guidance and
+  declarative role pipeline files.
+- Aligned stage-specific tool declarations and the typed tool-registry stage
+  vocabulary with the seven v6 stages.
+- Replaced the root workflow test contract, updated README and HTML workflow
+  diagram, and removed the obsolete duplicate root workflow definition and
+  outdated diagram asset.
+- Runtime transition machinery and application execution code were not changed.
+- Test commands and end-to-end Builder behavior remain unrun; do not infer
+  execution capability from the declarative v6 contract.

@@ -1,19 +1,50 @@
-# Declarative mini-pipeline; operation IDs do not grant execution authority.
+# Auditor workflow operations; identifiers are declarative and unbound.
 kind: skill_mini_pipeline
 definition_version: 1
 pipeline_id: auditor.audit
 owner: auditor
-artifact_contract_refs: [agents/skills/auditor/contracts/_discovery.py]
+workflow_stages: [audit_pre_research, audit_post_research]
+artifact_contract_refs:
+  - agents/skills/auditor/contracts/_discovery.py
+  - agents/skills/auditor/contracts/code_design.py
 segments:
-- id: pre
-  steps:
-  - id: inspect_request
-    operation_id: auditor.inspect_scope
-    status: unbound
-  - id: identify_search_questions
-    depends_on: [inspect_request]
-    operation_id: auditor.prepare_search_questions
-    status: unbound
+  - id: pre
+    processing_plan: PP1
+    steps:
+      - id: preserve_intent_and_inspect_scaffolding
+        operation_id: auditor.inspect_scope
+        status: unbound
+      - id: prepare_file_specs_and_research_items
+        depends_on: [preserve_intent_and_inspect_scaffolding]
+        operation_id: auditor.prepare_search_questions
+        status: unbound
+      - id: create_researcher_processing_plan
+        depends_on: [prepare_file_specs_and_research_items]
+        operation_id: auditor.create_PP2
+        status: unbound
+  - id: post
+    processing_plan_created: PP3
+    steps:
+      - id: reconcile_research_with_repository
+        operation_id: auditor.reconcile_research
+        status: unbound
+      - id: classify_and_normalize_evidence
+        depends_on: [reconcile_research_with_repository]
+        operation_id: auditor.normalize_findings
+        status: unbound
+      - id: prepare_coding_processing_design
+        depends_on: [classify_and_normalize_evidence]
+        operation_id: auditor.prepare_coding_design
+        status: unbound
+      - id: create_planner_processing_plan
+        depends_on: [prepare_coding_processing_design]
+        operation_id: auditor.create_PP3
+        status: unbound
 policy:
   source_access: read_only
+  application_source_changes: false
+  creates_PP1: false
+  creates_PP2: true
+  creates_PP3: true
+  executes_PP3: false
   issues_approval: false

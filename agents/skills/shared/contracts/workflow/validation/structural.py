@@ -176,7 +176,7 @@ def tool_invocation_gaps(
     spec: BuildSpecification,
     registry: ToolRegistrySnapshot | None,
     *,
-    stage: Literal["sandbox_execution"] = "sandbox_execution",
+    stage: Literal["builder"] = "builder",
 ) -> list[str]:
     """No executable verification without a pinned catalog and resolvable tools."""
     pending = [action for action in spec.actions if action.verification_tools]

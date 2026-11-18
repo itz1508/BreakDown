@@ -1,0 +1,84 @@
+{
+  "title": "BreakDown Processing Plan Schemas",
+  "$defs": {
+    "authored_plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "objective",
+        "inputs",
+        "steps",
+        "expected_outputs",
+        "completion_criteria",
+        "evidence_required"
+      ],
+      "properties": {
+        "objective": { "type": "string", "minLength": 1 },
+        "inputs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "steps": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "expected_outputs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "completion_criteria": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "evidence_required": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "input_processing_plan": {
+      "title": "PP1 input_processing_plan",
+      "$ref": "#/$defs/authored_plan"
+    },
+    "researcher_processing_plan": {
+      "title": "PP2 researcher_processing_plan",
+      "$ref": "#/$defs/authored_plan"
+    },
+    "planner_processing_plan": {
+      "title": "PP3 planner_processing_plan",
+      "$ref": "#/$defs/authored_plan"
+    },
+    "builder_processing_plan": {
+      "title": "PP4 builder_processing_plan",
+      "$ref": "#/$defs/authored_plan"
+    },
+    "runtime_plan_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan_id", "status", "criteria_results"],
+      "properties": {
+        "plan_id": { "type": "string", "minLength": 1 },
+        "status": {
+          "type": "string",
+          "enum": ["not_run", "completed", "failed", "blocked", "skipped"]
+        },
+        "criteria_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["criterion", "result", "evidence_ref"],
+            "properties": {
+              "criterion": { "type": "string", "minLength": 1 },
+              "result": {
+                "type": "string",
+                "enum": ["valid", "not_valid", "uncertainty"]
+              },
+              "evidence_ref": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

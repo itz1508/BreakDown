@@ -1,371 +1,666 @@
-# OneShot Breakdown — Workflow Definition
+# BreakDown workflow — v6
 #
-# Defines task progression, ownership, handoffs and user confirmation.
-# Existing application and skill code perform the operations.
+# Declarative contract only. Runtime records, active execution state, hashes,
+# decisions, timeouts, recovery counters and persistence remain runtime-owned.
+# Role skill definitions declare capabilities; they do not authorize transitions.
 
 workflow_id: oneshot.breakdown
-definition_version: 5
+definition_version: 6
 
-processing:
-  progression: listed_order_unless_explicitly_rerouted
-  handoff: exact_output_or_artifact_reference
-  persistence: existing_storage
-  missing_information: preserve_progress_and_request_clarification
-  clarification:
-    records: [question, affected_step, resume_point]
-    after_answer: resume_affected_step
-  changed_inputs: repeat_affected_checks
-  limits: application_configuration
+entry:
+  input: user_request
+  rule: every_input_requires_a_processing_plan
+  processing_plan:
+    id: PP1
+    schema: input_processing_plan
+    created_by: runtime
+    created_when: after_user_input_before_first_stage
+    executed_by: auditor
+    executed_in: audit_pre_research
+  input_mode: conversational
+  boundary_validation: required
 
 stages:
-  - id: user_input
-    owner: user
-    produces:
-      - original_request
-
-  - id: prepare_request
+  - id: audit_pre_research
+    order: 1
     owner: auditor
+    processing_plan: PP1
     requires:
-      - original_request
-    uses_when_available:
-      - catalog_context
-      - repo_summary
-      - sys_scan_observations
+      - user_request
+      - input_processing_plan
     purpose: >
-      Prepare an editable specification while preserving the original intent.
-      Separate supplied facts, inferred suggestions and unknowns.
-    sections:
-      - item
-      - intent_summary
-      - requirements
-      - current_state
+      Preserve the original request, inspect repository scaffolding read-only,
+      identify source-grounded research items, and prepare the Research handoff.
+    operations:
+      - preserve_original_request
+      - create_user_intent_summary
+      - inspect_scaffolding
+      - define_file_specs
+      - identify_research_items
+      - capture_source_checkpoint
+      - produce_research_report
+      - create_PP2
+    produces:
+      - user_intent_summary
+      - scaffolding_inventory
+      - file_specs
       - research_items
-      - user_questions
-    produces:
-      - discovery.json
+      - source_checkpoint
+      - research_report
+      - researcher_processing_plan
+    creates_processing_plan:
+      id: PP2
+      schema: researcher_processing_plan
+      created_by: auditor
+      created_when: end_of_audit_pre_research
+      executed_by: researcher
+      executed_in: research
+    rules:
+      - Keep user-supplied facts, inferences, proposals and unknowns distinct.
+      - Repository inspection is read-only.
+      - Do not turn Catalog material into requirements or evidence.
+      - Preserve unresolved questions for the next stage.
+    transitions:
+      on_complete: gate_1
+      on_failure:
+        action: runtime_recovery
+        resume_at: audit_pre_research
+      on_timeout:
+        action: runtime_recovery
+        resume_at: audit_pre_research
+      on_budget_exhausted:
+        action: runtime_recovery
+        resume_at: audit_pre_research
 
-  - id: specification_review
+  - id: gate_1
+    order: 2
     owner: user
     requires:
-      - discovery.json
-    interface:
-      display: streamed_edit_preview
-      actions:
-        - agent_edit
-        - manual_edit
-        - add_detail
-        - remove_detail
-        - accept_and_check
-        - decline
-    outcomes:
-      edited:
-        next: specification_review
-      accepted:
-        next: specification_check
-      declined:
-        end: without_research
-    produces_on_acceptance:
-      - accepted_discovery_reference
-
-  - id: specification_check
-    owner: auditor
-    requires:
-      - original_request
-      - accepted_discovery_reference
+      - researcher_processing_plan
+      - research_report
     purpose: >
-      Check intent preservation, contradictions, unsupported additions and
-      missing user decisions. Do not silently rewrite accepted content.
+      Obtain the user's decision to begin Research using the exact PP2 handoff.
+      A gate decision is not a processing-plan input.
+    decision:
+      choices:
+        - confirm
+        - cancel
+      on_confirm: research
+      on_cancel: completion
+      on_timeout: completion
+      timeout_seconds: 86400
     produces:
-      - specification_check_result
-    outcomes:
-      ready:
-        next: research
-      correction_needed:
-        next: prepare_request
-        preserve: user_edits_and_confirmed_details
-      information_needed:
-        action: request_clarification
-        resume_at: specification_check
+      - gate_1_decision
+    transitions:
+      on_failure:
+        action: completion
+        terminal_outcome: cancelled
+      on_timeout:
+        action: completion
+        terminal_outcome: cancelled
+      on_budget_exhausted:
+        action: completion
+        terminal_outcome: cancelled
 
   - id: research
+    order: 3
     owner: researcher
+    processing_plan: PP2
     requires:
-      - original_request
-      - accepted_discovery_reference
-      - specification_check_result
+      - researcher_processing_plan
+      - user_intent_summary
+      - scaffolding_inventory
+      - file_specs
+      - research_items
+      - source_checkpoint
+      - research_report
+      - gate_1_decision
     purpose: >
-      Investigate the accepted research items using supplied capabilities.
-      Retain sources, supported options, prerequisites, contradictions and
-      unanswered questions.
+      Execute PP2. Investigate the prepared technical questions and return
+      source-linked findings, citations, fixtures, constraints and unknowns.
+    operations:
+      - execute_researcher_processing_plan
+      - investigate_sources
+      - generate_fixtures_when_evidence_supports_them
+      - preserve_citations
+      - separate_resolved_and_unresolved_questions
     produces:
-      - audit.json
-      - code.json
-      - fixture.json
-      - case_samples.json
-    rules:
-      - Keep the four outputs distinct and source-linked.
-      - Derive GOOD/BAD expectations independently from candidate results.
-      - Do not claim research or execution that was not performed.
-
-  - id: repository_audit
-    owner: auditor
-    requires:
-      - original_request
-      - accepted_discovery_reference
-      - audit.json
-      - code.json
-    purpose: >
-      Compare research and requested behavior with actual repository source.
-      Trace relevant implementations, callers, dependencies and handoffs.
-    scaffolding_map_fields:
-      - full_path_and_symbol
-      - observed_responsibility
-      - consumers
-      - supporting_evidence
-      - proposed_change_if_any
-      - preservation_requirements
+      - research_findings
+      - research_plan
+      - generated_fixtures
+      - technical_references
+      - resolved_questions
       - unresolved_questions
+    rules:
+      - Research remains citation-capable plain output; do not force it into a JSON-only structured response.
+      - Distinguish a repository lookup from external web research.
+      - A source reference is evidence only for the content actually inspected.
+      - Do not claim tools, tests or execution that did not occur.
+    transitions:
+      on_complete: audit_post_research
+      on_failure:
+        action: runtime_recovery
+        resume_at: research
+      on_timeout:
+        action: runtime_recovery
+        resume_at: research
+      on_budget_exhausted:
+        action: runtime_recovery
+        resume_at: research
+
+  - id: audit_post_research
+    order: 4
+    owner: auditor
+    sub_roles:
+      - coder
+    requires:
+      - user_intent_summary
+      - source_checkpoint
+      - research_findings
+      - research_plan
+      - generated_fixtures
+      - technical_references
+      - resolved_questions
+      - unresolved_questions
+    purpose: >
+      Reconcile research with the inspected repository, classify and normalize
+      evidence, and prepare the coding processing design for Planning.
+    operations:
+      - compare_research_with_repository
+      - classify_findings
+      - normalize_evidence
+      - create_coding_processing_design
+      - create_coding_plan_and_steps
+      - create_PP3
     produces:
       - repository_findings
-      - scaffolding_map
-      - source_checkpoint
-      - unresolved_questions
+      - updated_findings
+      - coding_processing_design
+      - coding_plan
+      - coding_steps
+      - assessed_source_checkpoint
+      - planner_processing_plan
+    creates_processing_plan:
+      id: PP3
+      schema: planner_processing_plan
+      created_by: auditor
+      created_when: end_of_audit_post_research
+      executed_by: planner
+      executed_in: planning
+    rules:
+      - Coder is an Auditor sub-role, not a separate workflow stage owner.
+      - Coder prepares evidence-grounded coding inputs; it does not modify application source.
+      - This stage creates PP3 but does not execute a processing plan.
+      - Preserve unresolved questions and evidence provenance.
+    transitions:
+      on_complete: planning
+      on_failure:
+        action: runtime_recovery
+        resume_at: audit_post_research
+      on_timeout:
+        action: runtime_recovery
+        resume_at: audit_post_research
+      on_budget_exhausted:
+        action: runtime_recovery
+        resume_at: audit_post_research
 
   - id: planning
+    order: 5
     owner: planner
+    processing_plan: PP3
     requires:
-      - original_request
-      - accepted_discovery_reference
-      - audit.json
-      - code.json
-      - fixture.json
-      - case_samples.json
+      - planner_processing_plan
+      - user_intent_summary
       - repository_findings
-      - scaffolding_map
-      - source_checkpoint
+      - updated_findings
+      - coding_processing_design
+      - coding_plan
+      - coding_steps
+      - assessed_source_checkpoint
+      - technical_references
+      - generated_fixtures
       - unresolved_questions
     purpose: >
-      Define implementation design, phases where useful, file-level operations,
-      dependencies, expected outcomes and required fixtures.
-    rules:
-      - Each implementation task owns one file-level operation.
-      - A move identifies its source and destination.
-      - Independent tasks may run concurrently where safe.
-      - Inspect and retain do not authorize rewriting.
-      - Material unknowns require clarification rather than invented decisions.
+      Execute PP3, resolve material gaps, produce the requirement specification,
+      freeze its exact content and source identity, run preflight, and obtain
+      explicit user confirmation before creating PP4.
+    substeps:
+      - id: create_gap_processing_design
+        owner: planner
+        inputs:
+          - repository_findings
+          - coding_processing_design
+          - coding_plan
+          - coding_steps
+          - unresolved_questions
+        outputs:
+          - gap_processing_design
+      - id: gap_resolution
+        owner: planner
+        inputs:
+          - gap_processing_design
+          - repository_findings
+          - unresolved_questions
+        outputs:
+          - gap_resolutions
+          - updated_findings
+      - id: scan_verify_chaos
+        owner: planner
+        mode: paper_exercise_self_review
+        inputs:
+          - gap_processing_design
+          - gap_resolutions
+          - updated_findings
+          - coding_plan
+          - generated_fixtures
+        outputs:
+          - scan_results
+          - verify_results
+          - chaos_results
+        rules:
+          - Chaos means reasoned exercises of malformed input, boundaries and failure cases.
+          - This is Planner self-review, not independent verification.
+      - id: create_task_todo
+        owner: planner
+        inputs:
+          - user_intent_summary
+          - updated_findings
+          - scan_results
+          - verify_results
+          - chaos_results
+          - technical_references
+        outputs:
+          - requirement_spec
+          - plan_package_digest
+        rules:
+          - requirement_spec.implementation_steps is the sole canonical TaskTodo representation.
+          - Do not create phase_steps, waves or a second builder task list.
+          - Every task has a bounded target, expected outcome and observable acceptance checks.
+      - id: checkpoint_freeze_state
+        owner: runtime
+        inputs:
+          - requirement_spec
+          - plan_package_digest
+        outputs:
+          - checkpoint_state
+          - checkpoint_hash
+      - id: freeze_and_hash
+        owner: planner
+        inputs:
+          - requirement_spec
+          - plan_package_digest
+          - assessed_source_checkpoint
+          - checkpoint_hash
+        outputs:
+          - frozen_spec
+          - content_hash
+          - frozen_source_checkpoint
+        rules:
+          - Re-read current source identity before freezing.
+          - A mismatch from assessed_source_checkpoint is source drift.
+      - id: preflight_check
+        owner: planner
+        inputs:
+          - frozen_spec
+          - content_hash
+          - frozen_source_checkpoint
+        outputs:
+          - preflight_result
+      - id: decision_point_user_confirmation
+        owner: runtime
+        decision_owner: user
+        inputs:
+          - frozen_spec
+          - content_hash
+          - preflight_result
+        outputs:
+          - plan_decision
+      - id: confirm_plan
+        owner: runtime
+        inputs:
+          - plan_decision
+          - content_hash
+          - frozen_source_checkpoint
+        outputs:
+          - approval_hash
+          - approved_spec_revision
+          - approved_source_checkpoint
+          - builder_processing_plan
+        creates_processing_plan:
+          id: PP4
+          schema: builder_processing_plan
+          created_by: planner
+          created_when: after_confirm_plan
+          executed_by: builder
+          executed_in: builder
     produces:
-      - plan_revision
-      - implementation_plan
-      - phase_steps
-      - task_todo
-      - acceptance_criteria
-      - fixture_definitions
-
-  - id: check_plan
-    owner: planner
-    requires:
-      - original_request
-      - accepted_discovery_reference
-      - audit.json
-      - code.json
-      - fixture.json
-      - case_samples.json
-      - repository_findings
-      - scaffolding_map
-      - source_checkpoint
-      - plan_revision
-      - implementation_plan
-      - task_todo
-      - acceptance_criteria
-      - fixture_definitions
-    operations:
-      - check_requirement_and_file_references
-      - check_dependencies_and_resource_conflicts
-      - check_fixture_availability_or_generation_instructions
-      - run_required_available_plan_checks
-      - assemble_exact_package
-      - compute_package_digest
-    purpose: >
-      Check the proposed execution materials and assemble their exact references.
-      Record findings, inspection limits and checks not performed.
-    produces:
-      - plan_check_results
-      - plan_package_reference
-      - plan_package_digest
-    package_contents:
-      - original_request
-      - accepted_discovery_reference
-      - research_artifact_references
-      - repository_findings
-      - scaffolding_map
-      - source_checkpoint
-      - plan_revision
-      - implementation_plan
-      - task_todo
-      - acceptance_criteria
-      - fixture_definitions
-      - plan_check_results
-    reference_mapping:
-      research_artifact_references:
-        - audit.json
-        - code.json
-        - fixture.json
-        - case_samples.json
-    digest_rule: >
-      Use existing canonical serialization. Exclude the package digest itself
-      and the subsequent user-confirmation record.
-    outcomes:
-      ready:
-        next: plan_confirmation
-      correction_needed:
-        next: planning
-      information_needed:
-        action: request_clarification
-        resume_at: check_plan
-
-  - id: plan_confirmation
-    owner: user
-    requires:
-      - plan_revision
-      - plan_package_reference
-      - plan_package_digest
-      - source_checkpoint
-      - plan_check_results
-    purpose: Review the exact proposed execution package.
-    confirmation:
-      supplied_by: application_recorded_user_decision
-      binds_to:
-        - plan_revision
-        - plan_package_reference
-        - plan_package_digest
-        - source_checkpoint
-      waiting: persist_review_and_return_control_to_user
-    outcomes:
-      confirmed:
-        next: build
-      changes_requested:
-        next: planning
-      declined:
-        end: without_build
-    produces_on_confirmation:
-      - confirmed_package_reference
-      - user_confirmation_reference
-    confirmed_package_reference_contains:
-      - plan_package_reference
-      - plan_package_digest
-      - plan_revision
-      - source_checkpoint
-
-  - id: build
-    owner: builder
-    requires:
-      - confirmed_package_reference
-      - user_confirmation_reference
-    purpose: >
-      Implement the confirmed plan inside the authorized sandbox, execute
-      TaskTodo asynchronously and synchronize actual results.
-    sequence:
-      - verify_confirmed_hashes_and_source_preconditions
-      - create_authorized_sandbox
-      - implement_and_execute_task_todo_asynchronously
-      - run_assigned_checks
-      - retain_execution_evidence
-      - synchronize_actual_results
-    execution_rules:
-      - Only dependency-independent tasks may run concurrently.
-      - Serialize conflicting file or shared-resource operations.
-      - Do not execute dependent work after failed prerequisites.
-      - Record failed, uncertain, cancelled and unexecuted tasks honestly.
-      - Do not improvise material changes to the confirmed plan.
-      - Preserve partial results without presenting them as a successful build.
-    cleanup:
-      action: exit_sandbox
-      when: required_outputs_and_recovery_evidence_are_preserved
-      applies_to:
-        - completed
-        - failed
-        - cancelled
-      note: Sandbox cleanup does not undo external or synchronized effects.
-    resume:
-      uses: previous_execution_results
-      reconcile_first: uncertain_effects
-      execute: remaining_authorized_work_only
-    produces:
-      - build.json
-      - checkpoint
-      - synchronization_result
-    build_result_contents:
-      - task_execution_results
-      - assigned_check_results
-      - actual_changes
-      - execution_evidence
-      - failures_and_unknowns
-      - synchronization_details
-      - cleanup_status
-    checkpoint_meaning: >
-      Use the existing checkpoint representation to identify the actual resulting
-      state. Do not confuse it with the original approved source baseline.
-    outcomes:
-      synchronized:
+      - frozen_spec
+      - content_hash
+      - approval_hash
+      - approved_spec_revision
+      - approved_source_checkpoint
+      - preflight_result
+      - builder_processing_plan
+    revision_rules:
+      on_request_changes:
+        return_to: create_task_todo
+        max_loops: 3
+        when_exhausted:
+          action: runtime_recovery
+          user_decision_required: true
+      on_decline:
         next: completion
-      unexpected_source_drift:
-        next: repository_audit
-      issue:
-        action: preserve_progress_and_request_resolution
-        resume_at: build
+        terminal_outcome: cancelled
+      on_timeout:
+        next: completion
+        terminal_outcome: cancelled
+      on_content_changed:
+        return_to: create_task_todo
+        invalidate:
+          - content_hash
+          - approval_hash
+          - approved_spec_revision
+      on_source_drift:
+        action: runtime_recovery
+        resume_at: audit_pre_research
+      on_preflight_not_valid:
+        retry:
+          substep: preflight_check
+          max_attempts: 2
+        when_exhausted:
+          action: runtime_recovery
+          resume_at: create_task_todo
+    approval_rules:
+      - Approval binds the exact frozen specification revision and source checkpoint.
+      - Recomputed content_hash must match before Builder starts.
+      - Current source identity must match the frozen and approved source checkpoint.
+      - A content or source identity change invalidates the approval.
+      - Uncertainty never advances the decision point.
+    transitions:
+      on_complete: builder
+      on_failure:
+        action: runtime_recovery
+        resume_at: planning
+      on_timeout:
+        action: runtime_recovery
+        resume_at: planning
+      on_budget_exhausted:
+        action: runtime_recovery
+        resume_at: planning
+
+  - id: builder
+    order: 6
+    owner: builder
+    processing_plan: PP4
+    execution_order: sequential
+    requires:
+      - builder_processing_plan
+      - frozen_spec
+      - content_hash
+      - approval_hash
+      - approved_spec_revision
+      - approved_source_checkpoint
+      - preflight_result
+    purpose: >
+      Verify the approved hashes and source preconditions, create the authorized
+      sandbox, execute implementation_steps in order, synchronize only complete
+      authorized results, and exit the sandbox.
+    substeps:
+      - verify_hash
+      - enter_sandbox
+      - execute_tasks
+      - synchronize_results
+      - exit_sandbox
+    task_execution:
+      canonical_source: requirement_spec.implementation_steps
+      order: sequential
+      per_task_pattern:
+        - apply
+        - check
+        - record
+      stop_on_first_not_valid: true
+      per_task_correction_cap: 2
+      retry:
+        max_attempts: 1
+      correction_rules:
+        - Corrections stay inside the sandbox and the task's authorized target.
+        - Restore the task-start checkpoint before an allowed correction.
+        - A correction requires a different new error and remaining correction capacity.
+        - Stop on scope violation, missing target, unmet criterion or incorrect check.
+      limits:
+        - Check remaining time and budget before each task.
+        - Do not extend a timeout or budget.
+        - Stop at the current task boundary when a limit is exhausted.
+      failure_recording:
+        - Mark the current failed task as failed and its check as not_valid.
+        - Mark later tasks not_run.
+        - Preserve partial results as evidence.
+      synchronization:
+        apply_to_application_source_only_when:
+          - every_task_completed
+          - no_scope_or_gate_violation
+        otherwise:
+          - retain_partial_results_as_evidence
+          - do_not_apply_partial_results_to_application_source
+    produces:
+      - implementation_changes
+      - execution_evidence
+      - task_execution_results
+      - resulting_source_checkpoint
+      - synchronization_result
+      - partial_results
+      - failure_record
+    transitions:
+      on_complete: completion
+      on_precondition_not_valid:
+        action: runtime_recovery
+        resume_at: planning
+      on_failure:
+        next: completion
+        preserve:
+          - partial_results
+          - failure_record
+      on_timeout:
+        next: completion
+        preserve:
+          - partial_results
+          - failure_record
+      on_budget_exhausted:
+        next: completion
+        preserve:
+          - partial_results
+          - failure_record
 
   - id: completion
-    owner: application
+    order: 7
+    owner: runtime
     requires:
-      - build.json
-      - checkpoint
+      - terminal_outcome
+    consumes_when_available:
+      - implementation_changes
+      - execution_evidence
+      - task_execution_results
+      - resulting_source_checkpoint
       - synchronization_result
+      - partial_results
+      - failure_record
     purpose: >
-      Close the run with its actual outcome, retained result references and
-      unfinished work. Record cleanup status without hiding execution results.
+      Record the actual terminal outcome, changed files, checks performed,
+      success-criterion results, retained evidence and remaining work.
     completion_condition:
-      synchronization_result: completed
-    outcome:
-      derive_from:
-        - task_execution_results_in_build_json
-        - assigned_check_results_in_build_json
-        - failures_and_unknowns_in_build_json
-      distinguish:
-        - succeeded
-        - partial
-        - failed
-        - uncertain
-        - cancelled
+      completed:
+        all_tasks: completed
+        synchronization_result: completed
+      otherwise:
+        terminal_outcome: failed_or_cancelled
     produces:
       - completion_record
+      - retained_evidence
+    terminal: true
+    transitions:
+      on_failure:
+        action: retain_minimal_completion_record
+      on_timeout:
+        action: retain_minimal_completion_record
+      on_budget_exhausted:
+        action: retain_minimal_completion_record
 
-change_handling:
-  specification_changed:
-    return_to: specification_review
-    repeat: affected_downstream_work
+processing_plans:
+  authored_schema_ref: agents/skills/shared/contracts/workflow/processing_plans.schema.json#/$defs/authored_plan
+  runtime_record_schema_ref: agents/skills/shared/contracts/workflow/processing_plans.schema.json#/$defs/runtime_plan_record
+  plans:
+    PP1:
+      name: input_processing_plan
+      created_by: runtime
+      created_when: after_user_input_before_first_stage
+      executed_by: auditor
+      executed_in: audit_pre_research
+    PP2:
+      name: researcher_processing_plan
+      created_by: auditor
+      created_when: end_of_audit_pre_research
+      executed_by: researcher
+      executed_in: research
+    PP3:
+      name: planner_processing_plan
+      created_by: auditor
+      created_when: end_of_audit_post_research
+      executed_by: planner
+      executed_in: planning
+    PP4:
+      name: builder_processing_plan
+      created_by: planner
+      created_when: after_confirm_plan
+      executed_by: builder
+      executed_in: builder
+  rules:
+    - Plan schemas define shape, not hardcoded plan steps or criteria.
+    - Each plan instance carries exact inputs, outputs, steps, criteria and evidence requirements.
+    - Runtime records are separate from authored plan definitions.
+    - Runtime active execution metadata is not encoded as a processing-plan status.
+    - Processing-plan status values are not_run, completed, failed, blocked and skipped.
+    - Criteria results use valid, not_valid and uncertainty.
+    - Uncertainty never advances a stage or gate.
 
-  plan_package_changed:
-    return_to: planning
-    requires_renewed_user_confirmation: true
+requirement_spec:
+  schema_ref: agents/skills/planner/contracts/requirement_spec.schema.json
+  required_fields:
+    - project_name
+    - overview
+    - technology_stack
+    - prerequisites
+    - core_features
+    - database_schema
+    - api_endpoints_summary
+    - open_questions
+    - implementation_steps
+    - success_criteria
+  task_list_field: implementation_steps
+  rules:
+    - implementation_steps is the single canonical TaskTodo.
+    - Do not add builder_processing_steps, phase_steps or a separate task_todo artifact.
+    - All object schemas reject additional properties.
 
-  unexpected_source_change:
-    return_to: repository_audit
-    repeat: affected_downstream_work
-    requires_renewed_confirmation_if_confirmed_inputs_change: true
+ownership:
+  user:
+    stages:
+      - gate_1
+  auditor:
+    stages:
+      - audit_pre_research
+      - audit_post_research
+    sub_roles:
+      - coder
+    application_source_changes: false
+  researcher:
+    stages:
+      - research
+    owns:
+      - technical_investigation
+      - source_references
+      - fixture_generation
+  planner:
+    stages:
+      - planning
+    performs:
+      - create_gap_processing_design
+      - gap_resolution
+      - scan_verify_chaos
+      - create_task_todo
+      - freeze_and_hash
+      - preflight_check
+  builder:
+    stages:
+      - builder
+    owns:
+      - sandbox_creation
+      - sequential_execution
+      - result_synchronization
+  runtime:
+    stages:
+      - completion
+    performs:
+      - checkpoint_freeze_state
+      - decision_point_user_confirmation
+      - confirm_plan
+    coordinates:
+      - authorization_gates
+      - recovery_routing
+      - limit_enforcement
+      - synchronization
 
-  historical_outputs:
-    preserve: true
-    mark: superseded_when_no_longer_applicable
+configuration:
+  timeouts_seconds:
+    audit_pre_research: 600
+    research: 900
+    audit_post_research: 600
+    planning: 1200
+    builder: 1800
+    completion: 120
+  sub_step_timeouts_seconds:
+    checkpoint_freeze_state: 60
+    preflight_check: 300
+  gate_timeouts_seconds:
+    gate_1: 86400
+    plan_decision: 86400
+  retry:
+    preflight_check:
+      max_attempts: 2
+    builder:
+      max_attempts: 1
+  recovery:
+    max_resumes_per_stage: 2
+    on_exhausted: user_decision_required
+  cost_budget:
+    workflow:
+      max_tokens: 500000
+      max_tool_calls: 200
+    per_stage:
+      default_tokens: 100000
+    completion_reserve_tokens: 10000
+  generation:
+    truncated_generation:
+      max_regenerations: 1
+      use_higher_cap: true
+    builder_truncation:
+      apply_output: false
 
-rules:
-  - Preserve original intent separately from generated interpretations.
-  - Pass exact preceding outputs or artifact references between steps.
-  - Preserve full relevant source and evidence; summaries do not replace them.
-  - Distinguish facts, inferences, PROPOSALS and executed observations.
-  - A model statement or matching hash is not user confirmation.
-  - No execution sandbox or application-source effects before plan confirmation.
-  - Expected Builder changes are not unexpected source drift.
-  - Synchronization success alone does not establish implementation success.
-  - Reconcile uncertain effects before retrying.
-  - Retain partial results, failures and unknowns with accurate labels.
-  - Remove only disposable intermediates after required outputs are preserved.
+terminal_outputs:
+  - completion_record
+  - retained_evidence
+
+global_rules:
+  - YAML defines workflow stages, transitions, ownership, schemas and artifact flow only.
+  - Runtime owns plan instances, statuses, hashes, decisions, timeout tracking, persistence and recovery routing.
+  - Conversation contains discussion; only explicit decision points are workflow gates.
+  - Every input requires a processing plan.
+  - A gate decision is not a processing-plan input.
+  - Only explicit user decisions authorize the gated continuation.
+  - Hash equality is integrity evidence, not user approval.
+  - Never infer an execution result from a declaration.
+  - Evaluated results use valid, not_valid or uncertainty.
+  - Execution states use completed, failed, blocked, not_run or skipped.
+  - Do not use pass/fail as contract result values.
+  - Do not add a verifier stage; any independent validation is out-of-band.
+  - No stage or role may self-advance or grant itself execution authority.
+  - Preserve actual evidence, partial work, unknowns and remaining tasks.
